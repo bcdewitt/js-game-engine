@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Game</title>
+
+	<!-- CSS -->
+	<style>
+		/* Reset */
+		* { margin:0; padding:0; box-sizing: border-box; }
+
+		/* Set Overall Background Color */
+		body { background: black; }
+		
+		.outer { display: table; width: 100vw; height: 100vh; border-collapse: collapse; }
+		.inner { display: table-cell; vertical-align: middle; }
+
+		/* Style the canvas (max width and height of full viewport, keep aspect ratio) */
+		canvas {
+			display: block;
+			max-width: 100vw;
+			max-height: 100vh;
+			background: white;
+			margin: 0px auto;
+		}
+	</style>
+</head>
+<body>
+
+	<!-- HTML Content -->
+	<div class="outer">
+		<div class="inner">
+			<canvas id="game" width="1920" height="1080"></canvas>
+		</div>
+	</div>
+
+	<!-- JS (Using non-AMD modules, so we must list each js file here) -->
+	<script src="js/moduleSystem.js"></script>
+	<script src="js/utilities.js"></script>
+	<!-- <script src="js/Component.js"></script> -->
+	<!-- <script src="js/ComponentFactory.js"></script> -->
+	<!-- <script src="js/Entity.js"></script> -->
+	<!-- <script src="js/EntityFactory.js"></script> -->
+	<script src="js/AssetManager.js"></script>
+	<script src="js/TiledMap.js"></script>
+	<!-- <script src="js/DrawingManager.js"></script> -->
+	<!-- <script src="js/System.js"></script> -->
+	<!-- <script src="js/GameEngine.js"></script> -->
+
+	<script id="instantiator">
+		(function(){
+			/*
+			var
+				GameEngine = require('GameEngine'),
+				System = require('System')
+			;
+
+			var game = new GameEngine();
+
+			game.load(function() {
+				this.addSystem('system', new System());
+			});
+			game.run();
+			*/
+			
+			var assetManager = require('assetManager');
+			var TiledMap = require('TiledMap');
+			
+			var map = new TiledMap('json/level2.json', function() {
+				let canvas = document.getElementById('game');
+				let context = canvas.getContext('2d');
+				
+				let previousTime = performance.now();
+				let callbackId = null;
+				
+				//map.bgm.play();
+				
+				function main(timestamp) {
+					callbackId = window.requestAnimationFrame(main);
+					map.renderToCanvas(canvas, 'Background', timestamp);
+					map.renderToCanvas(canvas, 'Platforms', timestamp);
+					previousTime = timestamp;
+				}  
+				main(previousTime); // Start the cycle
+			});
+			
+			// Levels loop/wraparound in all directions
+			// Considers overhead and sideview as separate levels (loading different sideview shows transition with level name)
+			// Got the blaster master maps in a zip - http://www.auriplane.net/blastermaster/
+			// Can use ShoeBox to extract the data: http://renderhjs.net/shoebox/extractTiles.htm
+			// To test on Xbox: https://msdn.microsoft.com/windows/uwp/xbox-apps/devkit-activation
+			// To test on PS4...you need a bunch of steps: https://www.playstation.com/en-us/develop/
+			// To test on Wii U/3ds: https://developer.nintendo.com/the-process
+
+			/*
+			// Combination test
+			var assetManager = require('AssetManager');
+			assetManager.queueDownloads(['json/test1.json', 'json/test2.json']);
+			assetManager.downloadAll(function() {
+				assetManager.queueDownloads(['video/test1.mp4', 'video/test2.mp4']);
+				assetManager.downloadAll(function() {
+					var canvas = document.querySelector('#game');
+					var ctx = canvas.getContext('2d');
+					var video;
+
+					var obj = assetManager.getAsset('json/test1.json');
+					console.log(obj);
+					obj = assetManager.getAsset('json/test2.json');
+					console.log(obj);
+
+					function drawToCanvas() {
+						var that = this; //cache
+						(function loop() {
+							if (!that.paused && !that.ended) {
+								ctx.drawImage(that, 0, 0);
+								setTimeout(loop, 1000 / 30); // drawing at 30fps
+							}
+						})();
+					}
+
+					video = assetManager.getAsset('video/test1.mp4');
+					video.addEventListener('ended', function() {
+						video = assetManager.getAsset('video/test2.mp4');
+						video.addEventListener('play', drawToCanvas);
+						video.play();
+					});
+					video.addEventListener('play', drawToCanvas);
+					video.play();
+				});
+			});
+			*/
+
+
+			/*
+			// JSON test
+			var assetManager = require('assetManager');
+			assetManager.queueDownloads(['json/test1.json', 'json/test2.json']);
+			assetManager.downloadAll(function() {
+				var obj = assetManager.getAsset('json/test1.json');
+				console.log(obj);
+				obj = assetManager.getAsset('json/test2.json');
+				console.log(obj);
+			});
+			*/
+			
+
+
+			/*
+			// Video test
+			var assetManager = require('AssetManager');
+			assetManager.queueDownloads(['video/test1.mp4', 'video/test2.mp4']);
+			assetManager.downloadAll(function() {
+				var canvas = document.querySelector('#game');
+				var ctx = canvas.getContext('2d');
+				var video;
+
+				function drawToCanvas() {
+					var that = this; //cache
+					(function loop() {
+						if (!that.paused && !that.ended) {
+							ctx.drawImage(that, 0, 0);
+							setTimeout(loop, 1000 / 30); // drawing at 30fps
+						}
+					})();
+				}
+
+				video = assetManager.getAsset('video/test1.mp4');
+				video.addEventListener('ended', function() {
+					video = assetManager.getAsset('video/test2.mp4');
+					video.addEventListener('play', drawToCanvas);
+					video.play();
+				});
+				video.addEventListener('play', drawToCanvas);
+				video.play();
+			});
+			*/
+
+
+
+			/*
+			// Sound test
+			var assetManager = require('AssetManager');
+			assetManager.queueDownloads(['sfx/test1.wav', 'sfx/test2.wav']);
+			assetManager.downloadAll(function() {
+				var myAudio = assetManager.getAsset('sfx/test1.wav');
+				myAudio.play();
+				setTimeout(function() {
+					myAudio = assetManager.getAsset('sfx/test2.wav');
+					myAudio.play();
+				}, 150);
+			});
+			*/
+			
+
+
+			/*
+			// Img test
+			var assetManager = require('AssetManager');
+			assetManager.queueDownloads(['img/test1.png', 'img/test2.png']);
+			assetManager.downloadAll(function() {
+				var canvas = document.querySelector('#game');
+				var ctx = canvas.getContext('2d');
+				var image = assetManager.getAsset('img/test1.png');
+				ctx.drawImage(image, 0, 0);
+				image = assetManager.getAsset('img/test2.png');
+				ctx.drawImage(image, 0, 70);
+			});
+			*/
+
+
+		})();
+	</script>
+</body>
+</html>

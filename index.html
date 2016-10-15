@@ -33,39 +33,18 @@
 		</div>
 	</div>
 
-	<!-- JS (Using non-AMD modules, so we must list each js file here) -->
+	<!-- JS (Using custom module system, so we must include each js file here for require's to work) -->
 	<script src="js/moduleSystem.js"></script>
 	<script src="js/utilities.js"></script>
-	<!-- <script src="js/Component.js"></script> -->
-	<!-- <script src="js/ComponentFactory.js"></script> -->
-	<!-- <script src="js/Entity.js"></script> -->
-	<!-- <script src="js/EntityFactory.js"></script> -->
-	<script src="js/AssetManager.js"></script>
-	<script src="js/TiledMap.js"></script>
-	<!-- <script src="js/DrawingManager.js"></script> -->
-	<!-- <script src="js/System.js"></script> -->
-	<!-- <script src="js/GameEngine.js"></script> -->
+	<script src="js/assetManager.js"></script>
+	<script src="js/tiledMap.js"></script>
 
 	<script id="instantiator">
 		(function(){
-			/*
-			var
-				GameEngine = require('GameEngine'),
-				System = require('System')
-			;
-
-			var game = new GameEngine();
-
-			game.load(function() {
-				this.addSystem('system', new System());
-			});
-			game.run();
-			*/
-			
 			var assetManager = require('assetManager');
 			var TiledMap = require('TiledMap');
 			
-			var map = new TiledMap('json/level2.json', function() {
+			var map = new TiledMap('json/level1.json', function() {
 				let canvas = document.getElementById('game');
 				let context = canvas.getContext('2d');
 				
@@ -83,129 +62,9 @@
 				main(previousTime); // Start the cycle
 			});
 			
-			// Levels loop/wraparound in all directions
-			// Considers overhead and sideview as separate levels (loading different sideview shows transition with level name)
-			// Got the blaster master maps in a zip - http://www.auriplane.net/blastermaster/
-			// Can use ShoeBox to extract the data: http://renderhjs.net/shoebox/extractTiles.htm
 			// To test on Xbox: https://msdn.microsoft.com/windows/uwp/xbox-apps/devkit-activation
 			// To test on PS4...you need a bunch of steps: https://www.playstation.com/en-us/develop/
 			// To test on Wii U/3ds: https://developer.nintendo.com/the-process
-
-			/*
-			// Combination test
-			var assetManager = require('AssetManager');
-			assetManager.queueDownloads(['json/test1.json', 'json/test2.json']);
-			assetManager.downloadAll(function() {
-				assetManager.queueDownloads(['video/test1.mp4', 'video/test2.mp4']);
-				assetManager.downloadAll(function() {
-					var canvas = document.querySelector('#game');
-					var ctx = canvas.getContext('2d');
-					var video;
-
-					var obj = assetManager.getAsset('json/test1.json');
-					console.log(obj);
-					obj = assetManager.getAsset('json/test2.json');
-					console.log(obj);
-
-					function drawToCanvas() {
-						var that = this; //cache
-						(function loop() {
-							if (!that.paused && !that.ended) {
-								ctx.drawImage(that, 0, 0);
-								setTimeout(loop, 1000 / 30); // drawing at 30fps
-							}
-						})();
-					}
-
-					video = assetManager.getAsset('video/test1.mp4');
-					video.addEventListener('ended', function() {
-						video = assetManager.getAsset('video/test2.mp4');
-						video.addEventListener('play', drawToCanvas);
-						video.play();
-					});
-					video.addEventListener('play', drawToCanvas);
-					video.play();
-				});
-			});
-			*/
-
-
-			/*
-			// JSON test
-			var assetManager = require('assetManager');
-			assetManager.queueDownloads(['json/test1.json', 'json/test2.json']);
-			assetManager.downloadAll(function() {
-				var obj = assetManager.getAsset('json/test1.json');
-				console.log(obj);
-				obj = assetManager.getAsset('json/test2.json');
-				console.log(obj);
-			});
-			*/
-			
-
-
-			/*
-			// Video test
-			var assetManager = require('AssetManager');
-			assetManager.queueDownloads(['video/test1.mp4', 'video/test2.mp4']);
-			assetManager.downloadAll(function() {
-				var canvas = document.querySelector('#game');
-				var ctx = canvas.getContext('2d');
-				var video;
-
-				function drawToCanvas() {
-					var that = this; //cache
-					(function loop() {
-						if (!that.paused && !that.ended) {
-							ctx.drawImage(that, 0, 0);
-							setTimeout(loop, 1000 / 30); // drawing at 30fps
-						}
-					})();
-				}
-
-				video = assetManager.getAsset('video/test1.mp4');
-				video.addEventListener('ended', function() {
-					video = assetManager.getAsset('video/test2.mp4');
-					video.addEventListener('play', drawToCanvas);
-					video.play();
-				});
-				video.addEventListener('play', drawToCanvas);
-				video.play();
-			});
-			*/
-
-
-
-			/*
-			// Sound test
-			var assetManager = require('AssetManager');
-			assetManager.queueDownloads(['sfx/test1.wav', 'sfx/test2.wav']);
-			assetManager.downloadAll(function() {
-				var myAudio = assetManager.getAsset('sfx/test1.wav');
-				myAudio.play();
-				setTimeout(function() {
-					myAudio = assetManager.getAsset('sfx/test2.wav');
-					myAudio.play();
-				}, 150);
-			});
-			*/
-			
-
-
-			/*
-			// Img test
-			var assetManager = require('AssetManager');
-			assetManager.queueDownloads(['img/test1.png', 'img/test2.png']);
-			assetManager.downloadAll(function() {
-				var canvas = document.querySelector('#game');
-				var ctx = canvas.getContext('2d');
-				var image = assetManager.getAsset('img/test1.png');
-				ctx.drawImage(image, 0, 0);
-				image = assetManager.getAsset('img/test2.png');
-				ctx.drawImage(image, 0, 70);
-			});
-			*/
-
 
 		})();
 	</script>

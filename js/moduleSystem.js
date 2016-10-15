@@ -3,6 +3,7 @@ if (!(define && require)) {
 	var define, require;
 	
 	(function(){
+		'use strict';
 		var modules = {};
 		
 		class Module {

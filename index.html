@@ -10,7 +10,7 @@
 
 		/* Set Overall Background Color */
 		body { background: black; }
-		
+
 		.outer { display: table; width: 100vw; height: 100vh; border-collapse: collapse; }
 		.inner { display: table-cell; vertical-align: middle; }
 
@@ -40,29 +40,29 @@
 	<script src="js/tiledMap.js"></script>
 
 	<script id="instantiator">
-		(function(){
+		(function() {
 			'use strict';
 			var assetManager = require('assetManager');
 			var TiledMap = require('TiledMap');
-			
+
 			var map = new TiledMap('json/level1.json', function() {
 				let canvas = document.getElementById('game');
 				let context = canvas.getContext('2d');
-				
+
 				let previousTime = performance.now();
 				let callbackId = null;
-				
+
 				//map.bgm.play();
-				
+
 				function main(timestamp) {
 					callbackId = window.requestAnimationFrame(main);
 					map.renderToCanvas(canvas, 'Background', timestamp);
 					map.renderToCanvas(canvas, 'Platforms', timestamp);
 					previousTime = timestamp;
-				}  
+				}
 				main(previousTime); // Start the cycle
 			});
-			
+
 			// To test on Xbox: https://msdn.microsoft.com/windows/uwp/xbox-apps/devkit-activation
 			// To test on PS4...you need a bunch of steps: https://www.playstation.com/en-us/develop/
 			// To test on Wii U/3ds: https://developer.nintendo.com/the-process

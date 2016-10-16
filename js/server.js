@@ -1,35 +1,37 @@
+/* eslint-env node */
+/* eslint no-console: "off" */
 'use strict';
 
-const babel   = require('babel-core'); // Also using https://github.com/babel/babili
+//const babel   = require('babel-core'); // Also using https://github.com/babel/babili
 const http    = require('http');
 const fs      = require('fs');
 const path    = require('path');
 
 http.createServer(function(request, response) {
-    let filePath = '..' + request.url, ext;
-	
-    if (filePath == '../') filePath = '../index.html';
-	
-	console.log('request for' + filePath);
-	
+	let filePath = '..' + request.url, ext;
+
+	if (filePath === '../') filePath = '../index.html';
+
 	ext = path.extname(filePath);
-	
+
 	// Preprocess and respond differently depending on the file type
 	switch(ext) {
-		
+
 		// JavaScript
 		case '.js':
 			fs.readFile(filePath, function(error, content) {
 				if(!error) {
-					
+
 					// For more options, see http://babeljs.io/docs/usage/options/
+					/*
 					let options = {
 						presets: ['babili']
 					};
-					
+					*/
+
 					// transpile JS to ES5 standard (also minified thanks to babili preset)
 					//content = babel.transform(content, options).code;
-					
+
 					response.writeHead(200);
 					response.end(content, 'utf-8');
 				} else {
@@ -38,12 +40,12 @@ http.createServer(function(request, response) {
 				}
 			});
 			break;
-			
+
 		// Other
 		default:
 			fs.readFile(filePath, function(error, content) {
 				if (error) {
-					if(error.code == 'ENOENT'){
+					if(error.code === 'ENOENT'){
 						fs.readFile('./404.html', function(error, content) {
 							response.writeHead(200);
 							response.end(content, 'utf-8');

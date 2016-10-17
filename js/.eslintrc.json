@@ -15,6 +15,10 @@
 		"no-warning-comments": "warn",
 		"no-else-return": "warn",
 		"no-alert": "warn",
+		"no-trailing-spaces": [
+			"warn",
+			{ "skipBlankLines": true }
+		],
 		"indent": [
 			"warn",
      	"tab",

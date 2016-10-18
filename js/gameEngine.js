@@ -1,16 +1,15 @@
 define('GameEngine', function(module) {
 	'use strict';
 
-	const utilities = require('utilities');
 	const TiledMap = require('TiledMap');
+	const RenderSystem = require('RenderSystem');
 
 	class GameEngine {
 		constructor(jsonPath) {
 			this.loaded = false;
 			this.initiated = false;
 			this.runAfterLoad = false;
-			this.canvas = document.getElementById('game');
-			this.systems = utilities.createIterableObject();
+			this.systems = {};
 			this.entities = [];
 
 			// Set up map
@@ -22,8 +21,12 @@ define('GameEngine', function(module) {
 			});
 		}
 
+		getEntities() {
+			return this.entities;
+		}
+
 		init() {
-			// TODO: Init and add each System
+			this.systems['render'] = new RenderSystem(() => { return this.getEntities(); }, this.map);
 			this.initiated = true;
 		}
 
@@ -37,14 +40,13 @@ define('GameEngine', function(module) {
 
 			if(!this.initiated) this.init();
 
-			let context = this.canvas.getContext('2d');
-
 			// Define the main loop logic
 			let main = (timestamp) => {
 
-				// TODO: Replace this with actual ECS setup (loop over Systems, RenderSystem will handle context and map.render calls)
-				this.map.render(context, 'Background', timestamp, 0, 0, this.canvas.width, this.canvas.height);
-				this.map.render(context, 'Platforms', timestamp, 0, 0, this.canvas.width, this.canvas.height);
+				// ECS design pattern
+				for(let systemKey in this.systems) {
+					this.systems[systemKey].run(timestamp);
+				}
 
 				window.requestAnimationFrame(main);
 			};

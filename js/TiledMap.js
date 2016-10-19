@@ -1,13 +1,21 @@
+/**
+ * TiledMap module.
+ * @module TiledMap
+ */
 define('TiledMap', function(module) {
 	'use strict';
 
 	const utilities = require('utilities');
 	const assetManager = require('assetManager');
 
+	/** Class representing a map built with the Tiled map editor. */
 	class TiledMap {
 
-		// Load methods
-		constructor(url, onLoadCallback) {
+		/**
+		 * Create a Game Engine.
+		 * @param  {string} jsonPath - File path to map .json file.
+		 */
+		constructor(jsonPath, onLoadCallback) {
 			this.json = {};
 			this.tileWidth = 0;
 			this.tileHeight = 0;
@@ -17,9 +25,9 @@ define('TiledMap', function(module) {
 			this.hasBGM = false;
 			this.bgm;
 
-			assetManager.queueDownload(url);
+			assetManager.queueDownload(jsonPath);
 			assetManager.downloadAll(() => {
-				this.json = assetManager.getAsset(url);
+				this.json = assetManager.getAsset(jsonPath);
 
 				this.tileWidth = this.json.tilewidth;
 				this.tileHeight = this.json.tileheight;
@@ -45,6 +53,9 @@ define('TiledMap', function(module) {
 			});
 		}
 
+		/**
+		 * Queues all files for download that can be found in this.json.
+		 */
 		queueMapFiles() {
 			// Queue the tileset image files (get url from the map data)
 			let tilesets = this.json.tilesets;
@@ -59,6 +70,10 @@ define('TiledMap', function(module) {
 			}
 		}
 
+		/**
+		 * Creates in-memory representations of tiles using given tilesets.
+		 * @param  {Object[]} tilesets - Array of plain objects representing tileset data.
+		 */
 		populateTiles(tilesets) {
 			for(let tileset of tilesets) {
 				let img = assetManager.getAsset(tileset.image);
@@ -99,6 +114,10 @@ define('TiledMap', function(module) {
 			}
 		}
 
+		/**
+		 * Creates in-memory representations of layers using given layers data.
+		 * @param  {Object[]} layers - Array of plain objects representing layer data.
+		 */
 		populateLayers(layers) {
 			for(let layer of layers) {
 				if(layer.data) {
@@ -120,6 +139,9 @@ define('TiledMap', function(module) {
 			}
 		}
 
+		/**
+		 * Creates and draws canvases for each layer in this.layers. Only non-animated tiles are drawn.
+		 */
 		populateLayerCanvases() {
 
 			for (let layerName in this.layers) {
@@ -161,6 +183,16 @@ define('TiledMap', function(module) {
 
 
 		// Render methods
+		/**
+		 * Render animated tiles within the given area of a layer (tile frame depends on given time).
+		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
+		 * @param  {string} layerName                 - Key referencing layer in this.layers.
+		 * @param  {DOMHighResTimeStamp} time         - Time in milliseconds since first render.
+		 * @param  {Number} tileX1                    - x-coordinate at top left in number of tiles from left.
+		 * @param  {Number} tileY1                    - y-coordinate at top left in number of tiles from left.
+		 * @param  {Number} tileX2                    - x-coordinate at bottom right in number of tiles from left.
+		 * @param  {Number} tileY2                    - y-coordinate at bottom right in number of tiles from left.
+		 */
 		renderAnimatedTiles(context, layerName, time, tileX1, tileY1, tileX2, tileY2) {
 			let layer = this.layers[layerName];
 
@@ -197,6 +229,16 @@ define('TiledMap', function(module) {
 
 		}
 
+		/**
+		 * Render given area of a layer.
+		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
+		 * @param  {string} layerName                 - Key referencing layer in this.layers.
+		 * @param  {DOMHighResTimeStamp} timestamp    - Current time in milliseconds.
+		 * @param  {Number} x1                        - x-coordinate at top left in pixels from left.
+		 * @param  {Number} y1                        - y-coordinate at top left in pixels from left.
+		 * @param  {Number} width                     - width of selection in pixels.
+		 * @param  {Number} height                    - height of selection in pixels.
+		 */
 		render(context, layerName, timestamp, x1, y1, width, height) {
 			// Note: May need to use context.getImageData() and .putImageData() for transparency support instead of .drawImage()
 			// ...I tried these but they created memory leaks when debugging with Chrome

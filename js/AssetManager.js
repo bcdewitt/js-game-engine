@@ -1,24 +1,46 @@
+/**
+ * assetManager module.
+ * @module assetManager
+ */
 // Asset Loader/Manager (http://www.html5rocks.com/en/tutorials/games/assetmanager/)
 define('assetManager', function(module) {
 	'use strict';
 
+	/** Class that represents a set of file retreival methods. */
 	class AssetManager {
+
+		/**
+		 * Create an Asset Manager.
+		 */
 		constructor() {
 			this.cache = {};
 			this.init();
 		}
 
+		/**
+		 * Reset download queue (and error/success counts).
+		 */
 		init() {
 			this.downloadQueue = [];
 			this.successCount = 0;
 			this.errorCount = 0;
 		}
 
+		/**
+		 * Queue a file for download.
+		 * @param  {string}  path - File path/url at which the file may be found.
+		 * @param  {boolean=}  forceDownload - Setting this to true will add the file even if it is found in the cache.
+		 */
 		queueDownload(path, forceDownload) {
 			if(forceDownload || !this.cache[path])
 				this.downloadQueue.push(path);
 		}
 
+		/**
+		 * Queue multiple files for download.
+		 * @param  {string[]}  path - File paths/urls at which the files may be found.
+		 * @param  {boolean=}  forceDownload - Setting this to true will add the files even if it is found in the cache.
+		 */
 		queueDownloads(paths, forceDownload) {
 			let i = 0, l = paths.length;
 			for ( ; i < l; i++) {
@@ -26,6 +48,11 @@ define('assetManager', function(module) {
 			}
 		}
 
+		/**
+		 * Download all queued files.
+		 * @param  {function}  downloadCallback - function to be run once all files are downloaded.
+		 * @param  {function}  progCallback     - function to be run for each file downloaded.
+		 */
 		downloadAll(downloadCallback, progCallback) {
 			if (this.downloadQueue.length === 0) {
 				progCallback && progCallback(1.00);
@@ -127,10 +154,18 @@ define('assetManager', function(module) {
 			})();
 		}
 
+
+		/**
+		 * Returns true if all files in the current download queue have been downloaded.
+		 * @return {boolean}
+		 */
 		isDone() {
 			return (this.downloadQueue.length === this.successCount + this.errorCount);
 		}
 
+		/**
+		 * Gets the previously downloaded file from this AssetManager instance's cache
+		 */
 		getAsset(path) {
 			return this.cache[path];
 		}

@@ -1,15 +1,27 @@
+/**
+ * Utilities module.
+ * @module utilities
+ */
 define('utilities', function(module){
 	'use strict';
 
+	/** Class that represents a set of shared convenience methods. */
 	class Utilities {
-		constructor() {}
 
+		/**
+		 * Creates an associative array (an Object that may be used in a for...of).
+		 * @param  {Object=} obj - Plain-data Object.
+		 */
 		createIterableObject(obj) {
 			obj = obj || {};
 			obj[Symbol.iterator] = Array.prototype[Symbol.iterator];
 			return obj;
 		}
 
+		/**
+		 * Creates an array of the given dimensions.
+		 * @param  {...Number} [length=0] - Array dimensions.
+		 */
 		createArray(length) {
 			let arr, i;
 

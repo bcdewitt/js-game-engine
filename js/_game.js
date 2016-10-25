@@ -2,12 +2,16 @@
 (function() {
 	'use strict';
 
-	const Engine = require('Engine');
-	const RenderSystem = require('RenderSystem');
-	const GameEntityFactory = require('GameEntityFactory');
+	const GameEngine = require('GameEngine');
+	const ExampleRenderSystem = require('ExampleRenderSystem');
+	const ExampleGameEntityFactory = require('ExampleEntityFactory');
 
-	let engine = new Engine('json/level2.json', new GameEntityFactory(), () => {
-		engine.addSystem('render', new RenderSystem(engine.map));
+	let game = new GameEngine('json/level2.json', new ExampleGameEntityFactory(), () => {
+		game.addSystem('render', new ExampleRenderSystem(game.map));
 	});
-	engine.run();
+	game.run();
+	
+	// To test on Xbox: https://msdn.microsoft.com/windows/uwp/xbox-apps/devkit-activation
+	// To test on PS4...you need a bunch of steps: https://www.playstation.com/en-us/develop/
+	// To test on Wii U/3ds: https://developer.nintendo.com/the-process
 })();

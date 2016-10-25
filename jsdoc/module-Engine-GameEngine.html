@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>GameEngine - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a><ul class='methods'><li data-type='method'><a href="module-assetManager-AssetManager.html#downloadAll">downloadAll</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#getAsset">getAsset</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#init">init</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#isDone">isDone</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#queueDownload">queueDownload</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#queueDownloads">queueDownloads</a></li></ul></li><li><a href="module-Engine-GameEngine.html">GameEngine</a><ul class='methods'><li data-type='method'><a href="module-Engine-GameEngine.html#addEntity">addEntity</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#addEntitySubset">addEntitySubset</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#addSystem">addSystem</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#getEntities">getEntities</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#init">init</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#removeEntity">removeEntity</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#run">run</a></li></ul></li><li><a href="module-Entity-Entity.html">Entity</a><ul class='methods'><li data-type='method'><a href="module-Entity-Entity.html#addComponent">addComponent</a></li><li data-type='method'><a href="module-Entity-Entity.html#getComponent">getComponent</a></li><li data-type='method'><a href="module-Entity-Entity.html#hasComponent">hasComponent</a></li><li data-type='method'><a href="module-Entity-Entity.html#removeComponent">removeComponent</a></li></ul></li><li><a href="module-ExampleEntityFactory-ExampleEntityFactory.html">ExampleEntityFactory</a><ul class='methods'><li data-type='method'><a href="module-ExampleEntityFactory-ExampleEntityFactory.html#create">create</a></li></ul></li><li><a href="module-RenderSystem-ExampleRenderSystem.html">ExampleRenderSystem</a><ul class='methods'><li data-type='method'><a href="module-RenderSystem-ExampleRenderSystem.html#forEachEntity">forEachEntity</a></li><li data-type='method'><a href="module-RenderSystem-ExampleRenderSystem.html#getRequiredSubsets">getRequiredSubsets</a></li><li data-type='method'><a href="module-RenderSystem-ExampleRenderSystem.html#run">run</a></li></ul></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a><ul class='methods'><li data-type='method'><a href="module-TiledMap-TiledMap.html#populateLayerCanvases">populateLayerCanvases</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#populateLayers">populateLayers</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#populateTiles">populateTiles</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#queueMapFiles">queueMapFiles</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#render">render</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#renderAnimatedTiles">renderAnimatedTiles</a></li></ul></li><li><a href="module-utilities-Utilities.html">Utilities</a><ul class='methods'><li data-type='method'><a href="module-utilities-Utilities.html#createArray">createArray</a></li><li data-type='method'><a href="module-utilities-Utilities.html#createIterableObject">createIterableObject</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Engine.html">Engine</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-EntityFactory.html">EntityFactory</a></li><li><a href="module-ExampleEntityFactory.html">ExampleEntityFactory</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-EntityFactory-EntityFactory.html">EntityFactory</a><ul class='methods'><li data-type='method'><a href="module-EntityFactory-EntityFactory.html#create">create</a></li></ul></li><li><a href="module-System-System.html">System</a><ul class='methods'><li data-type='method'><a href="module-System-System.html#forEachEntity">forEachEntity</a></li><li data-type='method'><a href="module-System-System.html#getEntities">getEntities</a></li><li data-type='method'><a href="module-System-System.html#getRequiredSubsets">getRequiredSubsets</a></li><li data-type='method'><a href="module-System-System.html#run">run</a></li><li data-type='method'><a href="module-System-System.html#setEntityGetter">setEntityGetter</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">GameEngine</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="module-Engine.html">Engine</a>~</span>
+        
+        GameEngine
+        </h2>
+        
+            <div class="class-description">Class representing a Game Engine.</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="GameEngine"><span class="type-signature"></span>new GameEngine<span class="signature">(jsonPath, entityFactory, init)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a Game Engine.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>jsonPath</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">File path to map .json file.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>entityFactory</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">EntityFactory</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Instance of an EntityFactory. Used when calling addEntity() method.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>init</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Provides initialization logic. Add systems from within this delegate.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line11">line 11</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="addEntity"><span class="type-signature"></span>addEntity<span class="signature">(entityType, data)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Add an Entity.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>entityType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Type of Entity to add to this game.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Plain object representing the component data.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line69">line 69</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addEntitySubset"><span class="type-signature"></span>addEntitySubset<span class="signature">(subsetName, mapper)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a subset of the Entity array for this game.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subsetName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Name of component used to get subset.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mapper</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Function to help determine if an Entity should be a part of this subset.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addSystem"><span class="type-signature"></span>addSystem<span class="signature">(systemName, system)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Adds a System to this game.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>systemName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Key to use for the system.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>system</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">System</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">System to add</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line121">line 121</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getEntities"><span class="type-signature"></span>getEntities<span class="signature">(subsetName<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;Entity>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Get an array of Entity instances.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subsetName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Name of entity subset.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Entity instances for this game.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Entity></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="init"><span class="type-signature"></span>init<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Instantiate and add Systems for this game.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line138">line 138</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="removeEntity"><span class="type-signature"></span>removeEntity<span class="signature">(entity)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Remove an Entity.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>entity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Entity</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Entity instance to be removed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line98">line 98</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="run"><span class="type-signature"></span>run<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Fire main loop, which continuously iterates over and runs each System.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameEngine.js.html">gameEngine.js</a>, <a href="gameEngine.js.html#line147">line 147</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Tue Oct 25 2016 11:21:20 GMT-0400 (EDT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

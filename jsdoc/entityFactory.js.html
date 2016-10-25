@@ -2,22 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: entityFactory.js</title>
+    <title>entityFactory.js - Documentation</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: entityFactory.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a><ul class='methods'><li data-type='method'><a href="module-assetManager-AssetManager.html#downloadAll">downloadAll</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#getAsset">getAsset</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#init">init</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#isDone">isDone</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#queueDownload">queueDownload</a></li><li data-type='method'><a href="module-assetManager-AssetManager.html#queueDownloads">queueDownloads</a></li></ul></li><li><a href="module-Engine-GameEngine.html">GameEngine</a><ul class='methods'><li data-type='method'><a href="module-Engine-GameEngine.html#addEntity">addEntity</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#addEntitySubset">addEntitySubset</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#addSystem">addSystem</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#getEntities">getEntities</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#init">init</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#removeEntity">removeEntity</a></li><li data-type='method'><a href="module-Engine-GameEngine.html#run">run</a></li></ul></li><li><a href="module-Entity-Entity.html">Entity</a><ul class='methods'><li data-type='method'><a href="module-Entity-Entity.html#addComponent">addComponent</a></li><li data-type='method'><a href="module-Entity-Entity.html#getComponent">getComponent</a></li><li data-type='method'><a href="module-Entity-Entity.html#hasComponent">hasComponent</a></li><li data-type='method'><a href="module-Entity-Entity.html#removeComponent">removeComponent</a></li></ul></li><li><a href="module-ExampleEntityFactory-ExampleEntityFactory.html">ExampleEntityFactory</a><ul class='methods'><li data-type='method'><a href="module-ExampleEntityFactory-ExampleEntityFactory.html#create">create</a></li></ul></li><li><a href="module-RenderSystem-ExampleRenderSystem.html">ExampleRenderSystem</a><ul class='methods'><li data-type='method'><a href="module-RenderSystem-ExampleRenderSystem.html#forEachEntity">forEachEntity</a></li><li data-type='method'><a href="module-RenderSystem-ExampleRenderSystem.html#getRequiredSubsets">getRequiredSubsets</a></li><li data-type='method'><a href="module-RenderSystem-ExampleRenderSystem.html#run">run</a></li></ul></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a><ul class='methods'><li data-type='method'><a href="module-TiledMap-TiledMap.html#populateLayerCanvases">populateLayerCanvases</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#populateLayers">populateLayers</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#populateTiles">populateTiles</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#queueMapFiles">queueMapFiles</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#render">render</a></li><li data-type='method'><a href="module-TiledMap-TiledMap.html#renderAnimatedTiles">renderAnimatedTiles</a></li></ul></li><li><a href="module-utilities-Utilities.html">Utilities</a><ul class='methods'><li data-type='method'><a href="module-utilities-Utilities.html#createArray">createArray</a></li><li data-type='method'><a href="module-utilities-Utilities.html#createIterableObject">createIterableObject</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Engine.html">Engine</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-EntityFactory.html">EntityFactory</a></li><li><a href="module-ExampleEntityFactory.html">ExampleEntityFactory</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-EntityFactory-EntityFactory.html">EntityFactory</a><ul class='methods'><li data-type='method'><a href="module-EntityFactory-EntityFactory.html#create">create</a></li></ul></li><li><a href="module-System-System.html">System</a><ul class='methods'><li data-type='method'><a href="module-System-System.html#forEachEntity">forEachEntity</a></li><li data-type='method'><a href="module-System-System.html#getEntities">getEntities</a></li><li data-type='method'><a href="module-System-System.html#getRequiredSubsets">getRequiredSubsets</a></li><li data-type='method'><a href="module-System-System.html#run">run</a></li><li data-type='method'><a href="module-System-System.html#setEntityGetter">setEntityGetter</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">entityFactory.js</h1>
+    
 
     
 
@@ -54,7 +66,7 @@ define('EntityFactory', function(module) {
 		 * Create an Entity instance of the given type.
 		 * @param {string} entityType - Type of entity (key used to determine which constructor function to use to build entity).
 		 * @param {Object} data - Plain object that represents an entity's components.
-		 * @param  {function} compCallback - Function to call after a component is added/removed.
+		 * @param  {function} compCallback - Function to call after a component is added/removed or other changes are made that need to be observed.
 		 * @returns  {Entity}  A single Entity instance.
 		 */
 		create(entityType, data, compCallback) {
@@ -73,17 +85,13 @@ define('EntityFactory', function(module) {
 
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Engine.html">Engine</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-EntityFactory.html">EntityFactory</a></li><li><a href="module-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a></li><li><a href="module-Engine-Engine.html">Engine</a></li><li><a href="module-Entity-Entity.html">Entity</a></li><li><a href="module-GameEntityFactory-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem-RenderSystem.html">RenderSystem</a></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a></li><li><a href="module-utilities-Utilities.html">Utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-EntityFactory-EntityFactory.html">EntityFactory</a></li><li><a href="module-System-System.html">System</a></li></ul>
-</nav>
-
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Mon Oct 24 2016 22:58:46 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Tue Oct 25 2016 11:21:20 GMT-0400 (EDT) using the Minami theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
 </body>
 </html>

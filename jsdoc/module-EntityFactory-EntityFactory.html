@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Utilities</title>
+    <title>JSDoc: Interface: EntityFactory</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Utilities</h1>
+    <h1 class="page-title">Interface: EntityFactory</h1>
 
     
 
@@ -29,9 +29,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="module-utilities.html">utilities</a>~</span>Utilities</h2>
+            <span class="ancestors"><a href="module-EntityFactory.html">EntityFactory</a>~</span>EntityFactory</h2>
         
-            <div class="class-description">Class that represents a set of shared convenience methods.</div>
+            <div class="class-description">Class that acts as an interface/abstract class for an EntityFactory. Please avoid instantiating directly.</div>
         
     
 </header>
@@ -40,27 +40,10 @@
     <div class="container-overview">
     
         
+            <div class="description">Create an EntityFactory.</div>
+        
 
-    
-    <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="Utilities"><span class="type-signature"></span>new Utilities<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 
 
 <dl class="details">
@@ -92,7 +75,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.js.html">utilities.js</a>, <a href="utilities.js.html#line9">line 9</a>
+        <a href="entityFactory.js.html">entityFactory.js</a>, <a href="entityFactory.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -104,20 +87,7 @@
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     
     </div>
 
@@ -141,14 +111,14 @@
 
     
 
-    <h4 class="name" id="createArray"><span class="type-signature"></span>createArray<span class="signature">(&hellip;length<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(entityType, data, compCallback)</span><span class="type-signature"> &rarr; {Entity}</span></h4>
 
     
 
 
 
 <div class="description">
-    Creates an array of the given dimensions.
+    Create an Entity instance of the given type.
 </div>
 
 
@@ -172,11 +142,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -188,41 +154,69 @@
 
         <tr>
             
-                <td class="name"><code>length</code></td>
+                <td class="name"><code>entityType</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
+            
 
+            <td class="description last">Type of entity (key used to determine which constructor function to use to build entity).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
                 
-                    &lt;repeatable><br>
-                
-                </td>
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
             
 
             
-                <td class="default">
-                
-                    0
-                
-                </td>
+
+            <td class="description last">Plain object that represents an entity's components.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>compCallback</code></td>
             
 
-            <td class="description last">Array dimensions.</td>
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Function to call after a component is added/removed.</td>
         </tr>
 
     
@@ -263,7 +257,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.js.html">utilities.js</a>, <a href="utilities.js.html#line27">line 27</a>
+        <a href="entityFactory.js.html">entityFactory.js</a>, <a href="entityFactory.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -290,7 +284,7 @@
 
         
 <div class="param-desc">
-    An array that includes the number of dimensions given at the given lengths.
+    A single Entity instance.
 </div>
 
 
@@ -301,172 +295,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="createIterableObject"><span class="type-signature"></span>createIterableObject<span class="signature">(obj<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Creates an associative array (an Object that may be used in a for...of).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Plain-data Object.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.js.html">utilities.js</a>, <a href="utilities.js.html#line16">line 16</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    An iterable object for use in for...of loops.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
+<span class="param-type">Entity</span>
 
 
     </dd>

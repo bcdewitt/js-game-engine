@@ -7,12 +7,12 @@ define('RenderSystem', function(module) {
 
 	const System = require('System');
 
-	/** Class representing a particular type of System used for Rendering
+	/** Class representing a particular type of System used for Rendering. Not intended to be part of final game engine.
 	 * @extends System
 	 */
 	class RenderSystem extends System {
-		constructor(getEntities, map) {
-			super(getEntities);
+		constructor(map) {
+			super();
 			this.canvas = document.getElementById('game');
 			this.context = this.canvas.getContext('2d');
 			this.map = map;
@@ -22,8 +22,18 @@ define('RenderSystem', function(module) {
 		 * For now, this does nothing but output the given Entity to the console
 		 * @param  {Entity} entity - A single Entity instance.
 		 */
-		forEachEntity(entity) {
-			console.log(entity);
+		forEachEntity() {}
+
+		/**
+		 * Gets subset info (helps GameEngine with caching).
+		 * @returns {Object}  Plain object used as an associative array. It contains functions which check if a given entity meets criteria.
+		 */
+		getRequiredSubsets() {
+			return {
+				tunnelDetails: function(entity) {
+					return entity.hasComponent('tunnelDetails');
+				}
+			};
 		}
 
 		/**
@@ -33,7 +43,7 @@ define('RenderSystem', function(module) {
 		 */
 		run(timestamp) {
 			this.map.render(this.context, 'Background', timestamp, 0, 0, this.canvas.width, this.canvas.height);
-			super.run(timestamp);
+			super.run(timestamp, 'tunnelDetails');
 			this.map.render(this.context, 'Platforms', timestamp, 0, 0, this.canvas.width, this.canvas.height);
 		}
 	}

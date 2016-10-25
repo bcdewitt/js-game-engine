@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: TiledMap</title>
+    <title>JSDoc: Source: gameEntityFactory.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,133 +17,61 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: TiledMap</h1>
+    <h1 class="page-title">Source: gameEntityFactory.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * GameEntityFactory module.
+ * @module GameEntityFactory
+ */
+define('GameEntityFactory', function(module) {
 
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">TiledMap module.</div>
-        
+	const EntityFactory = require('EntityFactory');
 
-        
-            
+	/** Class representing a particular implementation of an EntityFactory. Not intended to be part of final game engine.
+	 * @extends EntityFactory
+	 */
+	class GameEntityFactory extends EntityFactory {
 
+		/**
+		 * Create an Entity instance of the given type.
+		 * @param {string} entityType - Type of entity (key used to determine which constructor function to use to build entity).
+		 * @param {Object} data - Plain object that represents an entity's components.
+		 * @param  {function} compCallback - Function to call after a component is added/removed.
+		 * @returns  {Entity}  A single Entity instance.
+		 */
+		create(entityType, data, compCallback) {
+			let entity = super.create(entityType, data, compCallback);
+			switch(entityType) {
+				case 'Tunnel':
+					entity.addComponent('tunnelDetails', {
+						sendTo: data.properties.sendTo
+					});
+					break;
+				case 'AreaGate':
+					entity.addComponent('gate', {
+						x: data.x,
+						y: data.y,
+						areaToLoad: data.properties.areaToLoad,
+						transition: data.properties.transiton
+					});
+					break;
+			}
+			return entity;
+		}
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tiledMap.js.html">tiledMap.js</a>, <a href="tiledMap.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-TiledMap-TiledMap.html">TiledMap</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+	module.exports = GameEntityFactory;
+});
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -14,6 +14,7 @@ define('TiledMap', function(module) {
 		/**
 		 * Create a Game Engine.
 		 * @param  {string} jsonPath - File path to map .json file.
+		 * @param {function} onLoadCallback - Callback function that represent logic to run after loading.
 		 */
 		constructor(jsonPath, onLoadCallback) {
 			this.json = {};
@@ -21,6 +22,7 @@ define('TiledMap', function(module) {
 			this.tileHeight = 0;
 			this.tiles = [];
 			this.layers = utilities.createIterableObject();
+			this.objects = [];
 			this.layerCanvases = utilities.createIterableObject();
 			this.hasBGM = false;
 			this.bgm;
@@ -48,7 +50,7 @@ define('TiledMap', function(module) {
 					// Draw the non-animated parts of each map layer on stored canvases (speeds up rendering at runtime)
 					this.populateLayerCanvases();
 
-					onLoadCallback();
+					onLoadCallback(this.objects);
 				});
 			});
 		}
@@ -115,12 +117,12 @@ define('TiledMap', function(module) {
 		}
 
 		/**
-		 * Creates in-memory representations of layers using given layers data.
+		 * Creates in-memory representations of layers and objects using given layers data.
 		 * @param  {Object[]} layers - Array of plain objects representing layer data.
 		 */
 		populateLayers(layers) {
 			for(let layer of layers) {
-				if(layer.data) {
+				if(layer.data && layer.type === 'tilelayer') {
 					let layerData = utilities.createArray(layer.width, layer.height);
 					let idx = 0;
 
@@ -135,6 +137,11 @@ define('TiledMap', function(module) {
 						height: layer.height,
 						data: layerData
 					};
+				} else if (layer.type === 'objectgroup') {
+					let objects = layer.objects;
+					for(let object of objects) {
+						this.objects.push(object);
+					}
 				}
 			}
 		}
@@ -188,10 +195,10 @@ define('TiledMap', function(module) {
 		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
 		 * @param  {string} layerName                 - Key referencing layer in this.layers.
 		 * @param  {DOMHighResTimeStamp} time         - Time in milliseconds since first render.
-		 * @param  {Number} tileX1                    - x-coordinate at top left in number of tiles from left.
-		 * @param  {Number} tileY1                    - y-coordinate at top left in number of tiles from left.
-		 * @param  {Number} tileX2                    - x-coordinate at bottom right in number of tiles from left.
-		 * @param  {Number} tileY2                    - y-coordinate at bottom right in number of tiles from left.
+		 * @param  {number} tileX1                    - x-coordinate at top left in number of tiles from left.
+		 * @param  {number} tileY1                    - y-coordinate at top left in number of tiles from left.
+		 * @param  {number} tileX2                    - x-coordinate at bottom right in number of tiles from left.
+		 * @param  {number} tileY2                    - y-coordinate at bottom right in number of tiles from left.
 		 */
 		renderAnimatedTiles(context, layerName, time, tileX1, tileY1, tileX2, tileY2) {
 			let layer = this.layers[layerName];
@@ -234,10 +241,10 @@ define('TiledMap', function(module) {
 		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
 		 * @param  {string} layerName                 - Key referencing layer in this.layers.
 		 * @param  {DOMHighResTimeStamp} timestamp    - Current time in milliseconds.
-		 * @param  {Number} x1                        - x-coordinate at top left in pixels from left.
-		 * @param  {Number} y1                        - y-coordinate at top left in pixels from left.
-		 * @param  {Number} width                     - width of selection in pixels.
-		 * @param  {Number} height                    - height of selection in pixels.
+		 * @param  {number} x1                        - x-coordinate at top left in pixels from left.
+		 * @param  {number} y1                        - y-coordinate at top left in pixels from left.
+		 * @param  {number} width                     - width of selection in pixels.
+		 * @param  {number} height                    - height of selection in pixels.
 		 */
 		render(context, layerName, timestamp, x1, y1, width, height) {
 			// Note: May need to use context.getImageData() and .putImageData() for transparency support instead of .drawImage()

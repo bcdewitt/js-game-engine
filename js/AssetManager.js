@@ -38,7 +38,7 @@ define('assetManager', function(module) {
 
 		/**
 		 * Queue multiple files for download.
-		 * @param  {string[]}  path - File paths/urls at which the files may be found.
+		 * @param  {string[]}  paths - File paths/urls at which the files may be found.
 		 * @param  {boolean=}  forceDownload - Setting this to true will add the files even if it is found in the cache.
 		 */
 		queueDownloads(paths, forceDownload) {
@@ -60,35 +60,34 @@ define('assetManager', function(module) {
 				return;
 			}
 
-			var that = this;
-			function handleDownload(path, obj, success) {
+			let handleDownload = (path, obj, success) => {
 
 				if(success) {
-					that.successCount += 1;
+					this.successCount += 1;
 					//console.log(path + ' is loaded');
 				} else {
-					that.errorCount += 1;
+					this.errorCount += 1;
 					//console.log('Error: Could not load ' + path);
 				}
 
-				if (that.isDone()) {
+				if (this.isDone()) {
 					progCallback && progCallback(1.00);
-					that.init();
-					that.cache[path] = obj;
+					this.init();
+					this.cache[path] = obj;
 					downloadCallback();
 				} else {
-					that.cache[path] = obj;
-					progCallback && progCallback((that.successCount + that.errorCount) / that.downloadQueue.length);
+					this.cache[path] = obj;
+					progCallback && progCallback((this.successCount + this.errorCount) / this.downloadQueue.length);
 				}
-			}
+			};
 
-			(function() {
-				for (var i = 0; i < that.downloadQueue.length; i++) {
-					var path = that.downloadQueue[i];
-					var parts = path.split('.');
-					var ext = parts[parts.length - 1];
-					var asset;
-					var loadEventName = 'load';
+			(() => {
+				for (let i = 0; i < this.downloadQueue.length; i++) {
+					let path = this.downloadQueue[i];
+					let parts = path.split('.');
+					let ext = parts[parts.length - 1];
+					let asset;
+					let loadEventName = 'load';
 
 					switch (ext.toLowerCase()) {
 
@@ -123,13 +122,13 @@ define('assetManager', function(module) {
 						// JSON
 						case 'json':
 							(function() {
-								var innerPath = path; // This and the outer function were needed to keep the path
-								var httpRequest = new XMLHttpRequest();
+								let innerPath = path; // This and the outer function were needed to keep the path
+								let httpRequest = new XMLHttpRequest();
 
 								httpRequest.onreadystatechange = function () {
 									if (this.readyState === 4) {
 										if (this.status === 200) {
-											var data = JSON.parse(this.responseText);
+											let data = JSON.parse(this.responseText);
 											handleDownload(innerPath, data, true);
 										} else {
 											handleDownload(innerPath, null, false);
@@ -157,14 +156,16 @@ define('assetManager', function(module) {
 
 		/**
 		 * Returns true if all files in the current download queue have been downloaded.
-		 * @return {boolean}
+		 * @returns {boolean} Returns true if done.
 		 */
 		isDone() {
 			return (this.downloadQueue.length === this.successCount + this.errorCount);
 		}
 
 		/**
-		 * Gets the previously downloaded file from this AssetManager instance's cache
+		 * Gets the previously downloaded file from this AssetManager instance's cache.
+		 * @param {string} path - The path to the previously downloaded asset.
+		 * @returns {*}  Returns an object representing the previously downloaded asset.
 		 */
 		getAsset(path) {
 			return this.cache[path];

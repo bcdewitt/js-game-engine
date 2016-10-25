@@ -42,6 +42,7 @@ define('TiledMap', function(module) {
 		/**
 		 * Create a Game Engine.
 		 * @param  {string} jsonPath - File path to map .json file.
+		 * @param {function} onLoadCallback - Callback function that represent logic to run after loading.
 		 */
 		constructor(jsonPath, onLoadCallback) {
 			this.json = {};
@@ -49,6 +50,7 @@ define('TiledMap', function(module) {
 			this.tileHeight = 0;
 			this.tiles = [];
 			this.layers = utilities.createIterableObject();
+			this.objects = [];
 			this.layerCanvases = utilities.createIterableObject();
 			this.hasBGM = false;
 			this.bgm;
@@ -76,7 +78,7 @@ define('TiledMap', function(module) {
 					// Draw the non-animated parts of each map layer on stored canvases (speeds up rendering at runtime)
 					this.populateLayerCanvases();
 
-					onLoadCallback();
+					onLoadCallback(this.objects);
 				});
 			});
 		}
@@ -143,12 +145,12 @@ define('TiledMap', function(module) {
 		}
 
 		/**
-		 * Creates in-memory representations of layers using given layers data.
+		 * Creates in-memory representations of layers and objects using given layers data.
 		 * @param  {Object[]} layers - Array of plain objects representing layer data.
 		 */
 		populateLayers(layers) {
 			for(let layer of layers) {
-				if(layer.data) {
+				if(layer.data &amp;&amp; layer.type === 'tilelayer') {
 					let layerData = utilities.createArray(layer.width, layer.height);
 					let idx = 0;
 
@@ -163,6 +165,11 @@ define('TiledMap', function(module) {
 						height: layer.height,
 						data: layerData
 					};
+				} else if (layer.type === 'objectgroup') {
+					let objects = layer.objects;
+					for(let object of objects) {
+						this.objects.push(object);
+					}
 				}
 			}
 		}
@@ -216,10 +223,10 @@ define('TiledMap', function(module) {
 		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
 		 * @param  {string} layerName                 - Key referencing layer in this.layers.
 		 * @param  {DOMHighResTimeStamp} time         - Time in milliseconds since first render.
-		 * @param  {Number} tileX1                    - x-coordinate at top left in number of tiles from left.
-		 * @param  {Number} tileY1                    - y-coordinate at top left in number of tiles from left.
-		 * @param  {Number} tileX2                    - x-coordinate at bottom right in number of tiles from left.
-		 * @param  {Number} tileY2                    - y-coordinate at bottom right in number of tiles from left.
+		 * @param  {number} tileX1                    - x-coordinate at top left in number of tiles from left.
+		 * @param  {number} tileY1                    - y-coordinate at top left in number of tiles from left.
+		 * @param  {number} tileX2                    - x-coordinate at bottom right in number of tiles from left.
+		 * @param  {number} tileY2                    - y-coordinate at bottom right in number of tiles from left.
 		 */
 		renderAnimatedTiles(context, layerName, time, tileX1, tileY1, tileX2, tileY2) {
 			let layer = this.layers[layerName];
@@ -262,10 +269,10 @@ define('TiledMap', function(module) {
 		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
 		 * @param  {string} layerName                 - Key referencing layer in this.layers.
 		 * @param  {DOMHighResTimeStamp} timestamp    - Current time in milliseconds.
-		 * @param  {Number} x1                        - x-coordinate at top left in pixels from left.
-		 * @param  {Number} y1                        - y-coordinate at top left in pixels from left.
-		 * @param  {Number} width                     - width of selection in pixels.
-		 * @param  {Number} height                    - height of selection in pixels.
+		 * @param  {number} x1                        - x-coordinate at top left in pixels from left.
+		 * @param  {number} y1                        - y-coordinate at top left in pixels from left.
+		 * @param  {number} width                     - width of selection in pixels.
+		 * @param  {number} height                    - height of selection in pixels.
 		 */
 		render(context, layerName, timestamp, x1, y1, width, height) {
 			// Note: May need to use context.getImageData() and .putImageData() for transparency support instead of .drawImage()
@@ -303,13 +310,13 @@ define('TiledMap', function(module) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-GameEngine.html">GameEngine</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a></li><li><a href="module-Entity-Entity.html">Entity</a></li><li><a href="module-GameEngine-GameEngine.html">GameEngine</a></li><li><a href="module-RenderSystem-RenderSystem.html">RenderSystem</a></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a></li><li><a href="module-utilities-Utilities.html">Utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-System-System.html">System</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Engine.html">Engine</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-EntityFactory.html">EntityFactory</a></li><li><a href="module-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a></li><li><a href="module-Engine-Engine.html">Engine</a></li><li><a href="module-Entity-Entity.html">Entity</a></li><li><a href="module-GameEntityFactory-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem-RenderSystem.html">RenderSystem</a></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a></li><li><a href="module-utilities-Utilities.html">Utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-EntityFactory-EntityFactory.html">EntityFactory</a></li><li><a href="module-System-System.html">System</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Wed Oct 19 2016 00:56:44 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Mon Oct 24 2016 22:58:46 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

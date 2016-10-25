@@ -299,14 +299,14 @@
 
     
 
-    <h4 class="name" id="getAsset"><span class="type-signature"></span>getAsset<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getAsset"><span class="type-signature"></span>getAsset<span class="signature">(path)</span><span class="type-signature"> &rarr; {*}</span></h4>
 
     
 
 
 
 <div class="description">
-    Gets the previously downloaded file from this AssetManager instance's cache
+    Gets the previously downloaded file from this AssetManager instance's cache.
 </div>
 
 
@@ -315,6 +315,55 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The path to the previously downloaded asset.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -350,7 +399,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assetManager.js.html">assetManager.js</a>, <a href="assetManager.js.html#line169">line 169</a>
+        <a href="assetManager.js.html">assetManager.js</a>, <a href="assetManager.js.html#line170">line 170</a>
     </li></ul></dd>
     
 
@@ -373,6 +422,28 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Returns an object representing the previously downloaded asset.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -514,7 +585,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assetManager.js.html">assetManager.js</a>, <a href="assetManager.js.html#line162">line 162</a>
+        <a href="assetManager.js.html">assetManager.js</a>, <a href="assetManager.js.html#line161">line 161</a>
     </li></ul></dd>
     
 
@@ -540,6 +611,10 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    Returns true if done.
+</div>
+
 
 
 <dl>
@@ -737,7 +812,7 @@
 
     
 
-    <h4 class="name" id="queueDownloads"><span class="type-signature"></span>queueDownloads<span class="signature">(path, forceDownload<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="queueDownloads"><span class="type-signature"></span>queueDownloads<span class="signature">(paths, forceDownload<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -782,7 +857,7 @@
 
         <tr>
             
-                <td class="name"><code>path</code></td>
+                <td class="name"><code>paths</code></td>
             
 
             <td class="type">
@@ -922,13 +997,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-GameEngine.html">GameEngine</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a></li><li><a href="module-Entity-Entity.html">Entity</a></li><li><a href="module-GameEngine-GameEngine.html">GameEngine</a></li><li><a href="module-RenderSystem-RenderSystem.html">RenderSystem</a></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a></li><li><a href="module-utilities-Utilities.html">Utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-System-System.html">System</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Engine.html">Engine</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-EntityFactory.html">EntityFactory</a></li><li><a href="module-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a></li><li><a href="module-Engine-Engine.html">Engine</a></li><li><a href="module-Entity-Entity.html">Entity</a></li><li><a href="module-GameEntityFactory-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem-RenderSystem.html">RenderSystem</a></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a></li><li><a href="module-utilities-Utilities.html">Utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-EntityFactory-EntityFactory.html">EntityFactory</a></li><li><a href="module-System-System.html">System</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Wed Oct 19 2016 00:56:44 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Mon Oct 24 2016 22:58:46 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

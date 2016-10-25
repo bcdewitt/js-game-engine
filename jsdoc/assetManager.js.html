@@ -66,7 +66,7 @@ define('assetManager', function(module) {
 
 		/**
 		 * Queue multiple files for download.
-		 * @param  {string[]}  path - File paths/urls at which the files may be found.
+		 * @param  {string[]}  paths - File paths/urls at which the files may be found.
 		 * @param  {boolean=}  forceDownload - Setting this to true will add the files even if it is found in the cache.
 		 */
 		queueDownloads(paths, forceDownload) {
@@ -88,35 +88,34 @@ define('assetManager', function(module) {
 				return;
 			}
 
-			var that = this;
-			function handleDownload(path, obj, success) {
+			let handleDownload = (path, obj, success) => {
 
 				if(success) {
-					that.successCount += 1;
+					this.successCount += 1;
 					//console.log(path + ' is loaded');
 				} else {
-					that.errorCount += 1;
+					this.errorCount += 1;
 					//console.log('Error: Could not load ' + path);
 				}
 
-				if (that.isDone()) {
+				if (this.isDone()) {
 					progCallback &amp;&amp; progCallback(1.00);
-					that.init();
-					that.cache[path] = obj;
+					this.init();
+					this.cache[path] = obj;
 					downloadCallback();
 				} else {
-					that.cache[path] = obj;
-					progCallback &amp;&amp; progCallback((that.successCount + that.errorCount) / that.downloadQueue.length);
+					this.cache[path] = obj;
+					progCallback &amp;&amp; progCallback((this.successCount + this.errorCount) / this.downloadQueue.length);
 				}
-			}
+			};
 
-			(function() {
-				for (var i = 0; i &lt; that.downloadQueue.length; i++) {
-					var path = that.downloadQueue[i];
-					var parts = path.split('.');
-					var ext = parts[parts.length - 1];
-					var asset;
-					var loadEventName = 'load';
+			(() => {
+				for (let i = 0; i &lt; this.downloadQueue.length; i++) {
+					let path = this.downloadQueue[i];
+					let parts = path.split('.');
+					let ext = parts[parts.length - 1];
+					let asset;
+					let loadEventName = 'load';
 
 					switch (ext.toLowerCase()) {
 
@@ -151,13 +150,13 @@ define('assetManager', function(module) {
 						// JSON
 						case 'json':
 							(function() {
-								var innerPath = path; // This and the outer function were needed to keep the path
-								var httpRequest = new XMLHttpRequest();
+								let innerPath = path; // This and the outer function were needed to keep the path
+								let httpRequest = new XMLHttpRequest();
 
 								httpRequest.onreadystatechange = function () {
 									if (this.readyState === 4) {
 										if (this.status === 200) {
-											var data = JSON.parse(this.responseText);
+											let data = JSON.parse(this.responseText);
 											handleDownload(innerPath, data, true);
 										} else {
 											handleDownload(innerPath, null, false);
@@ -185,14 +184,16 @@ define('assetManager', function(module) {
 
 		/**
 		 * Returns true if all files in the current download queue have been downloaded.
-		 * @return {boolean}
+		 * @returns {boolean} Returns true if done.
 		 */
 		isDone() {
 			return (this.downloadQueue.length === this.successCount + this.errorCount);
 		}
 
 		/**
-		 * Gets the previously downloaded file from this AssetManager instance's cache
+		 * Gets the previously downloaded file from this AssetManager instance's cache.
+		 * @param {string} path - The path to the previously downloaded asset.
+		 * @returns {*}  Returns an object representing the previously downloaded asset.
 		 */
 		getAsset(path) {
 			return this.cache[path];
@@ -212,13 +213,13 @@ define('assetManager', function(module) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-GameEngine.html">GameEngine</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a></li><li><a href="module-Entity-Entity.html">Entity</a></li><li><a href="module-GameEngine-GameEngine.html">GameEngine</a></li><li><a href="module-RenderSystem-RenderSystem.html">RenderSystem</a></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a></li><li><a href="module-utilities-Utilities.html">Utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-System-System.html">System</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-assetManager.html">assetManager</a></li><li><a href="module-Engine.html">Engine</a></li><li><a href="module-Entity.html">Entity</a></li><li><a href="module-EntityFactory.html">EntityFactory</a></li><li><a href="module-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem.html">RenderSystem</a></li><li><a href="module-System.html">System</a></li><li><a href="module-TiledMap.html">TiledMap</a></li><li><a href="module-utilities.html">utilities</a></li></ul><h3>Classes</h3><ul><li><a href="module-assetManager-AssetManager.html">AssetManager</a></li><li><a href="module-Engine-Engine.html">Engine</a></li><li><a href="module-Entity-Entity.html">Entity</a></li><li><a href="module-GameEntityFactory-GameEntityFactory.html">GameEntityFactory</a></li><li><a href="module-RenderSystem-RenderSystem.html">RenderSystem</a></li><li><a href="module-TiledMap-TiledMap.html">TiledMap</a></li><li><a href="module-utilities-Utilities.html">Utilities</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-EntityFactory-EntityFactory.html">EntityFactory</a></li><li><a href="module-System-System.html">System</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Wed Oct 19 2016 00:56:44 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Mon Oct 24 2016 22:58:46 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

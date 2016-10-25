@@ -10,17 +10,17 @@ define('Entity', function(module) {
 
 		/**
 		 * Create an Entity.
-		 * @param  {Object=} components - Associative array of plain-data Objects.
-		 * Systems use these to determine the actions to take for each iteration.
+		 * @param  {function} compCallback - Function to call after a component is added/removed.
 		 */
-		constructor(components) {
-			this.components = components || {};
+		constructor(compCallback) {
+			this.compCallback = compCallback;
+			this.components = {};
 		}
 
 		/**
 		 * Check if the given component exists for this Entity.
 		 * @param  {string} compName - Name of component.
-		 * @return {boolean}  true if the given component exists for this Entity.
+		 * @returns {boolean}  true if the given component exists for this Entity.
 		 */
 		hasComponent(compName) {
 			return this.components[compName] !== undefined;
@@ -29,7 +29,7 @@ define('Entity', function(module) {
 		/**
 		 * Gets the component object for this Entity under the given name.
 		 * @param  {string} compName - Name of component.
-		 * @return {Object|null}  Returns the component object under the given name.
+		 * @returns {Object|null}  Returns the component object under the given name.
 		 */
 		getComponent(compName) {
 			return this.components[compName];
@@ -49,6 +49,9 @@ define('Entity', function(module) {
 				this.components[compName] = null;
 			}
 
+			if(this.compCallback) {
+				this.compCallback(this);
+			}
 		}
 
 		/**
@@ -57,6 +60,10 @@ define('Entity', function(module) {
 		 */
 		removeComponent(compName) {
 			delete this.components[compName];
+
+			if(this.compCallback) {
+				this.compCallback(this);
+			}
 		}
 	}
 

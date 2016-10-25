@@ -12,6 +12,25 @@
 			"error",
 			"always"
 		],
+		"valid-jsdoc": [
+			"warn",
+			{
+				"requireReturn": false,
+				"prefer": {
+					"arg": "param",
+					"argument": "param",
+					"class": "constructor",
+					"return": "returns",
+					"virtual": "abstract"
+				},
+				"preferType": {
+					"Boolean": "boolean",
+					"Number": "number",
+					"object": "Object",
+					"String": "string"
+				}
+			}
+		],
 		"no-warning-comments": "warn",
 		"no-else-return": "warn",
 		"no-alert": "warn",

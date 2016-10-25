@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tests for Game Engine</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="node_modules/mocha/mocha.css">
+</head>
+<body>
+	<div id="mocha">
+		<h1>Tests for Game Engine</h1>
+	</div>
+	
+	<!-- JS -->
+	<script src="node_modules/mocha/mocha.js"></script>
+	<script src="node_modules/chai/chai.js"></script>
+	<script>
+		var expect = chai.expect;
+		mocha.setup({
+			ui: 'tdd',
+			ignoreLeaks: true
+		});
+		onload = function () {
+			mocha.run();
+		};
+	</script>
+	
+	<script src="../js/_module.js"></script>
+	
+	<script src="../js/utilities.js"></script>
+	<script src="../js/assetManager.js"></script>
+	<script src="../js/tiledMap.js"></script>
+	<script src="../js/gameEngine.js"></script>
+	<script src="../js/system.js"></script>
+	<script src="../js/exampleRenderSystem.js"></script>
+	<script src="../js/entityFactory.js"></script>
+	<script src="../js/exampleEntityFactory.js"></script>
+	<script src="../js/entity.js"></script>
+	
+	<script src="index.js"></script>
+</body>
+</html>

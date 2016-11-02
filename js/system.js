@@ -18,6 +18,22 @@ define('System', function(module) {
 			if (this.constructor === System) {
 				throw new Error('Can\'t instantiate System! (abstract class)');
 			}
+			this.loaded = false;
+		}
+
+		/**
+		 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON)
+		 */
+		getAssetPaths() {
+			return [];
+		}
+
+		/**
+		 * Event handler function - Store downloaded assets
+		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()"
+		 */
+		onAssetsLoaded() {
+			this.loaded = true;
 		}
 
 		/**
@@ -29,7 +45,7 @@ define('System', function(module) {
 		}
 
 		/**
-		 * Wrapper for ._getEntities() function set using .setEntityGetter() (checks if we correctly set up "getRequiredSubsets()" method)
+		 * Wrapper for ._getEntities() function - set using .setEntityGetter() (checks if we correctly set up "getRequiredSubsets()" method)
 		 * @param {string} subsetName - Name of entity subset to use.
 		 * @returns {Entity[]}  List of entities
 		 */

@@ -7,16 +7,16 @@ const http    = require('http');
 const fs      = require('fs');
 const path    = require('path');
 
-process.chdir("../");
+process.chdir('../');
 http.createServer(function(request, response) {
 	let filePath = request.url, ext;
 
 	// If filePath ends in a slash, replace the slash with /index.html
 	filePath = filePath.replace(/\/$/, '/index.html');
-	
+
 	// If filePath starts with a slash, replace it with ./
 	filePath = filePath.replace(/^\//, './');
-	
+
 	ext = path.extname(filePath);
 
 	// If the file path includes no extension and doesn't end with a slash, redirect

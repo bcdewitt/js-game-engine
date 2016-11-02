@@ -6,16 +6,53 @@ define('ExampleRenderSystem', function(module) {
 	'use strict';
 
 	const System = require('System');
+	const TiledMap = require('TiledMap');
 
 	/** Class representing a particular type of System used for Rendering. Not intended to be part of final game engine.
 	 * @extends System
 	 */
 	class ExampleRenderSystem extends System {
-		constructor(map) {
+		constructor() {
 			super();
 			this.canvas = document.getElementById('game');
-			this.context = this.canvas.getContext('2d');
-			this.map = map;
+			this.context = this.canvas && this.canvas.getContext('2d');
+			this.loadingPhase = 0;
+			this.mapPath = 'json/level2.json';
+			this.map;
+		}
+
+		/**
+		 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON)
+		 */
+		getAssetPaths() {
+			switch(this.loadingPhase) {
+				case 0:
+					return [{
+						path: this.mapPath,
+						reviver: function(data) {
+							return new TiledMap(data);
+						}
+					}];
+				case 1:
+					return this.map.getAssetPaths();
+			}
+		}
+
+		/**
+		 * Event handler function - Store downloaded assets
+		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()"
+		 */
+		onAssetsLoaded(assets) {
+			switch(this.loadingPhase) {
+				case 0:
+					this.map = assets[this.mapPath];
+					break;
+				case 1:
+					this.map.onAssetsLoaded(assets);
+					this.loaded = true;
+					break;
+			}
+			this.loadingPhase++;
 		}
 
 		/**

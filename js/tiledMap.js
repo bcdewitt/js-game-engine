@@ -6,70 +6,55 @@ define('TiledMap', function(module) {
 	'use strict';
 
 	const utilities = require('utilities');
-	const assetManager = require('assetManager');
 
-	/** Class representing a map built with the Tiled map editor. */
+	/** Class representing a Map built from Tiled data. */
 	class TiledMap {
+		constructor(data) {
+			this.data = data;
+			this.assets = {};
 
-		/**
-		 * Create a Game Engine.
-		 * @param  {string} jsonPath - File path to map .json file.
-		 * @param {function} onLoadCallback - Callback function that represent logic to run after loading.
-		 */
-		constructor(jsonPath, onLoadCallback) {
-			this.json = {};
-			this.tileWidth = 0;
-			this.tileHeight = 0;
+			this.tileWidth = data.tilewidth || 0;
+			this.tileHeight = data.tileheight || 0;
 			this.tiles = [];
-			this.layers = utilities.createIterableObject();
+			this.layers = {};
 			this.objects = [];
-			this.layerCanvases = utilities.createIterableObject();
-			this.hasBGM = false;
-			this.bgm;
-
-			assetManager.queueDownload(jsonPath);
-			assetManager.downloadAll(() => {
-				this.json = assetManager.getAsset(jsonPath);
-
-				this.tileWidth = this.json.tilewidth;
-				this.tileHeight = this.json.tileheight;
-
-				this.queueMapFiles(assetManager);
-
-				// Download queued files, finish initializing
-				assetManager.downloadAll(() => {
-
-					if(this.hasBGM) this.bgm = assetManager.getAsset(this.json.properties.bgm);
-
-					// Populate this.tiles array
-					this.populateTiles(this.json.tilesets);
-
-					// Split up each layer's data into x and y coordinate multidimensional array
-					this.populateLayers(this.json.layers);
-
-					// Draw the non-animated parts of each map layer on stored canvases (speeds up rendering at runtime)
-					this.populateLayerCanvases();
-
-					onLoadCallback(this.objects);
-				});
-			});
+			this.layerCanvases = {};
 		}
 
 		/**
-		 * Queues all files for download that can be found in this.json.
+		 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON)
 		 */
-		queueMapFiles() {
-			// Queue the tileset image files (get url from the map data)
-			let tilesets = this.json.tilesets;
-			for(let tileset of tilesets) {
-				assetManager.queueDownload(tileset.image);
-			}
+		getAssetPaths() {
+			let paths = [];
 
-			// Queue the map's music file
-			if(this.json.properties.bgm) {
-				this.hasBGM = true;
-				assetManager.queueDownload(this.json.properties.bgm);
-			}
+			paths.push(this.data.properties.bgm);
+
+			this.data.tilesets.forEach(function(tileset) {
+				paths.push(tileset.image);
+			});
+
+			return paths;
+		}
+
+		/**
+		 * Event handler function - Store downloaded assets
+		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()"
+		 */
+		onAssetsLoaded(assets) {
+			this.assets = assets;
+
+			this.bgm = this.data.properties && assets[this.data.properties.bgm];
+
+			// Populate this.tiles array
+			this.populateTiles(this.data.tilesets);
+
+			// Split up each layer's data into x and y coordinate multidimensional array
+			this.populateLayers(this.data.layers);
+
+			// Draw the non-animated parts of each map layer on stored canvases (speeds up rendering at runtime)
+			this.populateLayerCanvases();
+
+			// handle this.map.objects;
 		}
 
 		/**
@@ -78,7 +63,7 @@ define('TiledMap', function(module) {
 		 */
 		populateTiles(tilesets) {
 			for(let tileset of tilesets) {
-				let img = assetManager.getAsset(tileset.image);
+				let img = this.assets[tileset.image];
 
 				let yInc = tileset.tileheight + tileset.spacing;
 				for(let y = tileset.margin; this.tiles.length < tileset.tilecount; y += yInc) {
@@ -188,8 +173,6 @@ define('TiledMap', function(module) {
 
 		}
 
-
-		// Render methods
 		/**
 		 * Render animated tiles within the given area of a layer (tile frame depends on given time).
 		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
@@ -267,8 +250,8 @@ define('TiledMap', function(module) {
 			);
 
 		}
-
 	}
 
 	module.exports = TiledMap;
+
 });

@@ -1,9 +1,9 @@
 /**
- * assetManager module.
- * @module assetManager
+ * AssetManager module.
+ * @module AssetManager
  */
 // Asset Loader/Manager (http://www.html5rocks.com/en/tutorials/games/assetmanager/)
-define('assetManager', function(module) {
+define('AssetManager', function(module) {
 	'use strict';
 
 	/** Class that represents a set of file retreival methods. */
@@ -21,19 +21,23 @@ define('assetManager', function(module) {
 		 * Reset download queue (and error/success counts).
 		 */
 		init() {
-			this.downloadQueue = [];
-			this.successCount = 0;
-			this.errorCount = 0;
+			this.downloadQueue = [];  // array of path strings or plain objects containing a "path" string and "reviver" function (for JSON)
+			this.successCount = 0;    // number of successful downloads (set when downloadAll() method is run)
+			this.errorCount = 0;      // number of failed downloads (set when downloadAll() method is run)
 		}
 
 		/**
 		 * Queue a file for download.
-		 * @param  {string}  path - File path/url at which the file may be found.
+		 * @param  {string|Object}  pathOrObj - File path/url at which the file may be found.
 		 * @param  {boolean=}  forceDownload - Setting this to true will add the file even if it is found in the cache.
 		 */
-		queueDownload(path, forceDownload) {
+		queueDownload(pathOrObj, forceDownload) {
+			let path = (typeof pathOrObj === 'object') ?
+				pathOrObj.path:
+				pathOrObj;
+
 			if(forceDownload || !this.cache[path])
-				this.downloadQueue.push(path);
+				this.downloadQueue.push(pathOrObj);
 		}
 
 		/**
@@ -83,7 +87,10 @@ define('assetManager', function(module) {
 
 			(() => {
 				for (let i = 0; i < this.downloadQueue.length; i++) {
-					let path = this.downloadQueue[i];
+					let pathOrObj = this.downloadQueue[i];
+					let path = (typeof pathOrObj === 'object') ?
+						pathOrObj.path:
+						pathOrObj;
 					let parts = path.split('.');
 					let ext = parts[parts.length - 1];
 					let asset;
@@ -122,13 +129,17 @@ define('assetManager', function(module) {
 						// JSON
 						case 'json':
 							(function() {
-								let innerPath = path; // This and the outer function were needed to keep the path
+								let innerPathOrObj = pathOrObj; // This and the outer function were needed to keep the path
+								let innerPath = (typeof innerPathOrObj === 'object') ?
+									innerPathOrObj.path:
+									innerPathOrObj;
 								let httpRequest = new XMLHttpRequest();
 
 								httpRequest.onreadystatechange = function () {
 									if (this.readyState === 4) {
 										if (this.status === 200) {
 											let data = JSON.parse(this.responseText);
+											if(innerPathOrObj.reviver) { data = innerPathOrObj.reviver(data); }
 											handleDownload(innerPath, data, true);
 										} else {
 											handleDownload(innerPath, null, false);
@@ -173,5 +184,5 @@ define('assetManager', function(module) {
 
 	}
 
-	module.exports = new AssetManager();
+	module.exports = AssetManager;
 });

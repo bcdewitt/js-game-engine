@@ -5,7 +5,7 @@
 define('GameEngine', function(module) {
 	'use strict';
 
-	const TiledMap = require('TiledMap');
+	const assetManager = new (require('AssetManager'))();
 
 	/** Class representing a Game Engine. */
 	class GameEngine {
@@ -14,29 +14,17 @@ define('GameEngine', function(module) {
 		 * Create a Game Engine.
 		 * @param  {string} jsonPath - File path to map .json file.
 		 * @param {EntityFactory} entityFactory - Instance of an EntityFactory. Used when calling addEntity() method.
-		 * @param {function} init - Provides initialization logic. Add systems from within this delegate.
 		 */
-		constructor(jsonPath, entityFactory, init) {
+		constructor(jsonPath, entityFactory) {
 			this.loaded = false;
-			this.initiated = false;
 			this.runAfterLoad = false;
 			this.entityFactory = entityFactory;
 			this.systems = {};
 			this.entities = [];
 			this.entitySubsets = {};
-			this._init = init;
 
-			// Set up map
-			this.map = new TiledMap(jsonPath, (objects) => {
-				for(let object of objects) {
-					this.addEntity(object.type, object);
-				}
-
-				this.loaded = true;
-
-				// *call this.run() if an attempt was made to call this.run() before loading was completed
-				if(this.runAfterLoad) { this.run(); }
-			});
+			// Set up systems
+			this.addSystems();
 		}
 
 		/**
@@ -135,10 +123,52 @@ define('GameEngine', function(module) {
 		/**
 		 * Instantiate and add Systems for this game.
 		 */
-		init() {
-			this._init();
-			this.systems;
-			this.initiated = true;
+		addSystems() {
+			let loop = () => {
+				let callbackObjs = [];
+
+				// Queue downloads for each system, keep track of callbacks
+				for(let systemKey in this.systems) {
+					let system = this.systems[systemKey];
+					let pathsOrObjs = system.getAssetPaths();
+					if(!system.loaded) {
+						if(pathsOrObjs.length > 0) {
+							assetManager.queueDownloads(pathsOrObjs);
+						}
+						callbackObjs.push({
+							system: system,
+							paths: pathsOrObjs.map(function(pathOrObj) {
+								return pathOrObj.path ? pathOrObj.path : pathOrObj; // Ensure each item is a path string
+							})
+						});
+					}
+				}
+
+				// Download all queued assets, run callbacks (feed requested assets)
+				assetManager.downloadAll(() => {
+					let systemsLoaded = true;
+					for(let callbackObj of callbackObjs) {
+
+						let assets = {};
+						callbackObj.paths.forEach(function(pathStr) {
+							assets[pathStr] = assetManager.getAsset(pathStr);
+						});
+
+						callbackObj.system.onAssetsLoaded(assets);
+						systemsLoaded = systemsLoaded && callbackObj.system.loaded;
+					}
+
+					// If any system was not loaded, loop again
+					if(!systemsLoaded) { loop(); return; }
+
+					// Otherwise, flag engine as "loaded" and...
+					this.loaded = true;
+
+					// *call this.run() if an attempt was made to call this.run() before loading was completed
+					if(this.runAfterLoad) { this.run(); }
+				});
+			};
+			loop();
 		}
 
 		/**
@@ -152,20 +182,19 @@ define('GameEngine', function(module) {
 				return;
 			}
 
-			if(!this.initiated) this.init();
-
-			// Define the main loop logic
+			// Define the main loop function
 			let main = (timestamp) => {
 
-				// ECS design pattern
+				// Loop over systems (ECS design pattern)
 				for(let systemKey in this.systems) {
 					this.systems[systemKey].run(timestamp);
 				}
 
+				// Keep loop going by making an asynchronous, recursive call to main loop function
 				window.requestAnimationFrame(main);
 			};
 
-			// Run main loop (wrapper handles loop logic, main)
+			// Run main loop function
 			main(performance.now());
 		}
 	}

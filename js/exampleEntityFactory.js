@@ -23,7 +23,7 @@ define('ExampleEntityFactory', function(module) {
 			switch(entityType) {
 				case 'Tunnel':
 					entity.addComponent('tunnelDetails', {
-						sendTo: data.properties.sendTo
+						sendTo: data.sendTo
 					});
 					break;
 				case 'AreaGate':
@@ -37,8 +37,8 @@ define('ExampleEntityFactory', function(module) {
 							return this._x;
 						},
 						y: data.y,
-						areaToLoad: data.properties.areaToLoad,
-						transition: data.properties.transiton
+						areaToLoad: data.areaToLoad,
+						transition: data.transiton
 					});
 					break;
 			}

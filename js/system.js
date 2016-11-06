@@ -45,15 +45,6 @@ define('System', function(module) {
 		}
 
 		/**
-		 * Intended to be overridden. Provides logic to be run for each Entity.
-		 * @abstract
-		 * @param  {Entity} entity - A single Entity instance.
-		 */
-		forEachEntity() {
-			throw new Error('"forEachEntity() method" must be implemented by System subclass!');
-		}
-
-		/**
 		 * Gets subset info (helps GameEngine with caching).
 		 * @returns {Object}  Plain object used as an associative array. It contains functions which check if a given entity meets criteria.
 		 */
@@ -63,15 +54,10 @@ define('System', function(module) {
 
 		/**
 		 * Method that is called once per iteration of the main game loop.
-		 * Note: This can be overridden too, but it is recommended to call super.run() so the forEachEntity method will still fire.
 		 * @param  {DOMHighResTimeStamp} timestamp - Current time in milliseconds.
-		 * @param  {string} subsetName - Name of subset to use when getting entity list.
 		 */
-		run(timestamp, subsetName) {
-			let entities = this.getEntities(subsetName);
-			for(let entity of entities) {
-				this.forEachEntity(entity);
-			}
+		run() {
+			throw new Error('You must override .run(). (abstract method)');
 		}
 	}
 

@@ -43,7 +43,12 @@ define('ExampleRenderSystem', function(module) {
 		 */
 		run(timestamp) {
 			this.map.render(this.context, 'Background', timestamp, 0, 0, this.canvas.width, this.canvas.height);
-			super.run(timestamp, 'tunnelDetails');
+			/*
+			let entities = this.getEntities('tunnelDetails');
+			for(let entity of entities) {
+
+			}
+			*/
 			this.map.render(this.context, 'Platforms', timestamp, 0, 0, this.canvas.width, this.canvas.height);
 		}
 	}

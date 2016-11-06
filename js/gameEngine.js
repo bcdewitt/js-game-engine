@@ -90,7 +90,7 @@ define('GameEngine', function(module) {
 					// Create entities for each object type
 					objects = this.map.getObjects();
 					for(let object of objects) {
-						object;
+						this.addEntity(object.type, object);
 					}
 
 					super.onAssetsLoaded();

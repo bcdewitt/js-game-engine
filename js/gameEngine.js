@@ -5,26 +5,98 @@
 define('GameEngine', function(module) {
 	'use strict';
 
+	const AssetUser = require('AssetUser');
 	const assetManager = new (require('AssetManager'))();
+	const TiledMap = require('TiledMap');
 
 	/** Class representing a Game Engine. */
-	class GameEngine {
+	class GameEngine extends AssetUser {
 
 		/**
 		 * Create a Game Engine.
-		 * @param  {string} jsonPath - File path to map .json file.
+		 * @param {string} mapPath - URL to the map JSON data.
 		 * @param {EntityFactory} entityFactory - Instance of an EntityFactory. Used when calling addEntity() method.
 		 */
-		constructor(jsonPath, entityFactory) {
-			this.loaded = false;
+		constructor(mapPath, entityFactory) {
+			super();
+			this.mapPath = mapPath;
+			this.loadingPhase = 0;
 			this.runAfterLoad = false;
 			this.entityFactory = entityFactory;
 			this.systems = {};
 			this.entities = [];
 			this.entitySubsets = {};
 
-			// Set up systems
-			this.addSystems();
+			// Queue downloads for overall game....Should this be somehow combined with the addSystems() logic? I copied and edited this logic from there
+			let loop = () => {
+				let pathsOrObjs = this.getAssetPaths();
+				if(!this.loaded) {
+					if(pathsOrObjs.length > 0) {
+						assetManager.queueDownloads(pathsOrObjs);
+					}
+					let paths = pathsOrObjs.map(function(pathOrObj) {
+						return pathOrObj.path ? pathOrObj.path : pathOrObj; // Ensure each item is a path string
+					});
+
+					assetManager.downloadAll(() => {
+						let assets = {};
+						paths.forEach(function(pathStr) {
+							assets[pathStr] = assetManager.getAsset(pathStr);
+						});
+
+						this.onAssetsLoaded(assets);
+
+						if(!this.loaded) { loop(); return; }
+
+						this.addSystems();
+					});
+				}
+			};
+			loop();
+
+		}
+
+		/**
+		 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON)
+		 */
+		getAssetPaths() {
+			switch(this.loadingPhase) {
+				case 0:
+					return [{
+						path: this.mapPath,
+						reviver: function(data) {
+							return new TiledMap(data);
+						}
+					}];
+				case 1:
+					return this.map.getAssetPaths();
+			}
+		}
+
+		/**
+		 * Event handler function - Store downloaded assets
+		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()"
+		 */
+		onAssetsLoaded(assets) {
+			let objects;
+
+			switch(this.loadingPhase) {
+				case 0:
+					this.map = assets[this.mapPath];
+					break;
+				case 1:
+					this.map.onAssetsLoaded(assets);
+
+					// Create entities for each object type
+					objects = this.map.getObjects();
+					for(let object of objects) {
+						object;
+					}
+
+					super.onAssetsLoaded();
+					break;
+			}
+			this.loadingPhase++;
 		}
 
 		/**

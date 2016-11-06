@@ -5,11 +5,13 @@
 define('TiledMap', function(module) {
 	'use strict';
 
+	const AssetUser = require('AssetUser');
 	const utilities = require('utilities');
 
 	/** Class representing a Map built from Tiled data. */
-	class TiledMap {
+	class TiledMap extends AssetUser {
 		constructor(data) {
+			super();
 			this.data = data;
 			this.assets = {};
 
@@ -54,7 +56,11 @@ define('TiledMap', function(module) {
 			// Draw the non-animated parts of each map layer on stored canvases (speeds up rendering at runtime)
 			this.populateLayerCanvases();
 
-			// handle this.map.objects;
+			super.onAssetsLoaded();
+		}
+
+		getObjects() {
+			return this.objects;
 		}
 
 		/**
@@ -125,7 +131,19 @@ define('TiledMap', function(module) {
 				} else if (layer.type === 'objectgroup') {
 					let objects = layer.objects;
 					for(let object of objects) {
-						this.objects.push(object);
+						let obj = {
+							width: object.width,
+							height: object.height,
+							x: object.x,
+							y: object.y,
+							type: object.type
+						};
+
+						for(let key in object.properties) {
+							obj[key] = object.properties[key];
+						}
+
+						this.objects.push(obj);
 					}
 				}
 			}

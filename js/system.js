@@ -5,35 +5,22 @@
 define('System', function(module) {
 	'use strict';
 
+	const AssetUser = require('AssetUser');
+
 	/**
 	 * Class that acts as an interface/abstract class for a System (the "S" in the ECS design pattern). Please avoid instantiating directly.
 	 * @interface
 	 * */
-	class System {
+	class System extends AssetUser {
 
 		/**
 		 * Create a System.
 		 */
 		constructor() {
+			super();
 			if (this.constructor === System) {
 				throw new Error('Can\'t instantiate System! (abstract class)');
 			}
-			this.loaded = false;
-		}
-
-		/**
-		 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON)
-		 */
-		getAssetPaths() {
-			return [];
-		}
-
-		/**
-		 * Event handler function - Store downloaded assets
-		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()"
-		 */
-		onAssetsLoaded() {
-			this.loaded = true;
 		}
 
 		/**

@@ -6,14 +6,14 @@
 	const ExampleRenderSystem = require('ExampleRenderSystem');
 	const ExampleGameEntityFactory = require('ExampleEntityFactory');
 
-	class Game extends GameEngine {
+	class ExampleGameEngine extends GameEngine {
 		addSystems() {
-			this.addSystem('render', new ExampleRenderSystem());
+			this.addSystem('render', new ExampleRenderSystem(this.map));
 			super.addSystems();
 		}
 	}
 
-	let game = new Game('json/level2.json', new ExampleGameEntityFactory());
+	let game = new ExampleGameEngine('json/level2.json', new ExampleGameEntityFactory());
 	game.run();
 
 	// To test on Xbox: https://msdn.microsoft.com/windows/uwp/xbox-apps/devkit-activation

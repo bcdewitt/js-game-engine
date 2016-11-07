@@ -3,12 +3,14 @@
 	'use strict';
 
 	const GameEngine = require('GameEngine');
+	const ExampleSpawnerSystem = require('ExampleSpawnerSystem');
 	const ExampleRenderSystem = require('ExampleRenderSystem');
 	const ExampleGameEntityFactory = require('ExampleEntityFactory');
 
 	class ExampleGameEngine extends GameEngine {
 		addSystems() {
 			this.addSystem('render', new ExampleRenderSystem(this.map));
+			this.addSystem('spawn', new ExampleSpawnerSystem());
 			super.addSystems();
 		}
 	}

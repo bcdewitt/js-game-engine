@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>System - Documentation</title>
+    <title>ExampleSpawnerSystem - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">System</h1>
+    <h1 class="page-title">ExampleSpawnerSystem</h1>
     
 
     
@@ -41,12 +41,12 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="module-System.html">System</a>~</span>
+            <span class="ancestors"><a href="module-ExampleSpawnerSystem.html">ExampleSpawnerSystem</a>~</span>
         
-        System
+        ExampleSpawnerSystem
         </h2>
         
-            <div class="class-description">Class that acts as an interface/abstract class for a System (the "S" in the ECS design pattern). Please avoid instantiating directly.</div>
+            <div class="class-description">Class representing a particular type of System used for creating entities. Not intended to be part of final game engine.</div>
         
     
 </header>
@@ -55,10 +55,27 @@
     <div class="container-overview">
     
         
-            <div class="description">Create a System.</div>
-        
 
-        
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="ExampleSpawnerSystem"><span class="type-signature"></span>new ExampleSpawnerSystem<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <dl class="details">
@@ -90,7 +107,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="system.js.html">system.js</a>, <a href="system.js.html#line14">line 14</a>
+        <a href="exampleSpawnerSystem.js.html">exampleSpawnerSystem.js</a>, <a href="exampleSpawnerSystem.js.html#line13">line 13</a>
     </li></ul></dd>
     
 
@@ -102,9 +119,33 @@
 </dl>
 
 
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>System</li>
+    </ul>
+
 
     
 
@@ -120,335 +161,6 @@
 
     
         <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="addEntity"><span class="type-signature"></span>addEntity<span class="signature">(entityType, data)</span><span class="type-signature"> &rarr; {Entity}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Add an Entity.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>entityType</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Type of Entity to add to this game.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Plain object representing the component data.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="system.js.html">system.js</a>, <a href="system.js.html#line54">line 54</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Entity that was added
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Entity</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="getEntities"><span class="type-signature"></span>getEntities<span class="signature">(subsetName)</span><span class="type-signature"> &rarr; {Array.&lt;Entity>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Wrapper for ._getEntities() function - set using .setEntityGetter() (checks if we correctly set up "getRequiredSubsets()" method)
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>subsetName</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Name of entity subset to use.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="system.js.html">system.js</a>, <a href="system.js.html#line40">line 40</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    List of entities
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array.&lt;Entity></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
 
         
             
@@ -506,7 +218,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="system.js.html">system.js</a>, <a href="system.js.html#line70">line 70</a>
+        <a href="exampleSpawnerSystem.js.html">exampleSpawnerSystem.js</a>, <a href="exampleSpawnerSystem.js.html#line23">line 23</a>
     </li></ul></dd>
     
 
@@ -559,137 +271,6 @@
 
     
 
-    <h4 class="name" id="removeEntity"><span class="type-signature"></span>removeEntity<span class="signature">(entity)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Remove an Entity.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>entity</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Entity</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Entity instance to be removed</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="system.js.html">system.js</a>, <a href="system.js.html#line62">line 62</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
     <h4 class="name" id="run"><span class="type-signature"></span>run<span class="signature">(timestamp)</span><span class="type-signature"></span></h4>
 
     
@@ -697,7 +278,7 @@
 
 
 <div class="description">
-    Method that is called once per iteration of the main game loop.
+    Method that is called once per iteration of the main game loop.Renders map (and, in the future, Entity objects with sprite components).
 </div>
 
 
@@ -790,138 +371,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="system.js.html">system.js</a>, <a href="system.js.html#line78">line 78</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="setEntityManager"><span class="type-signature"></span>setEntityManager<span class="signature">(entityManager)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Sets the internal function used to get entities from an external source
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>entityManager</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">EntityManager</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Provides an API for an entity collection.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="system.js.html">system.js</a>, <a href="system.js.html#line31">line 31</a>
+        <a href="exampleSpawnerSystem.js.html">exampleSpawnerSystem.js</a>, <a href="exampleSpawnerSystem.js.html#line39">line 39</a>
     </li></ul></dd>
     
 

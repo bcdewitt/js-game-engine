@@ -6,6 +6,7 @@ define('GameEngine', function(module) {
 	'use strict';
 
 	const AssetUser = require('AssetUser');
+	const EntityManager = require('EntityManager');
 	const assetManager = new (require('AssetManager'))();
 	const TiledMap = require('TiledMap');
 
@@ -22,10 +23,8 @@ define('GameEngine', function(module) {
 			this.mapPath = mapPath;
 			this.loadingPhase = 0;
 			this.runAfterLoad = false;
-			this.entityFactory = entityFactory;
 			this.systems = {};
-			this.entities = [];
-			this.entitySubsets = {};
+			this.entityManager = new EntityManager(entityFactory);
 
 			// Queue downloads for overall game....Should this be somehow combined with the addSystems() logic? I copied and edited this logic from there
 			let loop = () => {
@@ -105,8 +104,7 @@ define('GameEngine', function(module) {
 		 * @returns {Entity[]}  Entity instances for this game.
 		 */
 		getEntities(subsetName) {
-			if(!subsetName) { return this.entities; }
-			return this.entitySubsets[subsetName].entities;
+			return this.entityManager.getEntities(subsetName);
 		}
 
 		/**
@@ -115,40 +113,17 @@ define('GameEngine', function(module) {
 		 * @param  {function} mapper - Function to help determine if an Entity should be a part of this subset.
 		 */
 		addEntitySubset(subsetName, mapper) {
-			this.entitySubsets[subsetName] = {
-				entities: this.entities.filter(mapper),
-				shouldContain: mapper
-			};
+			this.entityManager.addEntitySubset(subsetName, mapper);
 		}
 
 		/**
 		 * Add an Entity.
 		 * @param  {string} entityType - Type of Entity to add to this game.
 		 * @param {Object} data - Plain object representing the component data.
+		 * @returns {Entity}  Entity that was added
 		 */
 		addEntity(entityType, data) {
-
-			let callback = (entity) => {
-				for(let subsetKey in this.entitySubsets) {
-					let subset = this.entitySubsets[subsetKey];
-					if(subset.shouldContain(entity)) {
-						subset.entities.push(entity);
-					} else {
-						let idx = subset.entities.indexOf(entity);
-						if(idx !== -1) {
-							subset.entities.splice(idx, 1);
-						}
-					}
-				}
-			};
-
-			let entityToAdd = this.entityFactory.create(
-				entityType,
-				data,
-				callback
-			);
-
-			this.entities.push(entityToAdd);
+			return this.entityManager.addEntity(entityType, data);
 		}
 
 		/**
@@ -156,21 +131,7 @@ define('GameEngine', function(module) {
 		 * @param {Entity}  entity - Entity instance to be removed
 		 */
 		removeEntity(entity) {
-			let handle = (list) => {
-				let idx = list.indexOf(entity);
-				if(idx !== -1) {
-					list.splice(idx, 1);
-				}
-			};
-
-			// Remove from subset arrays
-			for(let subsetKey in this.entitySubsets) {
-				let subset = this.entitySubsets[subsetKey];
-				handle(subset.entities);
-			}
-
-			// Remove from main set array
-			handle(this.entities);
+			this.entityManager.removeEntity(entity);
 		}
 
 		/**
@@ -187,9 +148,8 @@ define('GameEngine', function(module) {
 				this.addEntitySubset(subsetKey, mapper);
 			}
 
-			system.setEntityGetter((subsetName) => {
-				return this.getEntities(subsetName);
-			});
+			// Share the same entityManager instance with each system
+			system.setEntityManager(this.entityManager);
 		}
 
 		/**

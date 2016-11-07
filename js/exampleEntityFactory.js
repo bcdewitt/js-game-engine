@@ -21,26 +21,30 @@ define('ExampleEntityFactory', function(module) {
 		create(entityType, data, compCallback) {
 			let entity = super.create(entityType, data, compCallback);
 			switch(entityType) {
-				case 'Tunnel':
-					entity.addComponent('tunnelDetails', {
-						sendTo: data.sendTo
-					});
-					break;
-				case 'AreaGate':
-					entity.addComponent('gate', {
-						_x: data.x,
-						set x(val) {
-							this._x = val;
-							compCallback(entity); // Allows us to observe this change for easy subsetting on component value change
-						},
-						get x() {
-							return this._x;
-						},
+				case 'PlayerSpawner':
+					entity.addComponent('spawner', {
+						entityType: 'Player',
+						x: data.x,
 						y: data.y,
-						areaToLoad: data.areaToLoad,
-						transition: data.transiton
+						name: data.name
 					});
 					break;
+				case 'EntitySpawner':
+					entity.addComponent('spawner', {
+						entityType: 'Monster',
+						x: data.x,
+						y: data.y,
+						name: data.name
+					});
+					break;
+				case 'Monster':
+					entity.addComponent('spawned', {
+						spawnerSource: data.spawnerSource
+					});
+					entity.addComponent('sprite', {
+						x: data.x,
+						y: data.y
+					});
 			}
 			return entity;
 		}

@@ -136,7 +136,8 @@ define('TiledMap', function(module) {
 							height: object.height,
 							x: object.x,
 							y: object.y,
-							type: object.type
+							type: object.type,
+							name: object.name
 						};
 
 						for(let key in object.properties) {

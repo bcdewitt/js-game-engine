@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>EntityFactory - Documentation</title>
+    <title>EntityManager - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">EntityFactory</h1>
+    <h1 class="page-title">EntityManager</h1>
     
 
     
@@ -40,8 +40,13 @@
 
 <header>
     
+        <h2>
+            <span class="ancestors"><a href="module-EntityManager.html">EntityManager</a>~</span>
         
-            
+        EntityManager
+        </h2>
+        
+            <div class="class-description">Class representing a collection of entities and logic to run against that collection.</div>
         
     
 </header>
@@ -50,20 +55,76 @@
     <div class="container-overview">
     
         
-            <div class="description">EntityFactory module.</div>
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="EntityManager"><span class="type-signature"></span>new EntityManager<span class="signature">(entityFactory)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Create an Entity Manager.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
         
 
         
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>entityFactory</code></td>
             
 
+            <td class="type">
+            
+                
+<span class="param-type">EntityFactory</span>
 
 
+            
+            </td>
 
+            
 
+            
 
+            <td class="description last">Instance of an EntityFactory. Used when calling addEntity() method.</td>
+        </tr>
 
-
-
+    
+    </tbody>
+</table>
 
 
 
@@ -99,7 +160,355 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="entityFactory.js.html">entityFactory.js</a>, <a href="entityFactory.js.html#line1">line 1</a>
+        <a href="entityManager.js.html">entityManager.js</a>, <a href="entityManager.js.html#line10">line 10</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="addEntity"><span class="type-signature"></span>addEntity<span class="signature">(entityType, data)</span><span class="type-signature"> &rarr; {Entity}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Add an Entity.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>entityType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Type of Entity to add to this game.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Plain object representing the component data.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="entityManager.js.html">entityManager.js</a>, <a href="entityManager.js.html#line50">line 50</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Entity that was added
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Entity</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addEntitySubset"><span class="type-signature"></span>addEntitySubset<span class="signature">(subsetName, mapper)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a subset of the Entity array for this game.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subsetName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Name of component used to get subset.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mapper</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Function to help determine if an Entity should be a part of this subset.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="entityManager.js.html">entityManager.js</a>, <a href="entityManager.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -126,21 +535,302 @@
 
 
         
-    
-    </div>
+            
 
     
 
+    <h4 class="name" id="getEntities"><span class="type-signature"></span>getEntities<span class="signature">(subsetName<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;Entity>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Get an array of Entity instances.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subsetName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Name of entity subset.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
     
 
     
 
-     
+    
+
+    
 
     
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="entityManager.js.html">entityManager.js</a>, <a href="entityManager.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Entity instances for this game.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Entity></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="removeEntity"><span class="type-signature"></span>removeEntity<span class="signature">(entity)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Remove an Entity.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>entity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Entity</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Entity instance to be removed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="entityManager.js.html">entityManager.js</a>, <a href="entityManager.js.html#line81">line 81</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     

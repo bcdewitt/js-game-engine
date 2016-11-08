@@ -22,15 +22,15 @@ define('AssetUser', function(module) {
 		}
 
 		/**
-		 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON)
+		 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON).
 		 */
 		getAssetPaths() {
 			return [];
 		}
 
 		/**
-		 * Event handler function - Store downloaded assets
-		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()"
+		 * Event handler function - Store downloaded assets.
+		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()".
 		 */
 		onAssetsLoaded() {
 			this.loaded = true;

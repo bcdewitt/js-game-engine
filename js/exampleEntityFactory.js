@@ -21,6 +21,18 @@ define('ExampleEntityFactory', function(module) {
 		create(entityType, data, compCallback) {
 			let entity = super.create(entityType, data, compCallback);
 			switch(entityType) {
+				case 'Camera':
+					entity.addComponent('camera', {
+						x: data.x,
+						y: data.y,
+						width: data.width,
+						height: data.height,
+						mapX: data.mapX,
+						mapY: data.mapY,
+						mapWidth: data.mapWidth,
+						mapHeight: data.mapHeight
+					});
+					break;
 				case 'PlayerSpawner':
 					entity.addComponent('spawner', {
 						entityType: 'Player',
@@ -41,9 +53,14 @@ define('ExampleEntityFactory', function(module) {
 					entity.addComponent('spawned', {
 						spawnerSource: data.spawnerSource
 					});
+					entity.addComponent('being', {
+						type: entityType
+					});
 					entity.addComponent('sprite', {
+						frame: 0,
 						x: data.x,
-						y: data.y
+						y: data.y,
+						layer: 'Background'
 					});
 			}
 			return entity;

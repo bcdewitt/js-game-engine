@@ -201,22 +201,27 @@ define('TiledMap', function(module) {
 		 * @param  {number} tileY1                    - y-coordinate at top left in number of tiles from left.
 		 * @param  {number} tileX2                    - x-coordinate at bottom right in number of tiles from left.
 		 * @param  {number} tileY2                    - y-coordinate at bottom right in number of tiles from left.
+		 * @param  {number} dX                        - x-coordinate at top left of destination in pixels from left.
+		 * @param  {number} dY                        - y-coordinate at top left of destination in pixels from left.
+		 * @param  {number} scaleW                    - scaling for width.
+		 * @param  {number} scaleH                    - scaling for height.
 		 */
-		renderAnimatedTiles(context, layerName, time, tileX1, tileY1, tileX2, tileY2) {
+		renderAnimatedTiles(context, layerName, time, tileX1, tileY1, tileX2, tileY2, dX, dY, scaleW, scaleH) {
 			let layer = this.layers[layerName];
 
 			if(layer && layer.data) {
 				for(let y = tileY1, l = Math.min(layer.height, tileY2); y < l; y++) {
-					for(let x = tileX1, l2 =  Math.min(layer.width, tileX2); x < l2; x++) {
+					for(let x = tileX1, l2 = Math.min(layer.width, tileX2); x < l2; x++) {
 						let tile = this.tiles[layer.data[x][y] - 1];
-						let posX = x * this.tileWidth;
-						let posY = y * this.tileHeight;
+						let posX = (x * this.tileWidth) + dX;
+						let posY = (y * this.tileHeight) + dY;
 
 						if(tile && tile.animation) {
 							let wrappedTime = time % tile.animation[tile.animation.length - 1].rangeEnd;
 							for(let step of tile.animation) {
-								if(wrappedTime > step.rangeStart && wrappedTime < step.rangeEnd)
+								if(wrappedTime > step.rangeStart && wrappedTime < step.rangeEnd) {
 									tile = this.tiles[step.tileid];
+								}
 							}
 
 							context.drawImage(
@@ -227,8 +232,8 @@ define('TiledMap', function(module) {
 								tile.height,
 								posX,
 								posY,
-								this.tileWidth,
-								this.tileHeight
+								this.tileWidth * scaleW,
+								this.tileHeight * scaleH
 							);
 
 						}
@@ -243,30 +248,41 @@ define('TiledMap', function(module) {
 		 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
 		 * @param  {string} layerName                 - Key referencing layer in this.layers.
 		 * @param  {DOMHighResTimeStamp} timestamp    - Current time in milliseconds.
-		 * @param  {number} x1                        - x-coordinate at top left in pixels from left.
-		 * @param  {number} y1                        - y-coordinate at top left in pixels from left.
-		 * @param  {number} width                     - width of selection in pixels.
-		 * @param  {number} height                    - height of selection in pixels.
+		 * @param  {number} sX                        - x-coordinate at top left of source in pixels from left.
+		 * @param  {number} sY                        - y-coordinate at top left of source in pixels from left.
+		 * @param  {number} sW                        - width of source in pixels.
+		 * @param  {number} sH                        - height of source in pixels.
+		 * @param  {number} dX                        - x-coordinate at top left of destination in pixels from left.
+		 * @param  {number} dY                        - y-coordinate at top left of destination in pixels from left.
+		 * @param  {number} dW                        - width of destination in pixels.
+		 * @param  {number} dH                        - height of destination in pixels.
 		 */
-		render(context, layerName, timestamp, x1, y1, width, height) {
+		render(context, layerName, timestamp, sX, sY, sW, sH, dX, dY, dW, dH) {
 			// Note: May need to use context.getImageData() and .putImageData() for transparency support instead of .drawImage()
 			// ...I tried these but they created memory leaks when debugging with Chrome
 
 			this.startTime = this.startTime || timestamp;
 
-			// Draw static parts of layer
-			context.drawImage(this.layerCanvases[layerName], x1, y1, width, height, 0, 0, width, height);
+			let canvas = this.layerCanvases[layerName];
 
-			// Draw animated parts of layer
-			this.renderAnimatedTiles(
-				context,
-				layerName,
-				(timestamp - this.startTime),    // get time since first render (for animation)
-				(x1 / this.tileWidth),           // calc x1 in tile units
-				(y1 / this.tileHeight),          // calc y1 in tile units
-				(x1 + width) / this.tileWidth,   // calc x2 in tile units
-				(y1 + height) / this.tileHeight  // calc y2 in tile units
-			);
+			if(canvas) {
+
+				// Draw static parts of layer
+				context.drawImage(canvas, sX, sY, sW, sH, dX, dY, dW, dH);
+
+				// Draw animated parts of layer
+				this.renderAnimatedTiles(
+					context,
+					layerName,
+					(timestamp - this.startTime),         // get time since first render (for animation)
+					parseInt(sX / this.tileWidth),        // calc x1 in tile units
+					parseInt(sY / this.tileHeight),       // calc y1 in tile units
+					parseInt(sX + sW) / this.tileWidth,   // calc x2 in tile units
+					parseInt(sY + sH) / this.tileHeight,  // calc y2 in tile units
+					dX, dY, dW / sW, dH / sH              // destination x, y, scaling-x, scaling-y
+				);
+
+			}
 
 		}
 	}

@@ -153,6 +153,8 @@ define('ExampleRenderSystem', function(module) {
 					}
 				}
 			}
+			
+			this.lastUpdate = timestamp;
 
 		}
 	}

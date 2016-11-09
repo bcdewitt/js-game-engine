@@ -69,10 +69,20 @@ define('ExampleRenderSystem', function(module) {
 			this.addEntity('Camera', {
 				x: 0,
 				y: 0,
-				width: this.canvas.width,
+				width: this.canvas.width / 2,
 				height: this.canvas.height,
 				mapX: 200,
 				mapY: 600,
+				mapWidth: this.canvas.width / 2,
+				mapHeight: this.canvas.height / 2
+			});
+			this.addEntity('Camera', {
+				x: this.canvas.width / 2,
+				y: 0,
+				width: this.canvas.width / 2,
+				height: this.canvas.height,
+				mapX: 100,
+				mapY: 920,
 				mapWidth: this.canvas.width / 2,
 				mapHeight: this.canvas.height / 2
 			});
@@ -91,15 +101,14 @@ define('ExampleRenderSystem', function(module) {
 
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-			let layers = {
-				Background: { sprites: [] },
-				Platforms:  { sprites: [] }
-			};
-
 			// Get each camera
 			let cameraEntities = this.getEntities('camera');
 			for(let cameraEntity of cameraEntities) {
 				let c = cameraEntity.getComponent('camera');
+				let layers = {
+					Background: { sprites: [] },
+					Platforms:  { sprites: [] }
+				};
 
 				// Get entities with a sprite component and add to the appropriate layer for rendering
 				let entities = this.getEntities('sprite');
@@ -114,9 +123,10 @@ define('ExampleRenderSystem', function(module) {
 						width: img.width,
 						height: img.height
 					};
+
 					if(
-						obj.x - obj.width > 0 && obj.x < c.mapWidth &&
-						obj.y - obj.height > 0 && obj.y < c.mapHeight
+						obj.x + obj.width > 0 && obj.x < c.mapWidth &&
+						obj.y + obj.height > 0 && obj.y < c.mapHeight
 					) {
 						layers[sprite.layer].sprites.push(obj);
 					}

@@ -43,14 +43,13 @@ define('ExampleUpdateSystem', function(module) {
 			let cameraEntities = this.getEntities('camera');
 			for(let cameraEntity of cameraEntities) {
 				let c = cameraEntity.getComponent('camera');
-				if(this.inputManager.leftArrow) c.mapX -= 1;
-				if(this.inputManager.rightArrow) c.mapX += 1;
-				if(this.inputManager.upArrow) c.mapY -= 1;
-				if(this.inputManager.downArrow) c.mapY += 1;
+				if(this.inputManager.leftButton.held)  c.mapX -= 1;
+				if(this.inputManager.rightButton.held) c.mapX += 1;
+				if(this.inputManager.upButton.held)    c.mapY -= 1;
+				if(this.inputManager.downButton.held)  c.mapY += 1;
 			}
 
 			this.lastUpdate = timestamp;
-			this.inputManager.reset();
 		}
 	}
 

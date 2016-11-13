@@ -5,35 +5,88 @@
 define('InputManager', function(module) {
 	'use strict';
 
-	/** Class representing a particular type of System used for updating entities. Not intended to be part of final game engine.
+	const keyboardInputs = Symbol();
+
+	class DigitalInput {
+		constructor() {
+			this.pressed = false;
+			this.held = false;
+		}
+	}
+
+	/* Can probably use something along these lines for analog inputs:
+	const wasPressed = Symbol();
+	class AnalogInput {
+		constructor() {
+			this.value = 0; (may be positive OR negative values)
+			this.idleValue = 0;
+			this.idleThreshold = 20;
+			this.min = -500;
+			this.max = 500;
+			this[wasPressed] = false;
+		}
+
+		get pressed() {
+			let held = this.held;
+			let pressed = !this[wasPressed] && held;
+			this[wasPressed] = held;
+
+			return pressed;
+		}
+
+		get held() {
+			let idleMin = this.idleValue - this.idleThreshold;
+			let idleMax = this.idleValue + this.idleThreshold;
+
+			return (this.value < idleMin || this.value > idleMax);
+		}
+
+		get idle() {
+			let idleMin = this.idleValue - this.idleThreshold;
+			let idleMax = this.idleValue + this.idleThreshold;
+			
+			return (this.value >= idleMin && this.value <= idleMax);
+		}
+
+	}
+	*/
+
+	/** Class representing an example input manager. Not intended to be part of final game engine.
 	 */
 	class InputManager {
 		constructor() {
-			this.reset();
+			this[keyboardInputs] = {
+				[37]: new DigitalInput(),
+				[38]: new DigitalInput(),
+				[39]: new DigitalInput(),
+				[40]: new DigitalInput()
+			};
 
 			window.addEventListener('keydown', (event) => {
-				switch (event.keyCode) {
-					case 37: // Left
-						this.leftArrow = true;
-						break;
-					case 38: // Up
-						this.upArrow = true;
-						break;
-					case 39: // Right
-						this.rightArrow = true;
-						break;
-					case 40: // Down
-						this.downArrow = true;
-						break;
-				}
+				let key = this[keyboardInputs][event.keyCode];
+				if(key) { key.held = true; }
+			}, false);
+
+			window.addEventListener('keyup', (event) => {
+				let key = this[keyboardInputs][event.keyCode];
+				if(key) { key.held = false; }
 			}, false);
 		}
 
-		reset() {
-			this.leftArrow = false;
-			this.upArrow = false;
-			this.rightArrow = false;
-			this.downArrow = false;
+		get leftButton() {
+			return this[keyboardInputs][37];
+		}
+
+		get upButton() {
+			return this[keyboardInputs][38];
+		}
+
+		get rightButton() {
+			return this[keyboardInputs][39];
+		}
+
+		get downButton() {
+			return this[keyboardInputs][40];
 		}
 	}
 

@@ -23,7 +23,12 @@ define('ExampleRenderSystem', function(module) {
 			this.lastUpdate = 0;
 			this.canvas = document.getElementById('game');
 			this.context = this.canvas && this.canvas.getContext('2d');
+			
+			this.context.mozImageSmoothingEnabled = false;
+			this.context.webkitImageSmoothingEnabled = false;
+			this.context.msImageSmoothingEnabled = false;
 			this.context.imageSmoothingEnabled = false;
+			
 			this.map = map;
 			this.images = {};
 			this.frames = [

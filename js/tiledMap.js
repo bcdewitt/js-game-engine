@@ -212,7 +212,9 @@ define('TiledMap', function(module) {
 			if(layer && layer.data) {
 				for(let y = tileY1, l = Math.min(layer.height, tileY2); y < l; y++) {
 					for(let x = tileX1, l2 = Math.min(layer.width, tileX2); x < l2; x++) {
-						let tile = this.tiles[layer.data[x][y] - 1];
+						let colData = layer.data[x];
+						let tileIdx = colData && colData[y];
+						let tile = tileIdx && this.tiles[tileIdx - 1];
 						let posX = (x * this.tileWidth) + dX;
 						let posY = (y * this.tileHeight) + dY;
 

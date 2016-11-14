@@ -23,6 +23,7 @@ define('ExampleRenderSystem', function(module) {
 			this.lastUpdate = 0;
 			this.canvas = document.getElementById('game');
 			this.context = this.canvas && this.canvas.getContext('2d');
+			this.context.imageSmoothingEnabled = false;
 			this.map = map;
 			this.images = {};
 			this.frames = [
@@ -83,8 +84,8 @@ define('ExampleRenderSystem', function(module) {
 				height: this.canvas.height,
 				mapX: 300,
 				mapY: 820,
-				mapWidth: parseInt(this.canvas.width / 6),
-				mapHeight: parseInt(this.canvas.height / 6),
+				mapWidth: parseInt(this.canvas.width / 8),
+				mapHeight: parseInt(this.canvas.height / 8),
 				following: null
 			});
 			/*

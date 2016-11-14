@@ -1,22 +1,20 @@
 /**
- * ExampleUpdateSystem module.
- * @module ExampleUpdateSystem
+ * ExamplePhysicsSystem module.
+ * @module ExamplePhysicsSystem
  */
-define('ExampleUpdateSystem', function(module) {
+define('ExamplePhysicsSystem', function(module) {
 	'use strict';
 
-	const InputManager = require('InputManager');
 	const System = require('System');
 
-	/** Class representing a particular type of System used for updating entities. Not intended to be part of final game engine.
+	/** Class representing a particular type of System used for applying simple physics to entities. Not intended to be part of final game engine.
 	 * @extends System
 	 */
-	class ExampleUpdateSystem extends System {
+	class ExamplePhysicsSystem extends System {
 		constructor() {
 			super();
 			this.lastUpdate = null;
 			this.maxUpdateRate = 60 / 1000;
-			this.inputManager = new InputManager();
 		}
 
 		/**
@@ -25,8 +23,8 @@ define('ExampleUpdateSystem', function(module) {
 		 */
 		getRequiredSubsets() {
 			return {
-				player: function(entity) {
-					return entity.hasComponent('being') && entity.getComponent('being').type === 'Player';
+				spawned: function(entity) {
+					return entity.hasComponent('spawned');
 				}
 			};
 		}
@@ -40,16 +38,15 @@ define('ExampleUpdateSystem', function(module) {
 			this.lastUpdate = this.lastUpdate || timestamp;
 			if(this.maxUpdateRate && timestamp - this.lastUpdate < this.maxUpdateRate) return;
 
-			let playerEntities = this.getEntities('player');
-			for(let playerEntity of playerEntities) {
-				let c = playerEntity.getComponent('sprite');
-				if(this.inputManager.leftButton.held)  c.x -= 1;
-				if(this.inputManager.rightButton.held) c.x += 1;
+			let spawnedEntities = this.getEntities('spawned');
+			for(let spawnedEntity of spawnedEntities) {
+				let c = spawnedEntity.getComponent('sprite');
+				if(c.y < 910) { c.y += 1; }
 			}
 
 			this.lastUpdate = timestamp;
 		}
 	}
 
-	module.exports = ExampleUpdateSystem;
+	module.exports = ExamplePhysicsSystem;
 });

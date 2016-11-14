@@ -32,6 +32,12 @@ define('ExampleRenderSystem', function(module) {
 					y: 0,
 					width: 16,
 					height: 16
+				}, {
+					img: 'img/tank.png',
+					x: 0,
+					y: 0,
+					width: 16,
+					height: 16
 				}
 			];
 		}
@@ -47,6 +53,9 @@ define('ExampleRenderSystem', function(module) {
 				},
 				sprite: function(entity) {
 					return entity.hasComponent('sprite');
+				},
+				player: function(entity) {
+					return entity.hasComponent('being') && entity.getComponent('being').type === 'Player';
 				}
 			};
 		}
@@ -56,7 +65,8 @@ define('ExampleRenderSystem', function(module) {
 		 */
 		getAssetPaths() {
 			return [
-				'img/monster.png'
+				'img/monster.png',
+				'img/tank.png'
 			];
 		}
 
@@ -69,13 +79,15 @@ define('ExampleRenderSystem', function(module) {
 			this.addEntity('Camera', {
 				x: 0,
 				y: 0,
-				width: this.canvas.width / 2,
+				width: this.canvas.width,
 				height: this.canvas.height,
-				mapX: 200,
-				mapY: 600,
-				mapWidth: this.canvas.width / 2,
-				mapHeight: this.canvas.height / 2
+				mapX: 300,
+				mapY: 820,
+				mapWidth: parseInt(this.canvas.width / 5),
+				mapHeight: parseInt(this.canvas.height / 5),
+				following: null
 			});
+			/*
 			this.addEntity('Camera', {
 				x: this.canvas.width / 2,
 				y: 0,
@@ -86,6 +98,7 @@ define('ExampleRenderSystem', function(module) {
 				mapWidth: this.canvas.width / 2,
 				mapHeight: this.canvas.height / 2
 			});
+			*/
 			super.onAssetsLoaded();
 		}
 
@@ -101,14 +114,29 @@ define('ExampleRenderSystem', function(module) {
 
 			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+			let players = this.getEntities('player');
+
 			// Get each camera
 			let cameraEntities = this.getEntities('camera');
 			for(let cameraEntity of cameraEntities) {
 				let c = cameraEntity.getComponent('camera');
+
+				// Set up drawing layers
 				let layers = {
 					Background: { sprites: [] },
-					Platforms:  { sprites: [] }
+					Platforms:  { sprites: [] },
+					Player:     { sprites: [] }
 				};
+
+				// Force camera to match followed entity
+				if(!c.following && players && players[0]) { c.following = players[0]; }
+				if(c.following) {
+					let sprite = c.following.getComponent('sprite');
+					let frame = this.frames[sprite.frame];
+					let img = this.images[frame.img];
+					c.mapX = sprite.x + parseInt(img.width / 2) - parseInt(c.mapWidth / 2);
+					c.mapY = sprite.y + parseInt(img.height / 2) - parseInt(c.mapHeight / 2);
+				}
 
 				// Get entities with a sprite component and add to the appropriate layer for rendering
 				let entities = this.getEntities('sprite');
@@ -153,7 +181,7 @@ define('ExampleRenderSystem', function(module) {
 					}
 				}
 			}
-			
+
 			this.lastUpdate = timestamp;
 
 		}

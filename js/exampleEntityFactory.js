@@ -30,7 +30,8 @@ define('ExampleEntityFactory', function(module) {
 						mapX: data.mapX,
 						mapY: data.mapY,
 						mapWidth: data.mapWidth,
-						mapHeight: data.mapHeight
+						mapHeight: data.mapHeight,
+						following: data.following
 					});
 					break;
 				case 'PlayerSpawner':
@@ -49,6 +50,7 @@ define('ExampleEntityFactory', function(module) {
 						name: data.name
 					});
 					break;
+				case 'Player':
 				case 'Monster':
 					entity.addComponent('spawned', {
 						spawnerSource: data.spawnerSource
@@ -57,10 +59,10 @@ define('ExampleEntityFactory', function(module) {
 						type: entityType
 					});
 					entity.addComponent('sprite', {
-						frame: 0,
+						frame: (entityType === 'Player' ? 1 : 0),
 						x: data.x,
 						y: data.y,
-						layer: 'Background'
+						layer: (entityType === 'Player' ? 'Player' : 'Platforms')
 					});
 			}
 			return entity;

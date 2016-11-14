@@ -83,8 +83,8 @@ define('ExampleRenderSystem', function(module) {
 				height: this.canvas.height,
 				mapX: 300,
 				mapY: 820,
-				mapWidth: parseInt(this.canvas.width / 5),
-				mapHeight: parseInt(this.canvas.height / 5),
+				mapWidth: parseInt(this.canvas.width / 6),
+				mapHeight: parseInt(this.canvas.height / 6),
 				following: null
 			});
 			/*

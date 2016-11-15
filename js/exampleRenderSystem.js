@@ -23,12 +23,12 @@ define('ExampleRenderSystem', function(module) {
 			this.lastUpdate = 0;
 			this.canvas = document.getElementById('game');
 			this.context = this.canvas && this.canvas.getContext('2d');
-			
+
 			this.context.mozImageSmoothingEnabled = false;
 			this.context.webkitImageSmoothingEnabled = false;
 			this.context.msImageSmoothingEnabled = false;
 			this.context.imageSmoothingEnabled = false;
-			
+
 			this.map = map;
 			this.images = {};
 			this.frames = [
@@ -170,20 +170,29 @@ define('ExampleRenderSystem', function(module) {
 				for(let layerKey in layers) {
 					let layer = layers[layerKey];
 
-					this.map.render(this.context, layerKey, timestamp, c.mapX, c.mapY, c.mapWidth, c.mapHeight, c.x, c.y, c.width, c.height);
+					let mapX = parseInt(c.mapX);
+					let mapY = parseInt(c.mapY);
+					let mapWidth = parseInt(c.mapWidth);
+					let mapHeight = parseInt(c.mapHeight);
+					let x = parseInt(c.x);
+					let y = parseInt(c.y);
+					let width = parseInt(c.width);
+					let height = parseInt(c.height);
+
+					this.map.render(this.context, layerKey, timestamp, mapX, mapY, mapWidth, mapHeight, x, y, width, height);
 
 					// Draw each sprite to a temporary canvas
 					if(layer.sprites.length > 0) {
 						let tempCanvas = document.createElement('canvas');
-						tempCanvas.width = c.mapWidth;
-						tempCanvas.height = c.mapHeight;
+						tempCanvas.width = mapWidth;
+						tempCanvas.height = mapHeight;
 						let tempCtx = tempCanvas.getContext('2d');
 						for(let sprite of layer.sprites) {
-							tempCtx.drawImage(sprite.img, sprite.x, sprite.y);
+							tempCtx.drawImage(sprite.img, parseInt(sprite.x), parseInt(sprite.y));
 						}
 
 						// Draw the temporary canvas to the main canvas (position and fit to camera bounds)
-						this.context.drawImage(tempCanvas, 0, 0, c.mapWidth, c.mapHeight, c.x, c.y, c.width, c.height);
+						this.context.drawImage(tempCanvas, 0, 0, mapWidth, mapHeight, x, y, width, height);
 					}
 				}
 			}

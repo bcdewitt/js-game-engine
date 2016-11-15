@@ -43,8 +43,8 @@ define('ExampleUpdateSystem', function(module) {
 			let playerEntities = this.getEntities('player');
 			for(let playerEntity of playerEntities) {
 				let c = playerEntity.getComponent('sprite');
-				if(this.inputManager.leftButton.held)  c.x -= 1;
-				if(this.inputManager.rightButton.held) c.x += 1;
+				if(this.inputManager.leftButton.held)  c.x -= 0.4;
+				if(this.inputManager.rightButton.held) c.x += 0.4;
 			}
 
 			this.lastUpdate = timestamp;

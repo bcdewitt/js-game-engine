@@ -39,6 +39,7 @@ define('Entity', function(module) {
 		 * Adds a component object for this Entity under the given name.
 		 * @param  {string} compName - Name of component.
 		 * @param  {Object=} component - Plain-data Object.
+		 * @returns {Object|null}  Returns the component object added under the given name.
 		 */
 		addComponent(compName, component) {
 			if(!compName) { return; }
@@ -52,6 +53,8 @@ define('Entity', function(module) {
 			if(this.compCallback) {
 				this.compCallback(this);
 			}
+
+			return this.components[compName];
 		}
 
 		/**

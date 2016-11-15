@@ -19,7 +19,7 @@
 		}
 	}
 
-	let game = new ExampleGameEngine('json/level2.json', new ExampleGameEntityFactory());
+	let game = new ExampleGameEngine('json/level3.json', new ExampleGameEntityFactory());
 	game.run();
 
 	// To test on Xbox: https://msdn.microsoft.com/windows/uwp/xbox-apps/devkit-activation

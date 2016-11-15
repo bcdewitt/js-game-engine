@@ -136,7 +136,7 @@ define('TiledMap', function(module) {
 							height: object.height,
 							x: object.x,
 							y: object.y,
-							type: object.type,
+							type: object.type || layer.name,
 							name: object.name
 						};
 

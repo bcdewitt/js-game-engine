@@ -34,6 +34,14 @@ define('ExampleEntityFactory', function(module) {
 						following: data.following
 					});
 					break;
+				case 'Collision':
+					entity.addComponent('staticPhysicsBody', {
+						x: data.x,
+						y: data.y,
+						width: data.width,
+						height: data.height
+					});
+					break;
 				case 'PlayerSpawner':
 					entity.addComponent('spawner', {
 						entityType: 'Player',
@@ -62,7 +70,20 @@ define('ExampleEntityFactory', function(module) {
 						frame: (entityType === 'Player' ? 1 : 0),
 						x: data.x,
 						y: data.y,
-						layer: (entityType === 'Player' ? 'Player' : 'Platforms')
+						layer: (entityType === 'Player' ? 'Player' : 'Platforms'),
+						width: data.width,
+						height: data.height
+					});
+					entity.addComponent('physicsBody', {
+						useSprite: true,
+						x: data.x,
+						y: data.y,
+						width: data.width,
+						height: data.height,
+						forceX: 0,
+						forceY: 0,
+						speedX: 0,
+						speedY: 0
 					});
 			}
 			return entity;

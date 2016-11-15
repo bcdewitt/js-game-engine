@@ -25,7 +25,6 @@ define('ExampleRenderSystem', function(module) {
 			this.context = this.canvas && this.canvas.getContext('2d');
 
 			this.context.mozImageSmoothingEnabled = false;
-			this.context.webkitImageSmoothingEnabled = false;
 			this.context.msImageSmoothingEnabled = false;
 			this.context.imageSmoothingEnabled = false;
 
@@ -150,6 +149,10 @@ define('ExampleRenderSystem', function(module) {
 					let sprite = entity.getComponent('sprite');
 					let frame = this.frames[sprite.frame];
 					let img = this.images[frame.img];
+
+					sprite.width = img.width;
+					sprite.height = img.height;
+
 					let obj = {
 						img: img,
 						x: sprite.x - c.mapX,

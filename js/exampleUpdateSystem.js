@@ -43,8 +43,16 @@ define('ExampleUpdateSystem', function(module) {
 			let playerEntities = this.getEntities('player');
 			for(let playerEntity of playerEntities) {
 				let c = playerEntity.getComponent('physicsBody');
-				if(this.inputManager.leftButton.held) { c.forceX = -0.4; }
-				if(this.inputManager.rightButton.held) { c.forceX = 0.4; }
+				let state = playerEntity.getComponent('state');
+				if(this.inputManager.leftButton.held) {
+					c.accX = -0.4;
+				} else if(this.inputManager.rightButton.held) {
+					c.accX = 0.4;
+				} else {
+					c.accX = 0;
+				}
+
+				if(this.inputManager.upButton.pressed && state.grounded) { c.spdY = -100; }
 			}
 
 			this.lastUpdate = timestamp;

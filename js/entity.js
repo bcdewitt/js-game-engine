@@ -44,11 +44,7 @@ define('Entity', function(module) {
 		addComponent(compName, component) {
 			if(!compName) { return; }
 
-			if(typeof component === 'object' && component.constructor === Object) {
-				this.components[compName] = component;
-			} else {
-				this.components[compName] = null;
-			}
+			this.components[compName] = component;
 
 			if(this.compCallback) {
 				this.compCallback(this);

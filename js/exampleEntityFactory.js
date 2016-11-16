@@ -6,6 +6,91 @@ define('ExampleEntityFactory', function(module) {
 
 	const EntityFactory = require('EntityFactory');
 
+	const SpriteComponent = (function() {
+		let _x = Symbol('_x');
+		let _y = Symbol('_y');
+		let _width = Symbol('_width');
+		let _height = Symbol('_height');
+		class SpriteComponent {
+			constructor(x, y, width, height, frame, layer) {
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.frame = frame;
+				this.layer = layer;
+			}
+			get x() {
+				return this[_x];
+			}
+			set x(val) {
+				this[_x] = val;
+				this.midPointX = val + this.halfWidth;
+			}
+
+			get y() {
+				return this[_y];
+			}
+			set y(val) {
+				this[_y] = val;
+				this.midPointY = val + this.halfHeight;
+			}
+
+			get width() {
+				return this[_width];
+			}
+			set width(val) {
+				this[_width] = val;
+				this.halfWidth = (val / 2);
+				this.midPointX = this.x + this.halfWidth;
+			}
+
+			get height() {
+				return this[_height];
+			}
+			set height(val) {
+				this[_height] = val;
+				this.halfHeight = (val / 2);
+				this.midPointY = this.y + this.halfHeight;
+			}
+		}
+
+		return SpriteComponent;
+	})();
+
+	const SpritePhysicsComponent = (function() {
+		let _entity = Symbol('_x');
+		let _spriteComp = Symbol('_x');
+		class SpritePhysicsComponent {
+			constructor(entity) {
+				this[_entity] = entity;
+				this.accX = 0;
+				this.accY = 0;
+				this.spdX = 0;
+				this.spdY = 0;
+			}
+			get [_spriteComp]() { return this[_entity].getComponent('sprite'); }
+			get x() { return this[_spriteComp].x; }
+			set x(val) { this[_spriteComp].x = val; }
+			get y() { return this[_spriteComp].y; }
+			set y(val) { this[_spriteComp].y = val; }
+			get width() { return this[_spriteComp].width; }
+			set width(val) { this[_spriteComp].width = val; }
+			get height() { return this[_spriteComp].height; }
+			set height(val) { this[_spriteComp].height = val; }
+			get midPointX() { return this[_spriteComp].midPointX; }
+			set midPointX(val) { this[_spriteComp].midPointX = val; }
+			get midPointY() { return this[_spriteComp].midPointY; }
+			set midPointY(val) { this[_spriteComp].midPointY = val; }
+			get halfWidth() { return this[_spriteComp].halfWidth; }
+			set halfWidth(val) { this[_spriteComp].halfWidth = val; }
+			get halfHeight() { return this[_spriteComp].halfHeight; }
+			set halfHeight(val) { this[_spriteComp].halfHeight = val; }
+		}
+
+		return SpritePhysicsComponent;
+	})();
+
 	/** Class representing a particular implementation of an EntityFactory. Not intended to be part of final game engine.
 	 * @extends EntityFactory
 	 */
@@ -39,7 +124,11 @@ define('ExampleEntityFactory', function(module) {
 						x: data.x,
 						y: data.y,
 						width: data.width,
-						height: data.height
+						height: data.height,
+						halfWidth: data.width / 2,
+						halfHeight: data.height / 2,
+						midPointX: data.x + (data.width / 2),
+						midPointY: data.y + (data.height / 2)
 					});
 					break;
 				case 'PlayerSpawner':
@@ -66,25 +155,19 @@ define('ExampleEntityFactory', function(module) {
 					entity.addComponent('being', {
 						type: entityType
 					});
-					entity.addComponent('sprite', {
-						frame: (entityType === 'Player' ? 1 : 0),
-						x: data.x,
-						y: data.y,
-						layer: (entityType === 'Player' ? 'Player' : 'Platforms'),
-						width: data.width,
-						height: data.height
+					entity.addComponent('state', {
+						state: 'idle',
+						grounded: false
 					});
-					entity.addComponent('physicsBody', {
-						useSprite: true,
-						x: data.x,
-						y: data.y,
-						width: data.width,
-						height: data.height,
-						forceX: 0,
-						forceY: 0,
-						speedX: 0,
-						speedY: 0
-					});
+					entity.addComponent('sprite', new SpriteComponent(
+						data.x,
+						data.y,
+						data.width,
+						data.height,
+						(entityType === 'Player' ? 1 : 0),
+						(entityType === 'Player' ? 'Player' : 'Platforms')
+					));
+					entity.addComponent('physicsBody', new SpritePhysicsComponent(entity));
 			}
 			return entity;
 		}

@@ -6,6 +6,9 @@ define('ExamplePhysicsSystem', function(module) {
 	'use strict';
 
 	const System = require('System');
+	const MAX_SPEED_X = 2.2;
+	const MAX_SPEED_Y = 6.5;
+	const FRICTION = 0.1;
 
 	/** Class representing a particular type of System used for applying simple physics to entities. Not intended to be part of final game engine.
 	 * @extends System
@@ -46,55 +49,70 @@ define('ExamplePhysicsSystem', function(module) {
 
 			// For every nonstatic physics body, check for static physics body collision
 			for(let nonstaticEntity of nonstaticEntities) {
-				let sprite = nonstaticEntity.getComponent('sprite');
 				let c = nonstaticEntity.getComponent('physicsBody');
+				let state = nonstaticEntity.getComponent('state');
+				state.grounded = false; // Only set to true after a collision is detected
 
-				// Positional Logic
-				c.forceY = Math.min(c.forceY + 0.4, 10); // Add gravity (limit to 10)
+				c.accY = 0.5; // Add gravity (limit to 10)
 
-				// Align physics body position and size to sprite (if set)
-				if(c.useSprite) {
-					sprite.x += c.forceX; // Add forces to position
-					sprite.y += c.forceY;
-					// TODO: Change "force" logic to better handle acceleration
+				// Add acceleration to speed
+				c.spdX = c.spdX + c.accX;
+				c.spdY = c.spdY + c.accY;
 
-					c.x = sprite.x;
-					c.y = sprite.y;
-					c.width = sprite.width;
-					c.height = sprite.height;
-				} else {
-					c.x += c.forceX; // Add forces to position
-					c.y += c.forceY;
-				}
+				// Limit speed
+				c.spdX = c.spdX >= 0 ? Math.min(c.spdX, MAX_SPEED_X) : Math.max(c.spdX, MAX_SPEED_X * -1);
+				c.spdY = c.spdY >= 0 ? Math.min(c.spdY, MAX_SPEED_Y) : Math.max(c.spdY, MAX_SPEED_Y * -1);
+
+				// Use speed to change position
+				c.x += c.spdX;
+				c.y += c.spdY;
 
 				for(let staticEntity of staticEntities) {
 					let c2 = staticEntity.getComponent('staticPhysicsBody');
 
+					let halfWidthSum = c.halfWidth + c2.halfWidth;
+					let halfHeightSum = c.halfHeight + c2.halfHeight;
+					let deltaX = c2.midPointX - c.midPointX;
+					let deltaY = c2.midPointY - c.midPointY;
+					let absDeltaX = Math.abs(deltaX);
+					let absDeltaY = Math.abs(deltaY);
+
 					// Collision Detection
 					if(
-						!(c.x + c.width  < c2.x || c.x > c2.x + c2.width ) && // if not to the left or to the right AND
-						!(c.y + c.height < c2.y || c.y > c2.y + c2.height)    // if not above or below
+						(halfWidthSum >= absDeltaX) &&
+						(halfHeightSum >= absDeltaY)
 					) {
+						let projectionY = halfHeightSum - absDeltaY; // Value used to correct positioning
+						let projectionX = halfWidthSum - absDeltaX;  // Value used to correct positioning
 
-						// TODO: Now we know there was a collision, we need to check...
-						// Get all line intersections from each sprite corner and each of staticEntity's outer edges
-							// *The following is similar to a raycasting approach (I didn't like the midpoint/halfwidth idea)
-							// y = mx + b,      m = (y - y1) / (x - x1),    b = y - mx   <-- just plug in real x, y and m values
-							// *don't run this logic if m === n, this means the lines don't intersect - they are parallel
-							// *also, don't forget that these equations are for infinite lines, we will also need to check if the intersection is on the line segment (between the two finite end points)
-							// intersection is found by setting x = b - a / m - n, then using our new x value in the line equation to solve for y (store which edge - top, left, bottom, or right)
+						// Use the lesser of the two projection values
+						if(projectionY < projectionX) {
+							if(deltaY > 0) projectionY *= -1;
+							// alert('move along y axis: ' + projectionY);
+							c.y += projectionY; // Apply "projection vector" to rect1
+							if(c.spdY > 0 && deltaY > 0) c.spdY = 0;
+							if(c.spdY < 0 && deltaY < 0) c.spdY = 0;
 
-							// Determine shortest line segment from previous position to intersection and use that
-							// a^2 + b^2 = c^2 ===      c = sqrt((intersect.x - prev.x)^2 + (intersect.y - prev.y)^2)
-
-							// Collision Resolution
-							// If line hit left edge, place physicsBody at c.x = intersection.x - c.width; c.forceX = 0;
-							// If line hit right edge, place physicsBody at c.x = intersection.x; c.forceX = 0;
-							// If line hit top edge, place physicsBody at c.y = intersection.y - c.height; c.forceY = 0;
-							// If line hit bottom edge, place physicsBody at c.y = intersection.y; c.forceY = 0;
+							if(projectionY < 0) {
+								state.grounded = true;
+								if(c.spdX > 0) {
+									c.spdX = Math.max(c.spdX - FRICTION, 0);
+								} else {
+									c.spdX = Math.min(c.spdX + FRICTION, 0);
+								}
+							}
+						} else {
+							if(deltaX > 0) projectionX *= -1;
+							// alert('move along x axis: ' + projectionX);
+							c.x += projectionX; // Apply "projection vector" to rect1
+							if(c.spdX > 0 && deltaX > 0) c.spdX = 0;
+							if(c.spdX < 0 && deltaX < 0) c.spdX = 0;
+						}
 					}
 				}
 			}
+
+
 
 			this.lastUpdate = timestamp;
 		}

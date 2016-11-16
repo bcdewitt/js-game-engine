@@ -30,6 +30,9 @@ define('EntityFactory', function(module) {
 		 * @returns  {Entity}  A single Entity instance.
 		 */
 		create(entityType, data, compCallback) {
+			if(typeof data !== 'object' || data.constructor !== Object) {
+				throw new Error('Can\'t must use plain objects for data');
+			}
 			return new Entity(compCallback);
 		}
 	}

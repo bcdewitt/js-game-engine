@@ -6,11 +6,19 @@ define('InputManager', function(module) {
 	'use strict';
 
 	const keyboardInputs = Symbol();
+	const wasPressed = Symbol();
 
 	class DigitalInput {
 		constructor() {
-			this.pressed = false;
+			this[wasPressed] = false;
 			this.held = false;
+		}
+		get pressed() {
+			let held = this.held;
+			let pressed = !this[wasPressed] && held;
+			this[wasPressed] = held;
+
+			return pressed;
 		}
 	}
 
@@ -44,7 +52,7 @@ define('InputManager', function(module) {
 		get idle() {
 			let idleMin = this.idleValue - this.idleThreshold;
 			let idleMax = this.idleValue + this.idleThreshold;
-			
+
 			return (this.value >= idleMin && this.value <= idleMax);
 		}
 

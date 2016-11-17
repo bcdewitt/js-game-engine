@@ -45,14 +45,14 @@ define('ExampleUpdateSystem', function(module) {
 				let c = playerEntity.getComponent('physicsBody');
 				let state = playerEntity.getComponent('state');
 				if(this.inputManager.leftButton.held) {
-					c.accX = -0.4;
+					c.accX = -0.3;
 				} else if(this.inputManager.rightButton.held) {
-					c.accX = 0.4;
+					c.accX = 0.3;
 				} else {
 					c.accX = 0;
 				}
 
-				if(this.inputManager.upButton.pressed && state.grounded) { c.spdY = -100; }
+				if(this.inputManager.jumpButton.pressed && state.grounded) { c.spdY = -100; }
 			}
 
 			this.lastUpdate = timestamp;

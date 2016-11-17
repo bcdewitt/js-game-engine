@@ -7,8 +7,9 @@ define('ExamplePhysicsSystem', function(module) {
 
 	const System = require('System');
 	const MAX_SPEED_X = 2.2;
-	const MAX_SPEED_Y = 6.5;
-	const FRICTION = 0.1;
+	const MAX_SPEED_Y = 5;
+	const GRAVITY = 0.4;
+	const FRICTION = 0.15;
 
 	/** Class representing a particular type of System used for applying simple physics to entities. Not intended to be part of final game engine.
 	 * @extends System
@@ -42,7 +43,8 @@ define('ExamplePhysicsSystem', function(module) {
 		 */
 		run(timestamp) {
 			this.lastUpdate = this.lastUpdate || timestamp;
-			if(this.maxUpdateRate && timestamp - this.lastUpdate < this.maxUpdateRate) return;
+			let deltaTime = timestamp - this.lastUpdate;
+			if(this.maxUpdateRate && deltaTime < this.maxUpdateRate) return;
 
 			let staticEntities = this.getEntities('staticPhysicsBody');
 			let nonstaticEntities = this.getEntities('physicsBody');
@@ -53,11 +55,12 @@ define('ExamplePhysicsSystem', function(module) {
 				let state = nonstaticEntity.getComponent('state');
 				state.grounded = false; // Only set to true after a collision is detected
 
-				c.accY = 0.5; // Add gravity (limit to 10)
+				c.accY = GRAVITY; // Add gravity (limit to 10)
 
-				// Add acceleration to speed
-				c.spdX = c.spdX + c.accX;
-				c.spdY = c.spdY + c.accY;
+				// Add acceleration to "speed"
+				let time = deltaTime / 10;
+				c.spdX = c.spdX + (c.accX / time);
+				c.spdY = c.spdY + (c.accY / time);
 
 				// Limit speed
 				c.spdX = c.spdX >= 0 ? Math.min(c.spdX, MAX_SPEED_X) : Math.max(c.spdX, MAX_SPEED_X * -1);
@@ -96,9 +99,9 @@ define('ExamplePhysicsSystem', function(module) {
 							if(projectionY < 0) {
 								state.grounded = true;
 								if(c.spdX > 0) {
-									c.spdX = Math.max(c.spdX - FRICTION, 0);
+									c.spdX = Math.max(c.spdX - (FRICTION / time), 0);
 								} else {
-									c.spdX = Math.min(c.spdX + FRICTION, 0);
+									c.spdX = Math.min(c.spdX + (FRICTION / time), 0);
 								}
 							}
 						} else {

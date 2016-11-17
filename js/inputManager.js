@@ -64,6 +64,7 @@ define('InputManager', function(module) {
 	class InputManager {
 		constructor() {
 			this[keyboardInputs] = {
+				[32]: new DigitalInput(),
 				[37]: new DigitalInput(),
 				[38]: new DigitalInput(),
 				[39]: new DigitalInput(),
@@ -79,6 +80,10 @@ define('InputManager', function(module) {
 				let key = this[keyboardInputs][event.keyCode];
 				if(key) { key.held = false; }
 			}, false);
+		}
+
+		get jumpButton() {
+			return this[keyboardInputs][32];
 		}
 
 		get leftButton() {

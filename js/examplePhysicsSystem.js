@@ -7,8 +7,8 @@ define('ExamplePhysicsSystem', function(module) {
 
 	const System = require('System');
 	const MAX_SPEED_X = 2.2;
-	const MAX_SPEED_Y = 5;
-	const GRAVITY = 0.4;
+	const MAX_SPEED_Y = 4;
+	const GRAVITY = 0.3;
 	const FRICTION = 0.15;
 
 	/** Class representing a particular type of System used for applying simple physics to entities. Not intended to be part of final game engine.

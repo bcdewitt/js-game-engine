@@ -139,8 +139,14 @@ define('ExampleRenderSystem', function(module) {
 					let sprite = c.following.getComponent('sprite');
 					let frame = this.frames[sprite.frame];
 					let img = this.images[frame.img];
-					c.mapX = sprite.x + parseInt(img.width / 2) - parseInt(c.mapWidth / 2);
-					c.mapY = sprite.y + parseInt(img.height / 2) - parseInt(c.mapHeight / 2);
+					c.mapX = sprite.x + (img.width / 2) - (c.mapWidth / 2);
+
+					let threshold = (c.mapHeight / 4);
+					if(sprite.y < c.mapY + threshold) {
+						c.mapY = sprite.y - threshold;
+					} else if((sprite.y + sprite.height) > c.mapY + c.mapHeight - threshold) {
+						c.mapY = sprite.y + sprite.height - (c.mapHeight - threshold);
+					}
 				}
 
 				// Get entities with a sprite component and add to the appropriate layer for rendering

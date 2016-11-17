@@ -82,10 +82,10 @@ define('ExamplePhysicsSystem', function(module) {
 
 					// Collision Detection
 					if(
-						(halfWidthSum >= absDeltaX) &&
-						(halfHeightSum >= absDeltaY)
+						(halfWidthSum > absDeltaX) &&
+						(halfHeightSum > absDeltaY)
 					) {
-						let projectionY = halfHeightSum - absDeltaY; // Value used to correct positioning
+						let projectionY = halfHeightSum - absDeltaY - 1; // Value used to correct positioning
 						let projectionX = halfWidthSum - absDeltaX;  // Value used to correct positioning
 
 						// Use the lesser of the two projection values

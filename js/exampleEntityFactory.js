@@ -157,7 +157,8 @@ define('ExampleEntityFactory', function(module) {
 					});
 					entity.addComponent('state', {
 						state: 'idle',
-						grounded: false
+						grounded: false,
+						lastUpdate: window.performance.now()
 					});
 					entity.addComponent('sprite', new SpriteComponent(
 						data.x,

@@ -47,7 +47,7 @@ define('ExampleSpawnerSystem', function(module) {
 				let ready = true;
 				let spawnedEntities = this.getEntities('spawned');
 				for(let spawnedEntity of spawnedEntities) {
-					if(spawnedEntity.spawnerSource === spawnerEntity.name) {
+					if(spawnedEntity.getComponent('spawned').spawnerSource === spawnerEntity.getComponent('spawner').name) {
 						ready = false;
 						break;
 					}

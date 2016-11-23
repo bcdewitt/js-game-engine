@@ -44,12 +44,25 @@ define('ExampleUpdateSystem', function(module) {
 			for(let playerEntity of playerEntities) {
 				let c = playerEntity.getComponent('physicsBody');
 				let state = playerEntity.getComponent('state');
+				let sprite = playerEntity.getComponent('sprite');
 				if(this.inputManager.leftButton.held) {
 					c.accX = -0.3;
+					state.state = 'driving';
 				} else if(this.inputManager.rightButton.held) {
 					c.accX = 0.3;
+					state.state = 'driving';
 				} else {
 					c.accX = 0;
+					state.state = 'idle';
+				}
+
+				if(state.state === 'driving') {
+					let animationTime = 500;
+					let time = (timestamp - state.lastUpdate) % animationTime;
+					if(time > 100) {
+						sprite.frame = Math.max(1, (sprite.frame + 1) % 5);
+						state.lastUpdate = timestamp;
+					}
 				}
 
 				if(this.inputManager.jumpButton.pressed && state.grounded) { c.spdY = -100; }

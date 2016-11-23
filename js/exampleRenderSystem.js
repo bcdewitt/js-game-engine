@@ -35,14 +35,32 @@ define('ExampleRenderSystem', function(module) {
 					img: 'img/monster.png',
 					x: 0,
 					y: 0,
-					width: 16,
-					height: 16
+					width: 14,
+					height: 26
 				}, {
-					img: 'img/tank.png',
+					img: 'img/tankSheet.png',
 					x: 0,
 					y: 0,
-					width: 16,
-					height: 16
+					width: 26,
+					height: 18
+				}, {
+					img: 'img/tankSheet.png',
+					x: 26,
+					y: 0,
+					width: 26,
+					height: 18
+				}, {
+					img: 'img/tankSheet.png',
+					x: 52,
+					y: 0,
+					width: 26,
+					height: 18
+				}, {
+					img: 'img/tankSheet.png',
+					x: 78,
+					y: 0,
+					width: 26,
+					height: 18
 				}
 			];
 		}
@@ -71,7 +89,7 @@ define('ExampleRenderSystem', function(module) {
 		getAssetPaths() {
 			return [
 				'img/monster.png',
-				'img/tank.png'
+				'img/tankSheet.png'
 			];
 		}
 
@@ -156,15 +174,17 @@ define('ExampleRenderSystem', function(module) {
 					let frame = this.frames[sprite.frame];
 					let img = this.images[frame.img];
 
-					sprite.width = img.width;
-					sprite.height = img.height;
+					sprite.width = frame.width;
+					sprite.height = frame.height;
 
 					let obj = {
 						img: img,
 						x: sprite.x - c.mapX,
 						y: sprite.y - c.mapY,
-						width: img.width,
-						height: img.height
+						width: frame.width,
+						height: frame.height,
+						sx: frame.x,
+						sy: frame.y
 					};
 
 					if(
@@ -197,7 +217,7 @@ define('ExampleRenderSystem', function(module) {
 						tempCanvas.height = mapHeight;
 						let tempCtx = tempCanvas.getContext('2d');
 						for(let sprite of layer.sprites) {
-							tempCtx.drawImage(sprite.img, parseInt(sprite.x), parseInt(sprite.y));
+							tempCtx.drawImage(sprite.img, parseInt(sprite.sx), parseInt(sprite.sy), parseInt(sprite.width), parseInt(sprite.height), parseInt(sprite.x), parseInt(sprite.y), parseInt(sprite.width), parseInt(sprite.height));
 						}
 
 						// Draw the temporary canvas to the main canvas (position and fit to camera bounds)

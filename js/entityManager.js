@@ -52,13 +52,9 @@ define('EntityManager', function(module) {
 			let callback = (entity) => {
 				for(let subsetKey in this.entitySubsets) {
 					let subset = this.entitySubsets[subsetKey];
-					if(subset.shouldContain(entity)) {
+					let idx = subset.entities.indexOf(entity);
+					if(idx === -1 && subset.shouldContain(entity)) {
 						subset.entities.push(entity);
-					} else {
-						let idx = subset.entities.indexOf(entity);
-						if(idx !== -1) {
-							subset.entities.splice(idx, 1);
-						}
 					}
 				}
 			};

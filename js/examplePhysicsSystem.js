@@ -9,7 +9,7 @@ define('ExamplePhysicsSystem', function(module) {
 	const MAX_SPEED_X = 2.2;
 	const MAX_SPEED_Y = 4;
 	const GRAVITY = 0.3;
-	const FRICTION = 0.15;
+	const FRICTION = 0.08;
 
 	/** Class representing a particular type of System used for applying simple physics to entities. Not intended to be part of final game engine.
 	 * @extends System
@@ -85,7 +85,7 @@ define('ExamplePhysicsSystem', function(module) {
 						(halfWidthSum > absDeltaX) &&
 						(halfHeightSum > absDeltaY)
 					) {
-						let projectionY = halfHeightSum - absDeltaY - 1; // Value used to correct positioning
+						let projectionY = halfHeightSum - absDeltaY; // Value used to correct positioning
 						let projectionX = halfWidthSum - absDeltaX;  // Value used to correct positioning
 
 						// Use the lesser of the two projection values

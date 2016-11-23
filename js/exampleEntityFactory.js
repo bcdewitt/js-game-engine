@@ -41,7 +41,7 @@ define('ExampleEntityFactory', function(module) {
 			}
 			set width(val) {
 				this[_width] = val;
-				this.halfWidth = (val / 2);
+				this.halfWidth = val / 2;
 				this.midPointX = this.x + this.halfWidth;
 			}
 
@@ -50,7 +50,7 @@ define('ExampleEntityFactory', function(module) {
 			}
 			set height(val) {
 				this[_height] = val;
-				this.halfHeight = (val / 2);
+				this.halfHeight = val / 2;
 				this.midPointY = this.y + this.halfHeight;
 			}
 		}
@@ -89,6 +89,27 @@ define('ExampleEntityFactory', function(module) {
 		}
 
 		return SpritePhysicsComponent;
+	})();
+
+	const StateComponent = (function() {
+		const state = Symbol('_symbol');
+		class StateComponent {
+			constructor(initialState) {
+				this[state] = null;
+				this.lastUpdate = null;
+				this.grounded = false;
+				this.state = initialState;
+			}
+			get state() {
+				return this[state];
+			}
+			set state(val) {
+				this[state] = val;
+				this.lastUpdate = window.performance.now();
+			}
+		}
+
+		return StateComponent;
 	})();
 
 	/** Class representing a particular implementation of an EntityFactory. Not intended to be part of final game engine.
@@ -155,11 +176,7 @@ define('ExampleEntityFactory', function(module) {
 					entity.addComponent('being', {
 						type: entityType
 					});
-					entity.addComponent('state', {
-						state: 'idle',
-						grounded: false,
-						lastUpdate: window.performance.now()
-					});
+					entity.addComponent('state', new StateComponent('idle'));
 					entity.addComponent('sprite', new SpriteComponent(
 						data.x,
 						data.y,

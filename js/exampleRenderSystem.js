@@ -199,8 +199,8 @@ define('ExampleRenderSystem', function(module) {
 				for(let layerKey in layers) {
 					let layer = layers[layerKey];
 
-					let mapX = parseInt(c.mapX);
-					let mapY = parseInt(c.mapY);
+					let mapX = Math.round(c.mapX);
+					let mapY = Math.round(c.mapY);
 					let mapWidth = parseInt(c.mapWidth);
 					let mapHeight = parseInt(c.mapHeight);
 					let x = parseInt(c.x);
@@ -217,7 +217,7 @@ define('ExampleRenderSystem', function(module) {
 						tempCanvas.height = mapHeight;
 						let tempCtx = tempCanvas.getContext('2d');
 						for(let sprite of layer.sprites) {
-							tempCtx.drawImage(sprite.img, parseInt(sprite.sx), parseInt(sprite.sy), parseInt(sprite.width), parseInt(sprite.height), parseInt(sprite.x), parseInt(sprite.y), parseInt(sprite.width), parseInt(sprite.height));
+							tempCtx.drawImage(sprite.img, parseInt(sprite.sx), parseInt(sprite.sy), parseInt(sprite.width), parseInt(sprite.height), Math.round(sprite.x), Math.round(sprite.y), parseInt(sprite.width), parseInt(sprite.height));
 						}
 
 						// Draw the temporary canvas to the main canvas (position and fit to camera bounds)

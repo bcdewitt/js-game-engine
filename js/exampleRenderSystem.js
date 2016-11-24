@@ -98,7 +98,26 @@ define('ExampleRenderSystem', function(module) {
 		 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()".
 		 */
 		onAssetsLoaded(assets) {
-			this.images = assets;
+			let images = assets; // All assets requested are images...so this is simple
+
+			this.images = images;
+			this.flippedImages = {};
+
+			// Images must be flipped and stored in flippedImages under same key
+			for(let key in images) {
+				let canvas = document.createElement('canvas');
+				let ctx = canvas.getContext('2d');
+				let image = images[key];
+
+				canvas.width = image.width;
+				canvas.height = image.height;
+
+				ctx.scale(-1, 1); // flip
+				ctx.drawImage(image, (-1 * canvas.width), 0); // draw flipped
+
+				this.flippedImages[key] = canvas;
+			}
+
 			this.addEntity('Camera', {
 				x: 0,
 				y: 0,
@@ -156,8 +175,7 @@ define('ExampleRenderSystem', function(module) {
 				if(c.following) {
 					let sprite = c.following.getComponent('sprite');
 					let frame = this.frames[sprite.frame];
-					let img = this.images[frame.img];
-					c.mapX = sprite.x + (img.width / 2) - (c.mapWidth / 2);
+					c.mapX = sprite.x + (frame.width / 2) - (c.mapWidth / 2);
 
 					let threshold = (c.mapHeight / 4);
 					if(sprite.y < c.mapY + threshold) {
@@ -172,7 +190,7 @@ define('ExampleRenderSystem', function(module) {
 				for(let entity of entities) {
 					let sprite = entity.getComponent('sprite');
 					let frame = this.frames[sprite.frame];
-					let img = this.images[frame.img];
+					let img = !sprite.flipped ? this.images[frame.img] : this.flippedImages[frame.img];
 
 					sprite.width = frame.width;
 					sprite.height = frame.height;

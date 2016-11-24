@@ -7,7 +7,7 @@ define('ExamplePhysicsSystem', function(module) {
 
 	const System = require('System');
 	const MAX_SPEED_X = 2.2;
-	const MAX_SPEED_Y = 4;
+	const MAX_SPEED_Y = 4.1;
 	const GRAVITY = 0.3;
 	const FRICTION = 0.08;
 

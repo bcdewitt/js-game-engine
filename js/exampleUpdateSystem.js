@@ -49,9 +49,11 @@ define('ExampleUpdateSystem', function(module) {
 				if(this.inputManager.leftButton.held) {
 					c.accX = -0.2;
 					state.state = 'driving';
+					sprite.flipped = true;
 				} else if(this.inputManager.rightButton.held) {
 					c.accX = 0.2;
 					state.state = 'driving';
+					sprite.flipped = false;
 				} else {
 					c.accX = 0;
 					if(c.spdX === 0) state.state = 'idle';

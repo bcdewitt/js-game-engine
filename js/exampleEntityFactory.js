@@ -19,6 +19,7 @@ define('ExampleEntityFactory', function(module) {
 				this.height = height;
 				this.frame = frame;
 				this.layer = layer;
+				this.flipped = false;
 			}
 			get x() {
 				return this[_x];
@@ -96,6 +97,7 @@ define('ExampleEntityFactory', function(module) {
 		class StateComponent {
 			constructor(initialState) {
 				this[state] = null;
+				this.lastState = null;
 				this.lastUpdate = null;
 				this.grounded = false;
 				this.state = initialState;
@@ -104,6 +106,7 @@ define('ExampleEntityFactory', function(module) {
 				return this[state];
 			}
 			set state(val) {
+				this.lastState = this[state];
 				this[state] = val;
 				this.lastUpdate = window.performance.now();
 			}

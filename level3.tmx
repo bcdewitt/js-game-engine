@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="16" nextobjectid="39">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="16" nextobjectid="56">
  <properties>
-  <property name="bgm" value="bgm/bgm1.mp3"/>
+  <property name="bgm" value="bgm/area1.mp3"/>
  </properties>
  <tileset firstgid="1" name="img\tileset.png" tilewidth="16" tileheight="16" tilecount="132" columns="11">
   <image source="img/tileset.png" width="176" height="192"/>
  </tileset>
- <layer name="Background" width="128" height="128" visible="0">
+ <layer name="Background" width="128" height="128">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -32782,7 +32782,7 @@
    <tile gid="122"/>
   </data>
  </layer>
- <objectgroup name="Objects" visible="0">
+ <objectgroup name="Objects">
   <object id="1" name="Tunnel-1" type="Tunnel" x="304" y="336" width="16" height="16">
    <properties>
     <property name="sendTo" type="int" value="3"/>
@@ -32881,5 +32881,22 @@
   <object id="35" type="Collision" x="1120" y="944" width="80" height="32"/>
   <object id="36" type="Collision" x="1200" y="928" width="48" height="48"/>
   <object id="38" type="Collision" x="208" y="0" width="96" height="2048"/>
+  <object id="39" type="Collision" x="1280" y="896" width="32" height="16"/>
+  <object id="40" type="Collision" x="1360" y="912" width="64" height="64"/>
+  <object id="41" type="Collision" x="1472" y="896" width="32" height="16"/>
+  <object id="42" type="Collision" x="1536" y="928" width="32" height="48"/>
+  <object id="43" type="Collision" x="1616" y="912" width="64" height="64"/>
+  <object id="44" type="Collision" x="1696" y="928" width="32" height="16"/>
+  <object id="45" type="Collision" x="1760" y="928" width="32" height="16"/>
+  <object id="46" type="Collision" x="1824" y="928" width="32" height="16"/>
+  <object id="47" type="Collision" x="1888" y="928" width="32" height="16"/>
+  <object id="48" type="Collision" x="1952" y="928" width="48" height="128"/>
+  <object id="49" type="Collision" x="304" y="992" width="1648" height="64"/>
+  <object id="50" type="Collision" x="2000" y="0" width="48" height="2048"/>
+  <object id="51" type="Collision" x="304" y="0" width="1696" height="32"/>
+  <object id="52" type="Collision" x="304" y="800" width="48" height="16"/>
+  <object id="53" type="Collision" x="304" y="672" width="48" height="16"/>
+  <object id="54" type="Collision" x="304" y="544" width="48" height="16"/>
+  <object id="55" type="Collision" x="304" y="352" width="48" height="16"/>
  </objectgroup>
 </map>

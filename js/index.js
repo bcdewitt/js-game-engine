@@ -6,6 +6,7 @@
 	const ExampleSpawnerSystem = require('ExampleSpawnerSystem');
 	const ExampleUpdateSystem = require('ExampleUpdateSystem');
 	const ExamplePhysicsSystem = require('ExamplePhysicsSystem');
+	const ExampleSoundSystem = require('ExampleSoundSystem');
 	const ExampleRenderSystem = require('ExampleRenderSystem');
 	const ExampleGameEntityFactory = require('ExampleEntityFactory');
 
@@ -15,6 +16,7 @@
 			this.addSystem('update', new ExampleUpdateSystem());
 			this.addSystem('physics', new ExamplePhysicsSystem());
 			this.addSystem('render', new ExampleRenderSystem(this.map));
+			this.addSystem('sound', new ExampleSoundSystem(this.map));
 			super.addSystems();
 		}
 	}

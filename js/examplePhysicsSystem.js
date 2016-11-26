@@ -53,6 +53,7 @@ define('ExamplePhysicsSystem', function(module) {
 			for(let nonstaticEntity of nonstaticEntities) {
 				let c = nonstaticEntity.getComponent('physicsBody');
 				let state = nonstaticEntity.getComponent('state');
+				let wasGrounded = state.grounded;
 				state.grounded = false; // Only set to true after a collision is detected
 
 				c.accY = GRAVITY; // Add gravity (limit to 10)
@@ -97,6 +98,7 @@ define('ExamplePhysicsSystem', function(module) {
 							if(c.spdY < 0 && deltaY < 0) c.spdY = 0;
 
 							if(projectionY < 0) {
+								if(!wasGrounded) { state.groundHit = true; } else { state.groundHit = false; }
 								state.grounded = true;
 								if(c.spdX > 0) {
 									c.spdX = Math.max(c.spdX - (FRICTION / time), 0);

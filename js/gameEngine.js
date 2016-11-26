@@ -163,7 +163,7 @@ define('GameEngine', function(module) {
 				for(let systemKey in this.systems) {
 					let system = this.systems[systemKey];
 					let pathsOrObjs = system.getAssetPaths();
-					if(!system.loaded) {
+					if(!system.loaded && !system.processing) {
 						if(pathsOrObjs.length > 0) {
 							assetManager.queueDownloads(pathsOrObjs);
 						}

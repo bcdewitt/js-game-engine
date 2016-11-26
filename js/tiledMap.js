@@ -21,6 +21,7 @@ define('TiledMap', function(module) {
 			this.layers = {};
 			this.objects = [];
 			this.layerCanvases = {};
+			this.bgmLoopTarget = (data.properties && data.properties.bgmLoopTarget) || 0;
 		}
 
 		/**
@@ -29,7 +30,9 @@ define('TiledMap', function(module) {
 		getAssetPaths() {
 			let paths = [];
 
-			paths.push(this.data.properties.bgm);
+			if(this.data.properties && this.data.properties.bgm) {
+				paths.push(this.data.properties.bgm);
+			}
 
 			this.data.tilesets.forEach(function(tileset) {
 				paths.push(tileset.image);

@@ -55,6 +55,8 @@ define('EntityManager', function(module) {
 					let idx = subset.entities.indexOf(entity);
 					if(idx === -1 && subset.shouldContain(entity)) {
 						subset.entities.push(entity);
+					} else if (idx !== -1 && !subset.shouldContain(entity)) {
+						subset.entities.splice(idx, 1);
 					}
 				}
 			};

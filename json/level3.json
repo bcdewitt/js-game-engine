@@ -735,11 +735,13 @@
  "orientation":"orthogonal",
  "properties":
     {
-     "bgm":"bgm\/area1.mp3"
+     "bgm":"bgm\/area1.mp3",
+     "bgmLoopTarget":"56.5"
     },
  "propertytypes":
     {
-     "bgm":"string"
+     "bgm":"string",
+     "bgmLoopTarget":"string"
     },
  "renderorder":"right-down",
  "tileheight":16,

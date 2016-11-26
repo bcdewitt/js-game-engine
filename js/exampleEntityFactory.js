@@ -7,10 +7,10 @@ define('ExampleEntityFactory', function(module) {
 	const EntityFactory = require('EntityFactory');
 
 	const SpriteComponent = (function() {
-		let _x = Symbol('_x');
-		let _y = Symbol('_y');
-		let _width = Symbol('_width');
-		let _height = Symbol('_height');
+		const _x = Symbol('_x');
+		const _y = Symbol('_y');
+		const _width = Symbol('_width');
+		const _height = Symbol('_height');
 		class SpriteComponent {
 			constructor(x, y, width, height, frame, layer) {
 				this.x = x;
@@ -60,8 +60,8 @@ define('ExampleEntityFactory', function(module) {
 	})();
 
 	const SpritePhysicsComponent = (function() {
-		let _entity = Symbol('_x');
-		let _spriteComp = Symbol('_x');
+		const _entity = Symbol('_x');
+		const _spriteComp = Symbol('_x');
 		class SpritePhysicsComponent {
 			constructor(entity) {
 				this[_entity] = entity;
@@ -92,22 +92,63 @@ define('ExampleEntityFactory', function(module) {
 		return SpritePhysicsComponent;
 	})();
 
+	const SpriteSoundComponent = (function() {
+		const _entity = Symbol('_entity');
+		const _spriteComp = Symbol('_spriteComp');
+		const _x = Symbol('_x');
+		const _y = Symbol('_y');
+		const _followSprite = Symbol('_followSprite');
+		const gainNodeMap = new WeakMap();
+
+		class SpriteSoundComponent {
+			constructor(src, entity) {
+				this[_entity] = entity;
+				this.src = src;
+				this.play = false;
+				this.volume = 1;
+				this[_followSprite] = true;
+			}
+			get [_spriteComp]() { return this[_entity].getComponent('sprite'); }
+			get followSprite() { return this[_followSprite]; }
+			set followSprite(val) {
+				if(this[_followSprite] && !val) {
+					this.x = this[_spriteComp].midPointX;
+					this.y = this[_spriteComp].midPointY;
+				}
+				this[_followSprite] = val;
+			}
+			get x() { return this.followSprite ? this[_spriteComp].midPointX : this[_x]; }
+			set x(val) { this[_x] = val; }
+			get y() { return this.followSprite ? this[_spriteComp].midPointY : this[_y]; }
+			set y(val) { this[_y] = val; }
+			set gainNode(val) {
+				gainNodeMap.set(this, val);
+			}
+			get gainNode() {
+				return gainNodeMap.get(this);
+			}
+		}
+
+		return SpriteSoundComponent;
+	})();
+
 	const StateComponent = (function() {
-		const state = Symbol('_symbol');
+		const _state = Symbol('_symbol');
 		class StateComponent {
 			constructor(initialState) {
-				this[state] = null;
+				this[_state] = null;
 				this.lastState = null;
 				this.lastUpdate = null;
 				this.grounded = false;
+				this.groundHit = false;
 				this.state = initialState;
 			}
 			get state() {
-				return this[state];
+				return this[_state];
 			}
 			set state(val) {
-				this.lastState = this[state];
-				this[state] = val;
+				this.lastState = this[_state];
+				this[_state] = val;
 				this.lastUpdate = window.performance.now();
 			}
 		}
@@ -140,6 +181,10 @@ define('ExampleEntityFactory', function(module) {
 						mapY: data.mapY,
 						mapWidth: data.mapWidth,
 						mapHeight: data.mapHeight,
+						get mapHalfWidth() { return this.mapWidth / 2; },
+						get mapHalfHeight() { return this.mapHeight / 2; },
+						get mapCenterX() { return this.mapX + this.mapHalfWidth; },
+						get mapCenterY() { return this.mapY + this.mapHalfHeight; },
 						following: data.following
 					});
 					break;
@@ -189,6 +234,7 @@ define('ExampleEntityFactory', function(module) {
 						(entityType === 'Player' ? 'Player' : 'Platforms')
 					));
 					entity.addComponent('physicsBody', new SpritePhysicsComponent(entity));
+					entity.addComponent('sound', new SpriteSoundComponent(null, entity));
 			}
 			return entity;
 		}

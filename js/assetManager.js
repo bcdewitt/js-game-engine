@@ -113,10 +113,28 @@ define('AssetManager', function(module) {
 						case 'ogg':
 						case 'wav':
 						case 'mp3':
-							asset = new Audio();
-							loadEventName = 'canplaythrough';
-							asset.crossOrigin = 'anonymous';
-							break;
+							(function() {
+								let innerPathOrObj = pathOrObj; // This and the outer function were needed to keep the path
+								let innerPath = (typeof innerPathOrObj === 'object') ?
+									innerPathOrObj.path:
+									innerPathOrObj;
+								let httpRequest = new XMLHttpRequest();
+								httpRequest.open('GET', innerPath, true);
+								httpRequest.responseType = 'arraybuffer';
+
+								httpRequest.onreadystatechange = function () {
+									if (this.readyState === 4) {
+										if (this.status === 200) {
+											handleDownload(innerPath, this.response, true);
+										} else {
+											handleDownload(innerPath, null, false);
+										}
+									}
+								};
+
+								httpRequest.send();
+							})();
+							continue;
 
 						// Video
 						case 'm3u8':

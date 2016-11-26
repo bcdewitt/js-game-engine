@@ -19,6 +19,7 @@ define('AssetUser', function(module) {
 				throw new Error('Can\'t instantiate AssetUser! (abstract class)');
 			}
 			this.loaded = false;
+			this.processing = false;
 		}
 
 		/**
@@ -34,6 +35,7 @@ define('AssetUser', function(module) {
 		 */
 		onAssetsLoaded() {
 			this.loaded = true;
+			this.processing = false;
 		}
 	}
 

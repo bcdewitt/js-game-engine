@@ -1,3 +1,5 @@
+/* global Windows, WinJS */
+
 // Game's main entry point
 (function() {
 	'use strict';
@@ -21,27 +23,25 @@
 		}
 	}
 
-	if (WinJS) { // If running as a UWP App (Windows/XBox)
-	    let app = WinJS.Application;
-	    let activation = Windows.ApplicationModel.Activation;
+	if (window.WinJS) { // If running as a UWP App (Windows/XBox)
+		let app = WinJS.Application;
+		let activation = Windows.ApplicationModel.Activation;
 
-	    app.onactivated = function (args) {
-	        if (args.detail.kind === activation.ActivationKind.launch) {
+		app.onactivated = function (args) {
+			if (args.detail.kind === activation.ActivationKind.launch) {
+				let game = new ExampleGameEngine('json/level3.json', new ExampleGameEntityFactory());
+				game.run();
+			}
+		};
 
+		// Run full screen - remove overscan
+		let applicationView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+		applicationView.setDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.useCoreWindow);
 
-	            let game = new ExampleGameEngine('json/level3.json', new ExampleGameEntityFactory());
-	            game.run();
-	        }
-	    };
-
-        // Run full screen - remove overscan
-	    let applicationView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-	    applicationView.setDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.useCoreWindow);
-
-	    app.start();
+		app.start();
 	} else {
-	    let game = new ExampleGameEngine('json/level3.json', new ExampleGameEntityFactory());
-	    game.run();
+		let game = new ExampleGameEngine('json/level3.json', new ExampleGameEntityFactory());
+		game.run();
 	}
 })();
 

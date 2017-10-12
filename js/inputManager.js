@@ -15,14 +15,15 @@ define('InputManager', function(module) {
 			this[wasPressed] = false;
 			this.held = false;
 		}
-	    get held() { return this[held]; }
-        set held(val) {
-            this[held] = val;
 
-            if (val && this[wasPressed]) {
-                this[wasPressed] = false;
-            }
-        }
+		get held() { return this[held]; }
+		set held(val) {
+			this[held] = val;
+
+			if (val && this[wasPressed]) {
+				this[wasPressed] = false;
+			}
+		}
 
 		get pressed() {
 			let held = this.held;
@@ -70,7 +71,7 @@ define('InputManager', function(module) {
 	}
 	*/
 
-	if(WinJS) { navigator.gamepadInputEmulation = 'keyboard'; }
+	if(window.WinJS) { navigator.gamepadInputEmulation = 'keyboard'; }
 
 	/** Class representing an example input manager. Not intended to be part of final game engine.
 	 */
@@ -81,11 +82,11 @@ define('InputManager', function(module) {
 				[37]: new DigitalInput(), // Left Arrow
 				[39]: new DigitalInput(), // Right Arrow
 
-                [214]: new DigitalInput(), // GamepadLeftThumbstickLeft
-                [205]: new DigitalInput(), // GamepadDPadLeft
-                [213]: new DigitalInput(), // GamepadLeftThumbstickRight
-                [206]: new DigitalInput(), // GamepadDPadRight
-                [195]: new DigitalInput()  // A Button
+				[214]: new DigitalInput(), // GamepadLeftThumbstickLeft
+				[205]: new DigitalInput(), // GamepadDPadLeft
+				[213]: new DigitalInput(), // GamepadLeftThumbstickRight
+				[206]: new DigitalInput(), // GamepadDPadRight
+				[195]: new DigitalInput()  // A Button
 			};
 
 			window.addEventListener('keydown', (event) => {
@@ -99,29 +100,29 @@ define('InputManager', function(module) {
 			}, false);
 		}
 
-	    get jumpButton() {
-	        let key = this[keyboardInputs][195];
-	        if(key.held) { return key; }
+		get jumpButton() {
+			let key = this[keyboardInputs][195];
+			if(key.held) { return key; }
 
 			return this[keyboardInputs][32];
 		}
 
-        get leftButton() {
-            let key = this[keyboardInputs][205];
-            if(key.held) { return key; }
+		get leftButton() {
+			let key = this[keyboardInputs][205];
+			if(key.held) { return key; }
 
-            key = this[keyboardInputs][214];
-            if(key.held) { return key; }
+			key = this[keyboardInputs][214];
+			if(key.held) { return key; }
 
 			return this[keyboardInputs][37];
 		}
 
-        get rightButton() {
-            let key = this[keyboardInputs][206];
-            if(key.held) { return key; }
+		get rightButton() {
+			let key = this[keyboardInputs][206];
+			if(key.held) { return key; }
 
-            key = this[keyboardInputs][213];
-            if (key.held) { return key; }
+			key = this[keyboardInputs][213];
+			if (key.held) { return key; }
 
 			return this[keyboardInputs][39];
 		}

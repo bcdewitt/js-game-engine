@@ -12,6 +12,11 @@
 			"error",
 			"always"
 		],
+		"brace-style": [ "warn",
+			"1tbs", {
+				"allowSingleLine": true
+			}
+		],
 		"valid-jsdoc": [
 			"warn",
 			{

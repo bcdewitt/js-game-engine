@@ -1,6 +1,6 @@
 {
 	"source": {
-		"include": [ "public/js" ],
+		"include": [ "./" ],
 		"includePattern": ".+\\.mjs$"
 	},
 	"opts": {

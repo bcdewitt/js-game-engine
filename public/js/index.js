@@ -1115,9 +1115,6 @@ class AnalogInput {
 }
 */
 
-// TODO: Move to public/js/index
-if(window.WinJS) { navigator.gamepadInputEmulation = 'keyboard'; }
-
 /** Class representing an example input manager. Not intended to be part of final game engine.
  */
 class InputManager {
@@ -1575,7 +1572,7 @@ class ExampleSoundSystem extends System {
 
 /**
  * ExampleRenderSystem module.
- * @module RenderSystem
+ * @module ExampleRenderSystem
  */
 
 /** Class representing a particular type of System used for Rendering. Not intended to be part of final game engine.
@@ -1921,161 +1918,149 @@ class EntityFactory {
 	}
 }
 
+const _x = Symbol('_x');
+const _y = Symbol('_y');
+const _width = Symbol('_width');
+const _height = Symbol('_height');
+
+class SpriteComponent {
+	constructor(x, y, width, height, frame, layer) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.frame = frame;
+		this.layer = layer;
+		this.flipped = false;
+	}
+	get x() {
+		return this[_x]
+	}
+	set x(val) {
+		this[_x] = val;
+		this.midPointX = val + this.halfWidth;
+	}
+
+	get y() {
+		return this[_y]
+	}
+	set y(val) {
+		this[_y] = val;
+		this.midPointY = val + this.halfHeight;
+	}
+
+	get width() {
+		return this[_width]
+	}
+	set width(val) {
+		this[_width] = val;
+		this.halfWidth = val / 2;
+		this.midPointX = this.x + this.halfWidth;
+	}
+
+	get height() {
+		return this[_height]
+	}
+	set height(val) {
+		this[_height] = val;
+		this.halfHeight = val / 2;
+		this.midPointY = this.y + this.halfHeight;
+	}
+}
+
+const _entity = Symbol('_x');
+const _spriteComp = Symbol('_x');
+
+class SpritePhysicsComponent {
+	constructor(entity) {
+		this[_entity] = entity;
+		this.accX = 0;
+		this.accY = 0;
+		this.spdX = 0;
+		this.spdY = 0;
+	}
+	get [_spriteComp]() { return this[_entity].getComponent('sprite') }
+	get x() { return this[_spriteComp].x }
+	set x(val) { this[_spriteComp].x = val; }
+	get y() { return this[_spriteComp].y }
+	set y(val) { this[_spriteComp].y = val; }
+	get width() { return this[_spriteComp].width }
+	set width(val) { this[_spriteComp].width = val; }
+	get height() { return this[_spriteComp].height }
+	set height(val) { this[_spriteComp].height = val; }
+	get midPointX() { return this[_spriteComp].midPointX }
+	set midPointX(val) { this[_spriteComp].midPointX = val; }
+	get midPointY() { return this[_spriteComp].midPointY }
+	set midPointY(val) { this[_spriteComp].midPointY = val; }
+	get halfWidth() { return this[_spriteComp].halfWidth }
+	set halfWidth(val) { this[_spriteComp].halfWidth = val; }
+	get halfHeight() { return this[_spriteComp].halfHeight }
+	set halfHeight(val) { this[_spriteComp].halfHeight = val; }
+}
+
+const _entity$1 = Symbol('_entity');
+const _spriteComp$1 = Symbol('_spriteComp');
+const _x$1 = Symbol('_x');
+const _y$1 = Symbol('_y');
+const _followSprite = Symbol('_followSprite');
+const gainNodeMap = new WeakMap();
+
+class SpriteSoundComponent {
+	constructor(src, entity) {
+		this[_entity$1] = entity;
+		this.src = src;
+		this.play = false;
+		this.volume = 1;
+		this[_followSprite] = true;
+	}
+	get [_spriteComp$1]() { return this[_entity$1].getComponent('sprite') }
+	get followSprite() { return this[_followSprite] }
+	set followSprite(val) {
+		if(this[_followSprite] && !val) {
+			this.x = this[_spriteComp$1].midPointX;
+			this.y = this[_spriteComp$1].midPointY;
+		}
+		this[_followSprite] = val;
+	}
+	get x() { return this.followSprite ? this[_spriteComp$1].midPointX : this[_x$1] }
+	set x(val) { this[_x$1] = val; }
+	get y() { return this.followSprite ? this[_spriteComp$1].midPointY : this[_y$1] }
+	set y(val) { this[_y$1] = val; }
+	set gainNode(val) {
+		gainNodeMap.set(this, val);
+	}
+	get gainNode() {
+		return gainNodeMap.get(this)
+	}
+}
+
+const _state = Symbol('_symbol');
+
+class StateComponent {
+	constructor(initialState) {
+		this[_state] = null;
+		this.lastState = null;
+		this.lastUpdate = null;
+		this.grounded = false;
+		this.groundHit = false;
+		this.state = initialState;
+	}
+	get state() {
+		return this[_state]
+	}
+	set state(val) {
+		this.lastState = this[_state];
+		this[_state] = val;
+		this.lastUpdate = window.performance.now();
+	}
+}
+
 /**
  * ExampleEntityFactory module.
  * @module ExampleEntityFactory
  */
 
-const SpriteComponent = (function() {
-	const _x = Symbol('_x');
-	const _y = Symbol('_y');
-	const _width = Symbol('_width');
-	const _height = Symbol('_height');
-	class SpriteComponent {
-		constructor(x, y, width, height, frame, layer) {
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-			this.frame = frame;
-			this.layer = layer;
-			this.flipped = false;
-		}
-		get x() {
-			return this[_x]
-		}
-		set x(val) {
-			this[_x] = val;
-			this.midPointX = val + this.halfWidth;
-		}
-
-		get y() {
-			return this[_y]
-		}
-		set y(val) {
-			this[_y] = val;
-			this.midPointY = val + this.halfHeight;
-		}
-
-		get width() {
-			return this[_width]
-		}
-		set width(val) {
-			this[_width] = val;
-			this.halfWidth = val / 2;
-			this.midPointX = this.x + this.halfWidth;
-		}
-
-		get height() {
-			return this[_height]
-		}
-		set height(val) {
-			this[_height] = val;
-			this.halfHeight = val / 2;
-			this.midPointY = this.y + this.halfHeight;
-		}
-	}
-
-	return SpriteComponent
-})();
-
-const SpritePhysicsComponent = (function() {
-	const _entity = Symbol('_x');
-	const _spriteComp = Symbol('_x');
-	class SpritePhysicsComponent {
-		constructor(entity) {
-			this[_entity] = entity;
-			this.accX = 0;
-			this.accY = 0;
-			this.spdX = 0;
-			this.spdY = 0;
-		}
-		get [_spriteComp]() { return this[_entity].getComponent('sprite') }
-		get x() { return this[_spriteComp].x }
-		set x(val) { this[_spriteComp].x = val; }
-		get y() { return this[_spriteComp].y }
-		set y(val) { this[_spriteComp].y = val; }
-		get width() { return this[_spriteComp].width }
-		set width(val) { this[_spriteComp].width = val; }
-		get height() { return this[_spriteComp].height }
-		set height(val) { this[_spriteComp].height = val; }
-		get midPointX() { return this[_spriteComp].midPointX }
-		set midPointX(val) { this[_spriteComp].midPointX = val; }
-		get midPointY() { return this[_spriteComp].midPointY }
-		set midPointY(val) { this[_spriteComp].midPointY = val; }
-		get halfWidth() { return this[_spriteComp].halfWidth }
-		set halfWidth(val) { this[_spriteComp].halfWidth = val; }
-		get halfHeight() { return this[_spriteComp].halfHeight }
-		set halfHeight(val) { this[_spriteComp].halfHeight = val; }
-	}
-
-	return SpritePhysicsComponent
-})();
-
-const SpriteSoundComponent = (function() {
-	const _entity = Symbol('_entity');
-	const _spriteComp = Symbol('_spriteComp');
-	const _x = Symbol('_x');
-	const _y = Symbol('_y');
-	const _followSprite = Symbol('_followSprite');
-	const gainNodeMap = new WeakMap();
-
-	class SpriteSoundComponent {
-		constructor(src, entity) {
-			this[_entity] = entity;
-			this.src = src;
-			this.play = false;
-			this.volume = 1;
-			this[_followSprite] = true;
-		}
-		get [_spriteComp]() { return this[_entity].getComponent('sprite') }
-		get followSprite() { return this[_followSprite] }
-		set followSprite(val) {
-			if(this[_followSprite] && !val) {
-				this.x = this[_spriteComp].midPointX;
-				this.y = this[_spriteComp].midPointY;
-			}
-			this[_followSprite] = val;
-		}
-		get x() { return this.followSprite ? this[_spriteComp].midPointX : this[_x] }
-		set x(val) { this[_x] = val; }
-		get y() { return this.followSprite ? this[_spriteComp].midPointY : this[_y] }
-		set y(val) { this[_y] = val; }
-		set gainNode(val) {
-			gainNodeMap.set(this, val);
-		}
-		get gainNode() {
-			return gainNodeMap.get(this)
-		}
-	}
-
-	return SpriteSoundComponent
-})();
-
-const StateComponent = (function() {
-	const _state = Symbol('_symbol');
-	class StateComponent {
-		constructor(initialState) {
-			this[_state] = null;
-			this.lastState = null;
-			this.lastUpdate = null;
-			this.grounded = false;
-			this.groundHit = false;
-			this.state = initialState;
-		}
-		get state() {
-			return this[_state]
-		}
-		set state(val) {
-			this.lastState = this[_state];
-			this[_state] = val;
-			this.lastUpdate = window.performance.now();
-		}
-	}
-
-	return StateComponent
-})();
-
+// Import component classes
 /** Class representing a particular implementation of an EntityFactory. Not intended to be part of final game engine.
  * @extends EntityFactory
  */
@@ -2160,25 +2145,7 @@ class ExampleEntityFactory extends EntityFactory {
 	}
 }
 
-/* global Windows, WinJS */
-
 // Game's main entry point
-
-
-
-
-
-
-
-
-// TODO: May need to put into the build steps - copy game engine files into public/gamelib directory
-
-
-
-
-
-
-
 class ExampleGameEngine extends GameEngine {
 	addSystems() {
 		this.addSystem('spawn', new ExampleSpawnerSystem());
@@ -2190,29 +2157,7 @@ class ExampleGameEngine extends GameEngine {
 	}
 }
 
-if (window.WinJS) { // If running as a UWP App (Windows/XBox)
-	let app = WinJS.Application;
-	let activation = Windows.ApplicationModel.Activation;
-
-	app.onactivated = function (args) {
-		if (args.detail.kind === activation.ActivationKind.launch) {
-			let game = new ExampleGameEngine('json/level3.json', new ExampleEntityFactory());
-			game.run();
-		}
-	};
-
-	// Run full screen - remove overscan
-	let applicationView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-	applicationView.setDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.useCoreWindow);
-
-	app.start();
-} else {
-	let game = new ExampleGameEngine('json/level3.json', new ExampleEntityFactory());
-	game.run();
-}
-
-// To test on Xbox: https://msdn.microsoft.com/windows/uwp/xbox-apps/devkit-activation
-// To test on PS4...you need a bunch of steps: https://www.playstation.com/en-us/develop/
-// To test on Wii U/3ds: https://developer.nintendo.com/the-process
+const game = new ExampleGameEngine('json/level3.json', new ExampleEntityFactory());
+game.run();
 
 }());

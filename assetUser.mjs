@@ -3,6 +3,7 @@
  * @module AssetUser
  */
 
+
 /**
  * Class that acts as an interface/abstract class for any class requiring assets. Please avoid instantiating directly.
  * @interface

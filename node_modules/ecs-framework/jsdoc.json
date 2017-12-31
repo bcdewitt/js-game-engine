@@ -1,0 +1,11 @@
+{
+	"source": {
+		"include": [ "./" ],
+		"includePattern": ".+\\.mjs$"
+	},
+	"opts": {
+		"template": "node_modules/minami",
+		"readme": "README.md",
+		"destination": "docs"
+	}
+}

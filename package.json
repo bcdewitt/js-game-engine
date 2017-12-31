@@ -1,0 +1,26 @@
+{
+	"name": "ecs-game",
+	"version": "0.0.1",
+	"main": "server.mjs",
+	"description": "This README would normally document whatever steps are necessary to get your application up and running.",
+	"port": 3030,
+	"scripts": {
+		"start": "NODE_ENV=production node -r @std/esm server.mjs",
+		"start-dev": "nodemon -r @std/esm server.mjs",
+		"build": "rollup -c",
+		"lint": "eslint public/js/*.js",
+		"doc": "jsdoc -c jsdoc.json"
+	},
+	"dependencies": {
+		"@std/esm": "^0.18.0",
+		"express": "^4.16.2"
+	},
+	"devDependencies": {
+		"eslint": "^4.13.0",
+		"jsdoc": "^3.5.5",
+		"minami": "^1.2.3",
+		"nodemon": "^1.12.5",
+		"rollup": "^0.52.1",
+		"rollup-plugin-includepaths": "^0.2.2"
+	}
+}

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>exampleRenderSystem.mjs - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-ExampleEntityFactory.html">ExampleEntityFactory</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleEntityFactory.html#create">create</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-ExamplePhysicsSystem.html">ExamplePhysicsSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExamplePhysicsSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExamplePhysicsSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html">ExampleRenderSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#getAssetPaths">getAssetPaths</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#onAssetsLoaded">onAssetsLoaded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html">ExampleSoundSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#getAssetPaths">getAssetPaths</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#onAssetsLoaded">onAssetsLoaded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-ExampleSpawnerSystem.html">ExampleSpawnerSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSpawnerSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSpawnerSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-ExampleUpdateSystem.html">ExampleUpdateSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleUpdateSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleUpdateSystem.html#run">run</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-ExampleEntityFactory.html">ExampleEntityFactory</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleEntityFactory.html#create">create</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-ExamplePhysicsSystem.html">ExamplePhysicsSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExamplePhysicsSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExamplePhysicsSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html">ExampleRenderSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#getAssetPaths">getAssetPaths</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#onAssetsLoaded">onAssetsLoaded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleRenderSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html">ExampleSoundSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#getAssetPaths">getAssetPaths</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#onAssetsLoaded">onAssetsLoaded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSoundSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-ExampleSpawnerSystem.html">ExampleSpawnerSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSpawnerSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleSpawnerSystem.html#run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-ExampleUpdateSystem.html">ExampleUpdateSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleUpdateSystem.html#getRequiredSubsets">getRequiredSubsets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-ExampleUpdateSystem.html#run">run</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">exampleRenderSystem.mjs</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * ExampleRenderSystem module.
+ * @module ExampleRenderSystem
+ */
+
+import System from './ecs-framework/system.mjs'
+
+/** Class representing a particular type of System used for Rendering. Not intended to be part of final game engine.
+ * @extends System
+ */
+export default class ExampleRenderSystem extends System {
+
+	/**
+	 * Create a System used for Rendering.
+	 * @param {TiledMap} map - The loaded map.
+	 * @param {EntityFactory} entityFactory - Instance of an EntityFactory. Used when calling addEntity() method.
+	 */
+	constructor(map) {
+		super()
+		this.maxFramerate = 60/1000
+		this.lastUpdate = 0
+		this.canvas = document.getElementById('game')
+		this.context = this.canvas &amp;&amp; this.canvas.getContext('2d')
+
+		this.context.mozImageSmoothingEnabled = false
+		this.context.msImageSmoothingEnabled = false
+		this.context.imageSmoothingEnabled = false
+
+		this.map = map
+		this.images = {}
+		this.frames = [
+			{
+				img: 'img/monster.png',
+				x: 0,
+				y: 0,
+				width: 14,
+				height: 26
+			}, {
+				img: 'img/tankSheet.png',
+				x: 0,
+				y: 0,
+				width: 26,
+				height: 18
+			}, {
+				img: 'img/tankSheet.png',
+				x: 26,
+				y: 0,
+				width: 26,
+				height: 18
+			}, {
+				img: 'img/tankSheet.png',
+				x: 52,
+				y: 0,
+				width: 26,
+				height: 18
+			}, {
+				img: 'img/tankSheet.png',
+				x: 78,
+				y: 0,
+				width: 26,
+				height: 18
+			}
+		]
+	}
+
+	/**
+	 * Gets subset info (helps GameEngine with caching).
+	 * @returns {Object}  Plain object used as an associative array. It contains functions which check if a given entity meets criteria.
+	 */
+	getRequiredSubsets() {
+		return {
+			camera: function(entity) {
+				return entity.hasComponent('camera')
+			},
+			sprite: function(entity) {
+				return entity.hasComponent('sprite')
+			},
+			player: function(entity) {
+				return entity.hasComponent('being') &amp;&amp; entity.getComponent('being').type === 'Player'
+			}
+		}
+	}
+
+	/**
+	 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON).
+	 */
+	getAssetPaths() {
+		return [
+			'img/monster.png',
+			'img/tankSheet.png'
+		]
+	}
+
+	/**
+	 * Event handler function - Store downloaded assets.
+	 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()".
+	 */
+	onAssetsLoaded(assets) {
+		let images = assets // All assets requested are images...so this is simple
+
+		this.images = images
+		this.flippedImages = {}
+
+		// Images must be flipped and stored in flippedImages under same key
+		for(let key in images) {
+			let canvas = document.createElement('canvas')
+			let ctx = canvas.getContext('2d')
+			let image = images[key]
+
+			canvas.width = image.width
+			canvas.height = image.height
+
+			ctx.scale(-1, 1) // flip
+			ctx.drawImage(image, (-1 * canvas.width), 0) // draw flipped
+
+			this.flippedImages[key] = canvas
+		}
+
+		this.addEntity('Camera', {
+			x: 0,
+			y: 0,
+			width: this.canvas.width,
+			height: this.canvas.height,
+			mapX: 300,
+			mapY: 820,
+			mapWidth: parseInt(this.canvas.width / 8),
+			mapHeight: parseInt(this.canvas.height / 8),
+			following: null
+		})
+		/*
+		this.addEntity('Camera', {
+			x: this.canvas.width / 2,
+			y: 0,
+			width: this.canvas.width / 2,
+			height: this.canvas.height,
+			mapX: 100,
+			mapY: 920,
+			mapWidth: this.canvas.width / 2,
+			mapHeight: this.canvas.height / 2
+		})
+		*/
+		super.onAssetsLoaded()
+	}
+
+	/**
+	 * Method that is called once per iteration of the main game loop.
+	 * Renders map (and, in the future, Entity objects with sprite components).
+	 * @param  {DOMHighResTimeStamp} timestamp - Current time in milliseconds.
+	 */
+	run(timestamp) {
+
+		// Limit drawing operations to 60 times per second
+		if(this.maxFramerate &amp;&amp; timestamp - this.lastUpdate &lt; this.maxFramerate) return
+
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+		let players = this.getEntities('player')
+
+		// Get each camera
+		let cameraEntities = this.getEntities('camera')
+		for(let cameraEntity of cameraEntities) {
+			let c = cameraEntity.getComponent('camera')
+
+			// Set up drawing layers
+			let layers = {
+				Background: { sprites: [] },
+				Platforms:  { sprites: [] },
+				Player:     { sprites: [] }
+			}
+
+			// Force camera to match followed entity
+			if(!c.following &amp;&amp; players &amp;&amp; players[0]) { c.following = players[0] }
+			if(c.following) {
+				let sprite = c.following.getComponent('sprite')
+				let frame = this.frames[sprite.frame]
+				c.mapX = sprite.x + (frame.width / 2) - (c.mapWidth / 2)
+
+				let threshold = (c.mapHeight / 4)
+				if(sprite.y &lt; c.mapY + threshold) {
+					c.mapY = sprite.y - threshold
+				} else if((sprite.y + sprite.height) > c.mapY + c.mapHeight - threshold) {
+					c.mapY = sprite.y + sprite.height - (c.mapHeight - threshold)
+				}
+			}
+
+			// Get entities with a sprite component and add to the appropriate layer for rendering
+			let entities = this.getEntities('sprite')
+			for(let entity of entities) {
+				let sprite = entity.getComponent('sprite')
+				let frame = this.frames[sprite.frame]
+				let img = !sprite.flipped ? this.images[frame.img] : this.flippedImages[frame.img]
+
+				sprite.width = frame.width
+				sprite.height = frame.height
+
+				let obj = {
+					img: img,
+					x: sprite.x - c.mapX,
+					y: sprite.y - c.mapY,
+					width: frame.width,
+					height: frame.height,
+					sx: frame.x,
+					sy: frame.y
+				}
+
+				if(
+					obj.x + obj.width > 0 &amp;&amp; obj.x &lt; c.mapWidth &amp;&amp;
+					obj.y + obj.height > 0 &amp;&amp; obj.y &lt; c.mapHeight
+				) {
+					layers[sprite.layer].sprites.push(obj)
+				}
+			}
+
+			// Draw each map layer (include all sprites for that layer)
+			for(let layerKey in layers) {
+				let layer = layers[layerKey]
+
+				let mapX = Math.round(c.mapX)
+				let mapY = Math.round(c.mapY)
+				let mapWidth = parseInt(c.mapWidth)
+				let mapHeight = parseInt(c.mapHeight)
+				let x = parseInt(c.x)
+				let y = parseInt(c.y)
+				let width = parseInt(c.width)
+				let height = parseInt(c.height)
+
+				this.map.render(this.context, layerKey, timestamp, mapX, mapY, mapWidth, mapHeight, x, y, width, height)
+
+				// Draw each sprite to a temporary canvas
+				if(layer.sprites.length > 0) {
+					let tempCanvas = document.createElement('canvas')
+					tempCanvas.width = mapWidth
+					tempCanvas.height = mapHeight
+					let tempCtx = tempCanvas.getContext('2d')
+					for(let sprite of layer.sprites) {
+						tempCtx.drawImage(sprite.img, parseInt(sprite.sx), parseInt(sprite.sy), parseInt(sprite.width), parseInt(sprite.height), Math.round(sprite.x), Math.round(sprite.y), parseInt(sprite.width), parseInt(sprite.height))
+					}
+
+					// Draw the temporary canvas to the main canvas (position and fit to camera bounds)
+					this.context.drawImage(tempCanvas, 0, 0, mapWidth, mapHeight, x, y, width, height)
+				}
+			}
+		}
+
+		this.lastUpdate = timestamp
+
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 30 2017 23:34:50 GMT-0500 (STD) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

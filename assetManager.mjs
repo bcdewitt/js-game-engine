@@ -3,7 +3,6 @@
  * @module AssetManager
  */
 
-
 // Asset Loader/Manager (http://www.html5rocks.com/en/tutorials/games/assetmanager/)
 
 /** Class that represents a set of file retreival methods. */

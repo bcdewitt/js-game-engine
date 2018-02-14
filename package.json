@@ -1,14 +1,35 @@
 {
 	"name": "js-game-engine",
 	"version": "0.0.1",
+	"main": "dist/index.js",
 	"description": "This README would normally document whatever steps are necessary to get your application up and running.",
 	"scripts": {
-		"lint": "eslint . --ext .mjs --ignore-path .gitignore",
-		"doc": "jsdoc -c jsdoc.json"
+		"watch": "nodemon --watch src --exec",
+		"build": "rollup src/index.mjs --o dist/index.js --f cjs",
+		"lint": "eslint src --ext .mjs",
+		"doc": "jsdoc -c jsdoc.json",
+		"test": "jest"
+	},
+	"jest": {
+		"verbose": true,
+		"testMatch": [
+			"**/test/tests/**/*.test.js"
+		],
+		"globalSetup": "./test/setup.js",
+		"globalTeardown": "./test/teardown.js",
+		"testEnvironment": "./test/puppeteer-environment.js"
 	},
 	"devDependencies": {
+		"chalk": "^2.3.0",
 		"eslint": "^4.14.0",
+		"eslint-plugin-jest": "^21.5.0",
+		"express": "^4.16.2",
+		"jest": "^22.0.4",
 		"jsdoc": "^3.5.5",
-		"minami": "^1.2.3"
+		"minami": "^1.2.3",
+		"nodemon": "^1.14.8",
+		"puppeteer": "^0.13.0",
+		"rimraf": "^2.6.2",
+		"rollup": "^0.53.3"
 	}
 }

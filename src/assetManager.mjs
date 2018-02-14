@@ -66,10 +66,9 @@ export default class AssetManager {
 
 			if(success) {
 				this.successCount += 1
-				//console.log(path + ' is loaded')
 			} else {
 				this.errorCount += 1
-				//console.log('Error: Could not load ' + path)
+				console.warn('Error: Could not load ' + path) // eslint-disable-line no-console
 			}
 
 			if (this.isDone()) {

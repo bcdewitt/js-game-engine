@@ -1,0 +1,13 @@
+{
+	"env": {
+		"node": true,
+		"jest/globals": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 8
+	},
+	"rules": {
+		"no-console": "off"
+	},
+	"plugins": ["jest"]
+}

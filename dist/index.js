@@ -204,10 +204,9 @@ class AssetManager {
 
 			if(success) {
 				this.successCount += 1;
-				//console.log(path + ' is loaded')
 			} else {
 				this.errorCount += 1;
-				//console.log('Error: Could not load ' + path)
+				console.warn('Error: Could not load ' + path); // eslint-disable-line no-console
 			}
 
 			if (this.isDone()) {
@@ -338,48 +337,32 @@ class AssetManager {
 }
 
 /**
- * Utilities module.
- * @module utilities
- */
-
-/** Class that represents a set of shared convenience methods. */
-class Utilities {
-
-	/**
-	 * Creates an associative array (an Object that may be used in a for...of).
-	 * @param  {Object=} obj - Plain-data Object.
-	 * @returns {Object}  An iterable object for use in for...of loops.
-	 */
-	static createIterableObject(obj) {
-		obj = obj || {};
-		obj[Symbol.iterator] = Array.prototype[Symbol.iterator];
-		return obj
-	}
-
-	/**
-	 * Creates an array of the given dimensions.
-	 * @param  {...number} [length=0] - Array dimensions.
-	 * @returns {Array}  An array that includes the number of dimensions given at the given lengths.
-	 */
-	static createArray(length) {
-		let arr, i;
-
-		arr = new Array(length || 0);
-		i = length;
-
-		if (arguments.length > 1) {
-			let args = Array.prototype.slice.call(arguments, 1);
-			while(i--) arr[length-1 - i] = this.createArray.apply(this, args);
-		}
-
-		return arr
-	}
-}
-
-/**
  * TiledMap module.
  * @module TiledMap
  */
+
+/**
+ * createArray function.
+ *
+ * Creates nested empty arrays
+ *
+ * @param { ...number } args - Nested array lengths
+ * @returns { array } - An array of arrays
+ */
+const createArray = (...args) => {
+	if (args.length === 0) return []
+
+	const length = args[0];
+
+	const arr = new Array(length);
+
+	let i = length;
+	if (args.length > 1) {
+		while(i--) arr[length-1 - i] = createArray(...(args.slice(1)));
+	}
+
+	return arr
+};
 
 /** Class representing a Map built from Tiled data. */
 class TiledMap extends AssetUser {
@@ -490,7 +473,7 @@ class TiledMap extends AssetUser {
 	populateLayers(layers) {
 		for(let layer of layers) {
 			if(layer.data && layer.type === 'tilelayer') {
-				let layerData = Utilities.createArray(layer.width, layer.height);
+				let layerData = createArray(layer.width, layer.height);
 				let idx = 0;
 
 				for(let y = 0, l = layer.height; y < l; y++) {
@@ -1066,13 +1049,13 @@ class EntityFactory {
 	/**
 	 * Create an Entity instance of the given type.
 	 * @param {string} entityType - Type of entity (key used to determine which constructor function to use to build entity).
-	 * @param {Object} data - Plain object that represents an entity's components.
+	 * @param {Object} data - Plain object that represents an entity's component values.
 	 * @param  {function} compCallback - Function to call after a component is added/removed or other changes are made that need to be observed.
 	 * @returns  {Entity}  A single Entity instance.
 	 */
 	create(entityType, data, compCallback) {
 		if(typeof data !== 'object' || data.constructor !== Object) {
-			throw new Error('Can\'t must use plain objects for data')
+			throw new Error('Must use plain objects for data')
 		}
 		return new Entity(compCallback)
 	}

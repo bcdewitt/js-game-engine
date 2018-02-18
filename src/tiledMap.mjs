@@ -4,7 +4,29 @@
  */
 
 import AssetUser from './assetUser.mjs'
-import Utilities from './utilities.mjs'
+
+/**
+ * createArray function.
+ *
+ * Creates nested empty arrays
+ *
+ * @param { ...number } args - Nested array lengths
+ * @returns { array } - An array of arrays
+ */
+const createArray = (...args) => {
+	if (args.length === 0) return []
+
+	const length = args[0]
+
+	const arr = new Array(length)
+
+	let i = length
+	if (args.length > 1) {
+		while(i--) arr[length-1 - i] = createArray(...(args.slice(1)))
+	}
+
+	return arr
+}
 
 /** Class representing a Map built from Tiled data. */
 export default class TiledMap extends AssetUser {
@@ -115,7 +137,7 @@ export default class TiledMap extends AssetUser {
 	populateLayers(layers) {
 		for(let layer of layers) {
 			if(layer.data && layer.type === 'tilelayer') {
-				let layerData = Utilities.createArray(layer.width, layer.height)
+				let layerData = createArray(layer.width, layer.height)
 				let idx = 0
 
 				for(let y = 0, l = layer.height; y < l; y++) {

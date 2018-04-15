@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>gameEvent.mjs - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Entity.html">Entity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#getComponent">getComponent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#hasComponent">hasComponent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#removeComponent">removeComponent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#setComponent">setComponent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GameEngine.html">GameEngine</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#changeScene">changeScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#fetchAssets">fetchAssets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#getScene">getScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#hasScene">hasScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#queueAsset">queueAsset</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#queueAssets">queueAssets</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#removeScene">removeScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#run">run</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#setScene">setScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="GameEngine.html#stopGame">stopGame</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="GameEvent.html">GameEvent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="InputManager.html">InputManager</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-Game-Game.html">Game</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Scene.html">Scene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#addEntity">addEntity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#changeScene">changeScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#getEntities">getEntities</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#getSystem">getSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#hasEntity">hasEntity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#hasSystem">hasSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#reindexEntity">reindexEntity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#removeEntity">removeEntity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#removeSystem">removeSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#setEntityIndexer">setEntityIndexer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#setSystem">setSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#stopGame">stopGame</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Scene.html#update">update</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="System.html">System</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="System.html#changeScene">changeScene</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="System.html#stopGame">stopGame</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="System.html#update">update</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-Game.html">Game</a></span></li><li class="nav-heading">Mixins</li><li class="nav-heading"><span class="nav-item-type type-mixin">M</span><span class="nav-item-name"><a href="eventTargetMixin.html">eventTargetMixin</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">gameEvent.mjs</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// TODO: Finish documenting GameEvent and eventTargetMixin
+
+const _GameEvent = new WeakMap()
+let propagatingEvent = null // Keeps track of the currently propagating event to cancel out duplicate events
+
+/**
+ * Class representing an event fired by a game object.
+ */
+class GameEvent {
+	constructor(type, { bubbles } = {}) {
+		const _this = {
+			target: null,
+			currentTarget: null,
+			propagateImmediate: true,
+			propagate: !!bubbles,
+		}
+		_GameEvent.set(this, _this)
+
+		this.timestamp = null
+		Object.defineProperty(this, 'type', { value: type, writable: false })
+		Object.defineProperty(this, 'bubbles', { value: !!bubbles, writable: false })
+		Object.defineProperty(this, 'target', { get() { return _this.target } })
+		Object.defineProperty(this, 'currentTarget', { get() { return _this.currentTarget } })
+	}
+
+	stopPropagation() {
+		_GameEvent.get(this).propagate = false
+	}
+
+	stopImmediatePropagation() {
+		const _this = _GameEvent.get(this)
+		_this.propagate = false
+		_this.propagateImmediate = false
+	}
+}
+
+const _eventTargetMixin = new WeakMap()
+
+/**
+ * Event Target mixin
+ *
+ * This provides properties and methods used for game event handling.
+ * It's not meant to be used directly.
+ *
+ * @mixin eventTargetMixin
+ */
+const eventTargetMixin = {
+	construct() {
+		_eventTargetMixin.set(this, {
+			listeners: new Map(),
+			listenerOptions: new WeakMap(),
+			parent: null,
+		})
+	},
+
+	dispatchEvent(e) {
+		// Prevent duplicate events during propagation
+		if (propagatingEvent &amp;&amp; propagatingEvent.currentTarget === this) return
+
+		const _this = _eventTargetMixin.get(this)
+		const _event = _GameEvent.get(e)
+
+		// Modify event's private properties
+		if (_event.target === null) {
+			_event.timestamp = performance.now()
+			_event.target = this
+		}
+		_event.currentTarget = this
+
+		// Loop over listeners (break out when e.stopImmediatePropagation() is called)
+		const set = _this.listeners.get(e.type)
+		if (set) {
+			for (const listener of set) {
+				const options = _this.listenerOptions.get(listener)
+				listener.call(this, e)
+				if (options &amp;&amp; options.once) this.removeEventListener(e.type, listener)
+				if (!_event.propagateImmediate) break
+			}
+		}
+
+		// If this event propagates, dispatch event on parent
+		if (_event.propagate &amp;&amp; _this.parent) {
+			propagatingEvent = e
+			_this.parent.dispatchEvent(e)
+		} else {
+			propagatingEvent = null
+		}
+		return this
+	},
+
+	addEventListener(type, listener, options) {
+		const _this = _eventTargetMixin.get(this)
+		const set = _this.listeners.has(type) ? _this.listeners.get(type) : new Set()
+		set.add(listener)
+
+		_this.listeners.set(type, set)
+		_this.listenerOptions.set(listener, options)
+		return this
+	},
+
+	removeEventListener(type, listener) {
+		const set = _eventTargetMixin.get(this).listeners.get(type)
+		if (!set) return
+		set.delete(listener)
+		return this
+	},
+
+	propagateEventsFrom(child) {
+		const _child = _eventTargetMixin.get(child)
+		if (_child) _child.parent = this
+		return this
+	},
+
+	stopPropagatingFrom(child) {
+		const _child = _eventTargetMixin.get(child)
+		if (_child &amp;&amp; _child.parent === this) _child.parent = null
+		return this
+	}
+}
+
+export { GameEvent, eventTargetMixin }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Mar 04 2018 17:43:11 GMT-0500 (Eastern Standard Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

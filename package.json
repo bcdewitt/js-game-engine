@@ -5,7 +5,7 @@
 	"description": "This README would normally document whatever steps are necessary to get your application up and running.",
 	"scripts": {
 		"watch": "nodemon --watch src --exec",
-		"build": "rollup src/index.mjs --o dist/index.js --f cjs",
+		"build": "rollup src/index.mjs --o dist/index.js --f cjs && rollup src/index.mjs --o esm/index.mjs --f es",
 		"lint": "eslint src --ext .mjs",
 		"doc": "jsdoc -c jsdoc.json",
 		"test": "jest"
@@ -21,7 +21,7 @@
 	},
 	"devDependencies": {
 		"chalk": "^2.3.0",
-		"eslint": "^4.14.0",
+		"eslint": "^4.19.1",
 		"eslint-plugin-jest": "^21.5.0",
 		"express": "^4.16.2",
 		"jest": "^22.0.4",

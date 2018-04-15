@@ -1,79 +1,127 @@
+import { MixedWith } from './utilities.mjs'
+import { eventTargetMixin } from './gameEvent.mjs'
+import GameStopEvent from './events/gameStopEvent.mjs'
+import GameSceneChangeEvent from './events/gameSceneChangeEvent.mjs'
+import SystemMountedEvent from './events/systemMountedEvent.mjs'
+import SystemUpdateEvent from './events/systemUpdateEvent.mjs'
+import SystemLoadEvent from './events/systemLoadEvent.mjs'
+import SystemLoadedEvent from './events/systemLoadedEvent.mjs'
+
+// Creates a function that throws an error when run
+const unimplemented = name => () => {
+	throw new Error(`${name} not set`)
+}
+
 /**
- * System module.
- * @module System
+ * Class representing a System.
+ * @mixes eventTargetMixin
  */
-
-import AssetUser from './assetUser.mjs'
-
-/**
- * Class that acts as an interface/abstract class for a System (the "S" in the ECS design pattern). Please avoid instantiating directly.
- * @interface
- * */
-export default class System extends AssetUser {
-
-	/**
-	 * Create a System.
-	 */
+const _System = new WeakMap()
+class System extends MixedWith(eventTargetMixin) {
 	constructor() {
 		super()
-		if (this.constructor === System) {
-			throw new Error('Can\'t instantiate System! (abstract class)')
-		}
-		this.entityManager = null
+		_System.set(this, {
+			getEntitiesFunc: unimplemented('getEntitiesFunc'),
+			addEntityFunc: unimplemented('addEntitiesFunc'),
+		})
+	}
+
+	setGetEntitiesFunc(func) {
+		_System.get(this).getEntitiesFunc = func
+		return this
+	}
+
+	unsetGetEntitiesFunc() {
+		_System.get(this).getEntitiesFunc = unimplemented('getEntitiesFunc')
+		return this
+	}
+
+	getEntities(indexName) {
+		return _System.get(this).getEntitiesFunc(indexName)
+	}
+
+	setAddEntityFunc(func) {
+		_System.get(this).addEntityFunc = func
+		return this
+	}
+
+	unsetAddEntityFunc() {
+		_System.get(this).addEntityFunc = unimplemented('addEntityFunc')
+		return this
+	}
+
+	addEntity(entity) {
+		_System.get(this).addEntityFunc(entity)
+		return this
 	}
 
 	/**
-	 * Sets the internal function used to get entities from an external source
-	 * @param  {EntityManager} entityManager - Provides an API for an entity collection.
+	 * Fires a bubbling "stopGame" event.
+	 *
+	 * @returns {this} - Returns self for method chaining.
 	 */
-	setEntityManager(entityManager) {
-		this.entityManager = entityManager
+	stopGame() {
+		this.dispatchEvent(new GameStopEvent('stopGame'))
+		return this
 	}
 
 	/**
-	 * Wrapper for ._getEntities() function - set using .setEntityGetter() (checks if we correctly set up "getRequiredSubsets()" method)
-	 * @param {string} subsetName - Name of entity subset to use.
-	 * @returns {Entity[]}  List of entities
+	 * Fires a bubbling "changeScene" event.
+	 *
+	 * @param {string} sceneName - Name of the scene to activate
+	 * @returns {this} - Returns self for method chaining.
 	 */
-	getEntities(subsetName) {
-		if(!subsetName || this.getRequiredSubsets()[subsetName]) {
-			return this.entityManager && this.entityManager.getEntities(subsetName)
-		}
-
-		throw new Error('You must override .getRequiredSubset() to set up subsets before calling .getEntities(subsetName)')
+	changeScene(sceneName) {
+		this.dispatchEvent(new GameSceneChangeEvent('changeScene', { sceneName }))
+		return this
 	}
 
 	/**
-	 * Add an Entity.
-	 * @param  {string} entityType - Type of Entity to add to this game.
-	 * @param {Object} data - Plain object representing the component data.
-	 * @returns {Entity}  Entity that was added
+	 * Fires a "load" event.
+	 *
+	 * @async
+	 * @param {AssetFetcher} assetFetcher - AssetFetcher to be used in handlers.
+	 * @returns {Promise} - Promise that resolves once the load event handler(s) resolve.
 	 */
-	addEntity(entityType, data) {
-		return this.entityManager && this.entityManager.addEntity(entityType, data)
+	load(assetFetcher) {
+		return this.dispatchEventAsync(new SystemLoadEvent('load', { assetFetcher }))
 	}
 
 	/**
-	 * Remove an Entity.
-	 * @param {Entity}  entity - Entity instance to be removed
+	 * Fires a "loaded" event.
+	 *
+	 * @param {Map} assets - Assets for the system to use.
+	  @returns {Promise} - Promise that resolves once the loaded event handler(s) resolve.
 	 */
-	removeEntity(entity) {
-		this.entityManager && this.entityManager.removeEntity(entity)
+	loaded(assets) {
+		return this.dispatchEventAsync(new SystemLoadedEvent('loaded', { assets }))
 	}
 
 	/**
-	 * Gets subset info (helps GameEngine with caching).
-	 * @returns {Object}  Plain object used as an associative array. It contains functions which check if a given entity meets criteria.
+	 * Fires a "mounted" event.
+	 *
+	 * @param {Collection<Entity>} entities - Entities to attach to the event.
+	 * @returns {this} - Returns self for method chaining.
 	 */
-	getRequiredSubsets() {
-		return {}
+	mounted(entities) {
+		this.dispatchEvent(new SystemMountedEvent('mounted', { entities }))
+		return this
 	}
 
 	/**
-	 * Method that is called once per iteration of the main game loop.
-	 * @param  {DOMHighResTimeStamp} timestamp - Current time in milliseconds.
+	 * Fires an "update" event.
+	 *
+	 * @param {Collection<Entity>} entities - Entities to attach to the event.
+	 * @param {DOMHighResTimeStamp} deltaTime -
+	 *     Time since last update in milliseconds to attach to the event.
+	 * @param {DOMHighResTimeStamp} timestamp -
+	 *     Current time in milliseconds to attach to the event.
+	 * @returns {this} - Returns self for method chaining.
 	 */
-	run() {
-		throw new Error('You must override .run(). (abstract method)')
+	update(entities, deltaTime, timestamp) {
+		this.dispatchEvent(new SystemUpdateEvent('update', { entities, deltaTime, timestamp }))
+		return this
 	}
 }
+
+export default System

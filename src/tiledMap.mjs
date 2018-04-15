@@ -1,296 +1,247 @@
-/**
- * TiledMap module.
- * @module TiledMap
- */
+import { createArray } from './utilities.mjs'
 
-import AssetUser from './assetUser.mjs'
-
-/**
- * createArray function.
- *
- * Creates nested empty arrays
- *
- * @param { ...number } args - Nested array lengths
- * @returns { array } - An array of arrays
- */
-const createArray = (...args) => {
-	if (args.length === 0) return []
-
-	const length = args[0]
-
-	const arr = new Array(length)
-
-	let i = length
-	if (args.length > 1) {
-		while(i--) arr[length-1 - i] = createArray(...(args.slice(1)))
+const defaultData = { tilesets: [], properties: {}, tileWidth: 0, tileHeight: 0 }
+class TiledMap {
+	constructor() {
+		// New object, falling back to defaults
+		this.data = Object.assign({}, defaultData)
+		this.resources = new Map()
+		this.basePath = ''
+		this.tileTypes = []
+		this.layers = new Map()
+		this.layerCanvases = new Map()
+		this.objects = {}
+		this.startTime = null
 	}
 
-	return arr
-}
-
-/** Class representing a Map built from Tiled data. */
-export default class TiledMap extends AssetUser {
-	constructor(data) {
-		super()
-		this.data = data
-		this.assets = {}
-
-		this.tileWidth = data.tilewidth || 0
-		this.tileHeight = data.tileheight || 0
-		this.tiles = []
-		this.layers = {}
-		this.objects = []
-		this.layerCanvases = {}
-		this.bgmLoopTarget = (data.properties && data.properties.bgmLoopTarget) || 0
+	get bgm() {
+		return this.data.properties && this.data.properties.bgm
 	}
 
-	/**
-	 * @returns {array}  Array of path strings or plain objects with a "path" and "reviver" function (for JSON)
-	 */
-	getAssetPaths() {
-		let paths = []
-
-		if(this.data.properties && this.data.properties.bgm) {
-			paths.push(this.data.properties.bgm)
-		}
-
-		this.data.tilesets.forEach(function(tileset) {
-			paths.push(tileset.image)
-		})
-
-		return paths
+	get bgmLoopTarget() {
+		return this.data.properties && this.data.properties.bgmLoopTarget
 	}
 
-	/**
-	 * Event handler function - Store downloaded assets
-	 * @param {Object} assets - Plain object that works as an associative array. Each item key is a path from "getAssetPaths()"
-	 */
-	onAssetsLoaded(assets) {
-		this.assets = assets
+	get tileWidth() {
+		return this.data.tilewidth
+	}
 
-		this.bgm = this.data.properties && assets[this.data.properties.bgm]
-
-		// Populate this.tiles array
-		this.populateTiles(this.data.tilesets)
-
-		// Split up each layer's data into x and y coordinate multidimensional array
-		this.populateLayers(this.data.layers)
-
-		// Draw the non-animated parts of each map layer on stored canvases (speeds up rendering at runtime)
-		this.populateLayerCanvases()
-
-		super.onAssetsLoaded()
+	get tileHeight() {
+		return this.data.tileheight
 	}
 
 	getObjects() {
 		return this.objects
 	}
 
-	/**
-	 * Creates in-memory representations of tiles using given tilesets.
-	 * @param  {Object[]} tilesets - Array of plain objects representing tileset data.
-	 */
-	populateTiles(tilesets) {
-		for(let tileset of tilesets) {
-			let img = this.assets[tileset.image]
+	decorate(data) {
+		this.data = Object.assign({}, defaultData, data)
+		return this
+	}
 
-			let yInc = tileset.tileheight + tileset.spacing
-			for(let y = tileset.margin; this.tiles.length < tileset.tilecount; y += yInc) {
+	setBasePath(basePath) {
+		this.basePath = basePath
+		return this
+	}
 
-				let xInc = tileset.tilewidth + tileset.spacing
-				for(let x = tileset.margin, l = (tileset.columns * tileset.tilewidth); x < l; x += xInc) {
-					let obj = {
-						img: img,
-						x: x,
-						y: y,
-						width: tileset.tilewidth,
-						height: tileset.tileheight
-					}
-					let extraData = tileset.tiles && tileset.tiles[this.tiles.length]
+	getRootRelativePath(path) {
+		return (new URL(path, this.basePath)).href
+	}
 
+	getResourcePaths() {
+		const { tilesets } = this.data
+
+		// Get tile image paths
+		const paths = tilesets.map(({ image }) => image)
+
+		// Get BGM paths
+		if (this.bgm) paths.push(this.bgm)
+
+		return this.basePath ?
+			paths.map(path => this.getRootRelativePath(path))
+			: paths
+	}
+
+	getResource(path) {
+		path = new URL(path, this.basePath).href
+		return this.resources.get(path)
+	}
+
+	setResources(resources) {
+		this.resources = new Map(resources)
+
+		// Post-loading setup
+		const { data } = this
+		this.initTileTypes(data.tilesets)
+		this.initLayers(data.layers)
+		this.initLayerCanvases(this.tileWidth, this.tileHeight, this.tileTypes, this.layers)
+
+		return this
+	}
+
+	initTileTypes(tilesets) {
+		tilesets.forEach((tileset) => {
+			const image = this.getResource(tileset.image)
+			const yStep = tileset.tileheight + tileset.spacing
+			const xStep = tileset.tilewidth + tileset.spacing
+			const pixelsAcross = tileset.columns * tileset.tilewidth
+
+			// Each loop, x and y represent the top left corner of each tile in the set
+			for(let y = tileset.margin; this.tileTypes.length < tileset.tilecount; y += yStep) {
+				for(let x = tileset.margin; x < pixelsAcross; x += xStep) {
+
+					// Create base tile type object
+					const obj = { image, x, y, width: tileset.tilewidth, height: tileset.tileheight }
+
+					// Add animation data to the tile type object (if any)
+					const extraData = tileset.tiles && tileset.tiles[this.tileTypes.length]
 					if(extraData && extraData.animation) {
 						let rangeStart = 0
 						let rangeEnd = 0
-						obj.animation = []
-
-						for(let step of extraData.animation) {
+						obj.animation = extraData.animation.map((step) => {
 							rangeStart = rangeEnd
 							rangeEnd = rangeStart + step.duration
-							obj.animation.push({
-								rangeStart: rangeStart,
-								rangeEnd: rangeEnd,
-								tileid: step.tileid
-							})
-						}
+							return { rangeStart, rangeEnd, tileid: step.tileid }
+						})
 					}
 
-					this.tiles.push(obj)
+					// Add tile type to list
+					this.tileTypes.push(obj)
 				}
 			}
-		}
+		})
 	}
 
-	/**
-	 * Creates in-memory representations of layers and objects using given layers data.
-	 * @param  {Object[]} layers - Array of plain objects representing layer data.
-	 */
-	populateLayers(layers) {
-		for(let layer of layers) {
-			if(layer.data && layer.type === 'tilelayer') {
-				let layerData = createArray(layer.width, layer.height)
-				let idx = 0
+	initLayers(layers) {
 
-				for(let y = 0, l = layer.height; y < l; y++) {
-					for(let x = 0, l2 = layer.width; x < l2; x++) {
-						layerData[x][y] = layer.data[idx++]
-					}
-				}
+		// Handle tile layers
+		const tileLayers = layers.filter(layer => layer.data && layer.type === 'tilelayer')
+		this.layers = new Map(tileLayers.map((layer) => {
+			const data = createArray(layer.width, layer.height)
+			let idx = 0
 
-				this.layers[layer.name] = {
-					width: layer.width,
-					height: layer.height,
-					data: layerData
-				}
-			} else if (layer.type === 'objectgroup') {
-				let objects = layer.objects
-				for(let object of objects) {
-					let obj = {
-						width: object.width,
-						height: object.height,
-						x: object.x,
-						y: object.y,
-						type: object.type || layer.name,
-						name: object.name
-					}
-
-					for(let key in object.properties) {
-						obj[key] = object.properties[key]
-					}
-
-					this.objects.push(obj)
-				}
-			}
-		}
-	}
-
-	/**
-	 * Creates and draws canvases for each layer in this.layers. Only non-animated tiles are drawn.
-	 */
-	populateLayerCanvases() {
-
-		for (let layerName in this.layers) {
-			let layer = this.layers[layerName]
-			let canvas = document.createElement('canvas')
-			canvas.width = layer.width * this.tileWidth
-			canvas.height = layer.height * this.tileHeight
-			let context = canvas.getContext('2d')
-
-			if(layer && layer.data) {
-				for(let y = 0, l = layer.height; y < l; y++) {
-					for(let x = 0, l2 = layer.width; x < l2; x++) {
-						let tile = this.tiles[layer.data[x][y] - 1]
-						let posX = x * this.tileWidth
-						let posY = y * this.tileHeight
-
-						if(tile && tile.animation === undefined) {
-							context.drawImage(
-								tile.img,
-								tile.x,
-								tile.y,
-								tile.width,
-								tile.height,
-								posX,
-								posY,
-								this.tileWidth,
-								this.tileHeight
-							)
-						}
-
-					}
+			for(let y = 0, l = layer.height; y < l; y++) {
+				for(let x = 0, l2 = layer.width; x < l2; x++) {
+					data[x][y] = layer.data[idx++]
 				}
 			}
 
-			this.layerCanvases[layerName] = canvas
-		}
+			return [ layer.name, { width: layer.width, height: layer.height, data } ]
+		}))
 
+		// Handle object layers
+		const objectLayers = layers.filter(layer => layer.type === 'objectgroup')
+		this.objects = objectLayers.reduce((objects, layer) => {
+			layer.objects.forEach((objectData) => {
+
+				// Grab base object properties
+				const object = {
+					width: objectData.width,
+					height: objectData.height,
+					x: objectData.x,
+					y: objectData.y,
+					type: objectData.type || layer.name,
+					name: objectData.name
+				}
+
+				// Merge properties found in objectData.properties into base object
+				Object.assign(object, objectData.properties)
+				objects.push(object)
+			})
+			return objects
+		}, [])
 	}
 
-	/**
-	 * Render animated tiles within the given area of a layer (tile frame depends on given time).
-	 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
-	 * @param  {string} layerName                 - Key referencing layer in this.layers.
-	 * @param  {DOMHighResTimeStamp} time         - Time in milliseconds since first render.
-	 * @param  {number} tileX1                    - x-coordinate at top left in number of tiles from left.
-	 * @param  {number} tileY1                    - y-coordinate at top left in number of tiles from left.
-	 * @param  {number} tileX2                    - x-coordinate at bottom right in number of tiles from left.
-	 * @param  {number} tileY2                    - y-coordinate at bottom right in number of tiles from left.
-	 * @param  {number} dX                        - x-coordinate at top left of destination in pixels from left.
-	 * @param  {number} dY                        - y-coordinate at top left of destination in pixels from left.
-	 * @param  {number} scaleW                    - scaling for width.
-	 * @param  {number} scaleH                    - scaling for height.
-	 */
-	renderAnimatedTiles(context, layerName, time, tileX1, tileY1, tileX2, tileY2, dX, dY, scaleW, scaleH) {
-		let layer = this.layers[layerName]
+	initLayerCanvases(tileWidth, tileHeight, tileTypes, layers) {
+		layers = [...layers] // convert to array
+		this.layerCanvases = new Map(
+			layers.map(([layerName, layer]) => {
+				let canvas = document.createElement('canvas')
+				canvas.width = layer.width * tileWidth
+				canvas.height = layer.height * tileHeight
+				let context = canvas.getContext('2d')
 
-		if(layer && layer.data) {
-			for(let y = tileY1, l = Math.min(layer.height, tileY2); y < l; y++) {
-				for(let x = tileX1, l2 = Math.min(layer.width, tileX2); x < l2; x++) {
-					let colData = layer.data[x]
-					let tileIdx = colData && colData[y]
-					let tile = tileIdx && this.tiles[tileIdx - 1]
-					let posX = (x * this.tileWidth) + dX
-					let posY = (y * this.tileHeight) + dY
+				if (layer && layer.data) {
+					for (let y = 0, l = layer.height; y < l; y++) {
+						for (let x = 0, l2 = layer.width; x < l2; x++) {
+							const tileType = tileTypes[layer.data[x][y] - 1]
+							const posX = x * tileWidth
+							const posY = y * tileHeight
 
-					if(tile && tile.animation) {
-						let wrappedTime = time % tile.animation[tile.animation.length - 1].rangeEnd
-						for(let step of tile.animation) {
-							if(wrappedTime > step.rangeStart && wrappedTime < step.rangeEnd) {
-								tile = this.tiles[step.tileid]
+							if (tileType && tileType.animation === undefined) {
+								context.drawImage(tileType.image,
+									tileType.x, tileType.y, tileType.width, tileType.height,
+									posX, posY, tileWidth, tileHeight
+								)
 							}
+
 						}
-
-						context.drawImage(
-							tile.img,
-							tile.x,
-							tile.y,
-							tile.width,
-							tile.height,
-							posX,
-							posY,
-							this.tileWidth * scaleW,
-							this.tileHeight * scaleH
-						)
-
 					}
+				}
+
+				return [ layerName, canvas ]
+			})
+		)
+	}
+
+	renderAnimatedTiles(context, layerName, time, tileX1, tileY1, tileX2, tileY2, dX, dY, scaleW, scaleH) {
+		const layer = this.layers.get(layerName)
+
+		if (!layer) return
+
+		// Adjust values to ensure we are operating within the layer boundaries
+		tileY1 = Math.max(tileY1, 0)
+		tileY2 = Math.min(tileY2, layer.height)
+		tileX1 = Math.max(tileX1, 0)
+		tileX2 = Math.min(tileX2, layer.width)
+
+		// Loop through each tile within the area specified in tileX1, Y1, X2, Y2
+		for (let y = tileY1; y < tileY2; y++) {
+			for (let x = tileX1; x < tileX2; x++) {
+				const tileIdx = layer.data[x][y]
+				if (tileIdx === 0) continue
+
+				const posX = (x * this.tileWidth) + dX
+				const posY = (y * this.tileHeight) + dY
+
+				// If the tile is animated, determine the tile type to be used at this point in time
+				let tileType = this.tileTypes[tileIdx - 1]
+				if (tileType.animation) {
+					const wrappedTime = time % tileType.animation[tileType.animation.length - 1].rangeEnd
+					for (let step of tileType.animation) {
+						if (wrappedTime > step.rangeStart && wrappedTime < step.rangeEnd) {
+							tileType = this.tileTypes[step.tileid]
+							break
+						}
+					}
+
+					context.drawImage(
+						tileType.img,
+						tileType.x,
+						tileType.y,
+						tileType.width,
+						tileType.height,
+						posX,
+						posY,
+						this.tileWidth * scaleW,
+						this.tileHeight * scaleH
+					)
+
 				}
 			}
 		}
 
 	}
 
-	/**
-	 * Render given area of a layer.
-	 * @param  {CanvasRenderingContext2D} context - Provides API to draw on a canvas.
-	 * @param  {string} layerName                 - Key referencing layer in this.layers.
-	 * @param  {DOMHighResTimeStamp} timestamp    - Current time in milliseconds.
-	 * @param  {number} sX                        - x-coordinate at top left of source in pixels from left.
-	 * @param  {number} sY                        - y-coordinate at top left of source in pixels from left.
-	 * @param  {number} sW                        - width of source in pixels.
-	 * @param  {number} sH                        - height of source in pixels.
-	 * @param  {number} dX                        - x-coordinate at top left of destination in pixels from left.
-	 * @param  {number} dY                        - y-coordinate at top left of destination in pixels from left.
-	 * @param  {number} dW                        - width of destination in pixels.
-	 * @param  {number} dH                        - height of destination in pixels.
-	 */
 	render(context, layerName, timestamp, sX, sY, sW, sH, dX, dY, dW, dH) {
-		// Note: May need to use context.getImageData() and .putImageData() for transparency support instead of .drawImage()
+		// NOTE: May need to use context.getImageData() and .putImageData() for transparency support instead of .drawImage()
 		// ...I tried these but they created memory leaks when debugging with Chrome
 
 		this.startTime = this.startTime || timestamp
 
-		let canvas = this.layerCanvases[layerName]
+		const canvas = this.layerCanvases.get(layerName)
 
-		if(canvas) {
+		if (canvas) {
 
 			// Draw static parts of layer
 			context.drawImage(canvas, sX, sY, sW, sH, dX, dY, dW, dH)
@@ -311,3 +262,5 @@ export default class TiledMap extends AssetUser {
 
 	}
 }
+
+export default TiledMap

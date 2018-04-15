@@ -22,6 +22,15 @@ class PuppeteerEnvironment extends NodeEnvironment {
 		this.global.__BROWSER__ = await puppeteer.connect({
 			browserWSEndpoint: wsEndpoint,
 		})
+
+		// Set up the page we will use to run our tests
+		const page = await this.global.__BROWSER__.newPage()
+		await page.goto('http://localhost')
+		page.on('console', msg => {
+			for (let i = 0; i < msg.args.length; ++i)
+				console.log(`${i}: ${msg.args[i]}`)
+		})
+		this.global.page = page
 	}
 
 	async teardown() {

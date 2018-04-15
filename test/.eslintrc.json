@@ -3,6 +3,9 @@
 		"node": true,
 		"jest/globals": true
 	},
+	"globals": {
+		"Game": true
+	},
 	"parserOptions": {
 		"ecmaVersion": 8
 	},

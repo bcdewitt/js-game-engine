@@ -1,8 +1,3 @@
-/**
- * InputManager module.
- * @module InputManager
- */
-
 const keyboardInputs = Symbol()
 
 const wasPressed = Symbol()
@@ -71,7 +66,7 @@ class AnalogInput {
 
 /** Class representing an example input manager. Not intended to be part of final game engine.
  */
-export default class InputManager {
+class InputManager {
 	constructor() {
 		this[keyboardInputs] = {
 			[32]: new DigitalInput(), // Space Key
@@ -123,3 +118,5 @@ export default class InputManager {
 		return this[keyboardInputs][39]
 	}
 }
+
+export default InputManager

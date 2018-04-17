@@ -30,7 +30,6 @@ describe('Collection', () => {
 			return {
 				forEach: results,
 				map: [...collection.map(item => item * 2)],
-				reject: [...collection.reject(item => item < 2)],
 				filter: [...collection.filter(item => item >= 2)],
 				reduce: collection.reduce((total, item) => total + item),
 				some: collection.some(item => item === 2),
@@ -42,7 +41,6 @@ describe('Collection', () => {
 		expect(result).toEqual({
 			forEach: [1, 2, 3],
 			map: [2, 4, 6],
-			reject: [2, 3],
 			filter: [2, 3],
 			reduce: 6,
 			some: true,

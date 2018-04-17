@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>InputManager - Documentation</title>
+    <title>asyncFactory.mjs - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,133 +29,87 @@
 
 <div id="main">
     
-    <h1 class="page-title">InputManager</h1>
+    <h1 class="page-title">asyncFactory.mjs</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        InputManager
-        </h2>
-        
-            <div class="class-description">Class representing an example input manager. Not intended to be part of final game engine.</div>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const _AsyncFactory = new WeakMap()
 
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
+/**
+ * A class that serves as a container for asynchronous constructors.
+ */
+class AsyncFactory {
+	constructor() {
+		_AsyncFactory.set(this, {
+			middleware: new Set(),
+			constructors: new Map(),
+		})
+	}
 
-    
-    <h2>Constructor</h2>
-    
+	/**
+	 * @param {function} middlewareFunc - Async function to be called prior to all constructors.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	use(middlewareFunc) {
+		_AsyncFactory.get(this).middleware.add(middlewareFunc)
+		return this
+	}
 
-    <h4 class="name" id="InputManager"><span class="type-signature"></span>new InputManager<span class="signature">()</span><span class="type-signature"></span></h4>
+	/**
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @param {function} construct - Async constructor function.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	set(constructName, construct) {
+		const constructNames = Array.isArray(constructName) ? constructName : [ constructName ]
+		constructNames.forEach((constructName) => {
+			_AsyncFactory.get(this).constructors.set(constructName, construct)
+		})
+		return this
+	}
 
-    
+	/**
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @returns {boolean} - True if the constructor is set, false otherwise.
+	 */
+	has(constructName) {
+		return _AsyncFactory.get(this).constructors.has(constructName)
+	}
 
+	/**
+	 * @async
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @param {Object} data - Data to pass on to the constructor.
+	 * @returns {*} - Constructor return value.
+	 */
+	async create(constructName, data) {
+		const _this = _AsyncFactory.get(this)
+		const construct = _this.constructors.get(constructName)
+		if (!construct) {
+			console.warn(`${constructName} constructor doesn't exist`)
+			return
+		}
 
+		const middleware = [..._this.middleware]
 
+		for (const middlewareFunc of middleware) {
+			data = await middlewareFunc(constructName, data)
+		}
 
+		return await construct(constructName, data)
+	}
+}
 
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="inputManager.mjs.html">inputManager.mjs</a>, <a href="inputManager.mjs.html#line69">line 69</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+export default AsyncFactory
+</code></pre>
+        </article>
+    </section>
 
 
 

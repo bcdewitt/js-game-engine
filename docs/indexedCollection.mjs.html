@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>InputManager - Documentation</title>
+    <title>indexedCollection.mjs - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,133 +29,127 @@
 
 <div id="main">
     
-    <h1 class="page-title">InputManager</h1>
+    <h1 class="page-title">indexedCollection.mjs</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        InputManager
-        </h2>
-        
-            <div class="class-description">Class representing an example input manager. Not intended to be part of final game engine.</div>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Collection from './collection.mjs'
 
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
+const _Collection = new WeakMap()
 
-    
-    <h2>Constructor</h2>
-    
+/**
+ * Class that extends Set/Collection to create and access subsets via indexes.
+ */
+class IndexedCollection extends Collection {
+	constructor() {
+		super()
+		_Collection.set(this, {
+			indexed: new Map(),
+			indexers: new Map(),
+		})
+	}
 
-    <h4 class="name" id="InputManager"><span class="type-signature"></span>new InputManager<span class="signature">()</span><span class="type-signature"></span></h4>
+	/**
+	 * Creates a subset.
+	 *
+	 * @param {string} indexName - Key used to identify the subset.
+	 * @param {function} indexer - Function that produces an element of the subset.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	setIndex(indexName, indexer) {
+		const _this = _Collection.get(this)
 
-    
+		if (_this.indexers.has(indexName)) return
 
+		_this.indexers.set(indexName, indexer)
 
+		const indexedSet = new Collection()
+		this.forEach((item) => {
+			const val = indexer(item)
+			if (val !== undefined) indexedSet.add(val)
+		})
 
+		_this.indexed.set(indexName, indexedSet)
 
+		return this
+	}
 
+	/**
+	 * Creates a subset.
+	 *
+	 * @param {string} indexName - Key used to identify the subset.
+	 * @returns {Collection} - The subset Collection.
+	 */
+	getIndexed(indexName) {
+		return _Collection.get(this).indexed.get(indexName)
+	}
 
+	/**
+	 * Removes an item from all subsets.
+	 *
+	 * @param {*} item - Item to remove.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	unindexItem(item) {
+		const map = _Collection.get(this).indexed
+		map.forEach((indexer, key) => {
+			map.get(key).delete(item)
+		})
+		return this
+	}
 
-<dl class="details">
+	/**
+	 * Removes an item from all subsets. Intended to be called from observing
+	 * logic (like a Proxy) or events (like if a component property changes)
+	 *
+	 * @param {*} item - Item to remove.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	reindexItem(item) {
+		const _this = _Collection.get(this)
+		this.unindexItem(item) // in case item was already added
+		_this.indexers.forEach((indexer, key) => {
+			const val = indexer(item)
+			if (val !== undefined) _this.indexed.get(key).add(val)
+		})
+		return this
+	}
 
-    
+	/**
+	 * Adds an item to the Collection. All indexer functions are run against
+	 * each added item so the item is also added to the correct subset.
+	 *
+	 * @param {*} item - Item to add.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	add(item) {
+		const returnVal = super.add(item)
+		this.reindexItem(item)
+		return returnVal
+	}
 
-    
+	/**
+	 * Removes an item from the Collection and all subsets.
+	 *
+	 * @param {*} item - Item to remove.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	delete(item) {
+		this.unindexItem(item)
+		return super.delete(item)
+	}
+}
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="inputManager.mjs.html">inputManager.mjs</a>, <a href="inputManager.mjs.html#line69">line 69</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+export default IndexedCollection
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -1,3 +1,8 @@
+/**
+ * Module containing utility functions.
+ * @module Utilities
+ */
+
 const ADD_PROPS_METHOD_NAME = 'construct'
 
 // Creates a function that "extracts" an object with only the properties that test true
@@ -15,7 +20,15 @@ const extractConstructor = createExtractObjFunc((val, key) => key === ADD_PROPS_
 // Extracts an object with only the function properties (methods)
 const extractMethods = createExtractObjFunc((val, key) => key !== ADD_PROPS_METHOD_NAME)
 
-// Creates an extendable class that includes the provided mixins
+/**
+ * Returns a function that wraps the given class and applies the provided mixin objects.
+ * Ex.
+ *     const MixedWithPerson = createMixinFunc(Person)
+ *     class Author extends MixedWithPerson(mixin1, mixin2, ...) { ... }
+ *
+ * @param {function} Clazz - Class to be mixed with.
+ * @returns {function} - Function that applies mixins to a new class extending Clazz.
+ */
 const createMixinFunc = (Clazz) => (...mixins) => {
 	const constructors = mixins.map(mixin => extractConstructor(mixin).construct)
 	const methodsMixins = mixins.map(mixin => extractMethods(mixin))
@@ -42,9 +55,20 @@ const createMixinFunc = (Clazz) => (...mixins) => {
 	return Mixable
 }
 
+/**
+ * MixedWith provides the ability to add mixins to a class that does not
+ * extend a super class.
+ *
+ * @type {function}
+ * @param {...Object} - Mixin objects
+ */
 const MixedWith = createMixinFunc()
 
-// Creates nested empty arrays
+/**
+ * Creates nested empty arrays.
+ * Ex. createArray(2, 2) === [ [ , ], [ , ] ]
+ * @returns {array} - Outermost array.
+ */
 const createArray = (...args) => {
 	if (args.length === 0) return []
 

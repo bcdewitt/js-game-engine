@@ -12,11 +12,12 @@ const unimplemented = name => () => {
 	throw new Error(`${name} not set`)
 }
 
+const _System = new WeakMap()
+
 /**
  * Class representing a System.
  * @mixes eventTargetMixin
  */
-const _System = new WeakMap()
 class System extends MixedWith(eventTargetMixin) {
 	constructor() {
 		super()
@@ -26,30 +27,64 @@ class System extends MixedWith(eventTargetMixin) {
 		})
 	}
 
+	/**
+	 * Primarily used for dependency injection from the parent scene.
+	 *
+	 * @param {function} func - Function to use when getting entities.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	setGetEntitiesFunc(func) {
 		_System.get(this).getEntitiesFunc = func
 		return this
 	}
 
+	/**
+	 * Used to remove the injected "getEntitiesFunc" function.
+	 *
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	unsetGetEntitiesFunc() {
 		_System.get(this).getEntitiesFunc = unimplemented('getEntitiesFunc')
 		return this
 	}
 
+	/**
+	 * Gets entities using the previously-set "getEntitiesFunc".
+	 *
+	 * @param {string} indexName - .
+	 * @returns {*} - Returned entities.
+	 */
 	getEntities(indexName) {
 		return _System.get(this).getEntitiesFunc(indexName)
 	}
 
+	/**
+	 * Primarily used for dependency injection from the parent scene.
+	 *
+	 * @param {function} func - Function to use when adding an entity.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	setAddEntityFunc(func) {
 		_System.get(this).addEntityFunc = func
 		return this
 	}
 
+	/**
+	 * Used to remove the injected "addEntityFunc" function.
+	 *
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	unsetAddEntityFunc() {
 		_System.get(this).addEntityFunc = unimplemented('addEntityFunc')
 		return this
 	}
 
+	/**
+	 * Add an entity using the previously-set "addEntityFunc".
+	 *
+	 * @param {Entity} entity - The entity to add.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	addEntity(entity) {
 		_System.get(this).addEntityFunc(entity)
 		return this

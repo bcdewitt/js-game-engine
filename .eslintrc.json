@@ -10,6 +10,7 @@
 		"sourceType": "module"
 	},
   "rules": {
+		"no-console": "off",
 		"eqeqeq": "error",
 		"no-var": "error",
 		"semi": [

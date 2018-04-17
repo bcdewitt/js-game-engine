@@ -8,7 +8,10 @@ const getAllObjKeys = (obj) => [... new Set(obj ? Object.keys(obj).concat(
 const _Component = new WeakMap() // Store private variables here
 const _ProtoChainKeys = new WeakMap() // Cache object keys from prototype chains
 
-/** Class that represents an Component (the "C" in the ECS design pattern). */
+/**
+ * Class representing a Component (the "C" in the ECS design pattern).
+ * @mixes observableMixin
+ */
 class Component extends MixedWith(observableMixin) {
 
 	/**

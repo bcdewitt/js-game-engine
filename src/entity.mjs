@@ -3,7 +3,10 @@ import observableMixin from './observableMixin.mjs'
 
 const _Entity = new WeakMap() // Store private variables here
 
-/** Class that represents an Entity (the "E" in the ECS design pattern). */
+/**
+ * Class representing an Entity (the "E" in the ECS design pattern).
+ * @mixes observableMixin
+ */
 class Entity extends MixedWith(observableMixin) {
 
 	/**

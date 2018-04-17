@@ -133,7 +133,7 @@ class Game extends MixedWith(eventTargetMixin) {
 	}
 
 	/**
-	 * Starts the main game loop
+	 * Starts the main game loop.
 	 *
 	 * @param {string=} sceneName - Name used to uniquely identify the scene to find.
 	 * @returns {this} - Returns self for method chaining.

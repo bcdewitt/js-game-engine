@@ -1,61 +1,134 @@
 'use strict';
 
-// TODO: JSDoc
-
+/**
+ * A class that extends Set with partial implementations of common Array
+ * methods like .map() .filter(), etc.
+ */
 class Collection extends Set {
-	map(func) {
-		const newSet = new Collection();
-		this.forEach(item => newSet.add(func(item)));
+
+	/**
+	 * The map() method creates a new Collection with the results of calling
+	 * a provided function on every element in the calling Collection.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+	 *
+	 * @param {function} callback - Function that produces an element of the new Collection.
+	 * @returns {Collection} - A new Collection (or subclass) with each element being the result of the callback function.
+	 */
+	map(callback) {
+		const Clazz = this.constructor; // In case Collection gets extended
+		const newSet = new Clazz();
+		this.forEach(item => newSet.add(callback(item)));
 		return newSet
 	}
 
-	filter(func) {
-		const newSet = new Collection();
-		this.forEach(item => { if (func(item)) newSet.add(item); });
+	/**
+	 * The filter() method creates a new Collection with all elements that pass the
+	 * test implemented by the provided function.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+	 *
+	 * @param {function} callback - Function used to test each element of the Collection.
+	 *     Return true to keep the element, false otherwise.
+	 * @returns {Collection} - Collection (or subclass) holding filtered results.
+	 */
+	filter(callback) {
+		const Clazz = this.constructor;
+		const newSet = new Clazz();
+		this.forEach(item => { if (callback(item)) newSet.add(item); });
 		return newSet
 	}
 
-	reject(func) {
-		return this.filter(item => !func(item))
-	}
-
-	reduce(func, defaultVal) {
-		if (defaultVal === undefined && this.size === 0)
+	/**
+	 * The reduce() method applies a function against an accumulator
+	 * and each element in the Collection (from left to right) to reduce
+	 * it to a single value.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+	 *
+	 * @param {function} callback - Function to execute on each element in the Collection.
+	 * @param {*} [initialValue] - Value to use as the first argument to the first call of the callback.
+	 *     If no initial value is supplied, the first element in the Collection will be used.
+	 *     Calling reduce() on an empty Collection without an initial value is an error.
+	 * @returns {*} - The value that results from the reduction.
+	 */
+	reduce(callback, initialValue) {
+		if (initialValue === undefined && this.size === 0)
 			throw new Error('reduce() cannot be called on an empty set')
 
 		const iterator = this.values();
-		let lastVal = defaultVal === undefined ? iterator.next().value : defaultVal;
+		let lastVal = initialValue === undefined ? iterator.next().value : initialValue;
 		for (const item of iterator) {
-			lastVal = func(lastVal, item);
+			lastVal = callback(lastVal, item);
 		}
 		return lastVal
 	}
 
-	some(func) {
+	/**
+	 * The some() method tests whether at least one element in the Collection passes
+	 * the test implemented by the provided function.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+	 *
+	 * @param {function} callback - Function to test for each element.
+	 * @returns {boolean} - True if the callback function returns a truthy value for any Collection element; otherwise, false.
+	 */
+	some(callback) {
 		for (const item of this) {
-			if (func(item)) return true
+			if (callback(item)) return true
 		}
 		return false
 	}
 
-	every(func) {
+	/**
+	 * The every() method tests whether all elements in the Collection pass the
+	 * test implemented by the provided function.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+	 *
+	 * @param {function} callback - Function to test for each element.
+	 * @returns {boolean} - True if the callback function returns a truthy value for every Collection element; otherwise, false.
+	 */
+	every(callback) {
 		for (const item of this) {
-			if (!func(item)) return false
+			if (!callback(item)) return false
 		}
 		return true
 	}
 
-	find(func) {
+	/**
+	 * The find() method returns the value of the first element in the Collection
+	 * that satisfies the provided testing function. Otherwise undefined is returned.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+	 *
+	 * @param {function} callback - Function to execute on each value in the Collection.
+	 * @returns {*} - A value in the Collection if an element passes the test; otherwise, undefined.
+	 */
+	find(callback) {
 		for (const item of this) {
-			if (func(item)) return item
+			if (callback(item)) return item
 		}
 		return undefined
 	}
 
-	concat(iterable) {
-		const newSet = new Collection(this); // TODO: Change to make sure we can handle subclasses
-		for (const item of iterable) {
-			newSet.add(item);
+	/**
+	 * The concat() method is used to merge two or more iterable objects.
+	 * This method does not change the existing iterables, but instead
+	 * returns a new Collection.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
+	 *
+	 * @param {...Iterable.<*>} - iterable to concatenate into a new Collection.
+	 * @returns {Collection} - A new Collection (or subclass) instance.
+	 */
+	concat(...iterables) {
+		const Clazz = this.constructor; // In case Collection gets extended
+		const newSet = new Clazz(this);
+		for (const iterable of iterables) {
+			for (const item of iterable) {
+				newSet.add(item);
+			}
 		}
 		return newSet
 	}
@@ -84,14 +157,22 @@ class GameEvent {
 		Object.defineProperty(this, 'currentTarget', { get() { return _this.currentTarget } });
 	}
 
+	/**
+	 *
+	 */
 	stopPropagation() {
 		_GameEvent.get(this).propagate = false;
+		return this
 	}
 
+	/**
+	 *
+	 */
 	stopImmediatePropagation() {
 		const _this = _GameEvent.get(this);
 		_this.propagate = false;
 		_this.propagateImmediate = false;
+		return this
 	}
 }
 
@@ -283,10 +364,11 @@ class IndexedCollection extends Collection {
 	}
 }
 
-// TODO: JS Doc
-
 const _Factory = new WeakMap();
 
+/**
+ * A class that serves as a container for synchronous constructors.
+ */
 class Factory {
 	constructor() {
 		_Factory.set(this, {
@@ -295,11 +377,20 @@ class Factory {
 		});
 	}
 
+	/**
+	 * @param {function} middlewareFunc - Function to be called prior to all constructors.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	use(middlewareFunc) {
 		_Factory.get(this).middleware.add(middlewareFunc);
 		return this
 	}
 
+	/**
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @param {function} construct - Constructor function.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	set(constructName, construct) {
 		const constructNames = Array.isArray(constructName) ? constructName : [ constructName ];
 		constructNames.forEach((constructName) => {
@@ -308,10 +399,19 @@ class Factory {
 		return this
 	}
 
+	/**
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @returns {boolean} - True if the constructor is set, false otherwise.
+	 */
 	has(constructName) {
 		return _Factory.get(this).constructors.has(constructName)
 	}
 
+	/**
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @param {Object} data - Data to pass on to the constructor.
+	 * @returns {*} - Constructor return value.
+	 */
 	create(constructName, data) {
 		const _this = _Factory.get(this);
 		const construct = _this.constructors.get(constructName);
@@ -325,10 +425,11 @@ class Factory {
 	}
 }
 
-// TODO: JS Doc
-
 const _AsyncFactory = new WeakMap();
 
+/**
+ * A class that serves as a container for asynchronous constructors.
+ */
 class AsyncFactory {
 	constructor() {
 		_AsyncFactory.set(this, {
@@ -337,11 +438,20 @@ class AsyncFactory {
 		});
 	}
 
+	/**
+	 * @param {function} middlewareFunc - Async function to be called prior to all constructors.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	use(middlewareFunc) {
 		_AsyncFactory.get(this).middleware.add(middlewareFunc);
 		return this
 	}
 
+	/**
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @param {function} construct - Async constructor function.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	set(constructName, construct) {
 		const constructNames = Array.isArray(constructName) ? constructName : [ constructName ];
 		constructNames.forEach((constructName) => {
@@ -350,9 +460,28 @@ class AsyncFactory {
 		return this
 	}
 
+	/**
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @returns {boolean} - True if the constructor is set, false otherwise.
+	 */
+	has(constructName) {
+		return _AsyncFactory.get(this).constructors.has(constructName)
+	}
+
+	/**
+	 * @async
+	 * @param {string} constructName - Key to use for access to the constructor.
+	 * @param {Object} data - Data to pass on to the constructor.
+	 * @returns {*} - Constructor return value.
+	 */
 	async create(constructName, data) {
 		const _this = _AsyncFactory.get(this);
 		const construct = _this.constructors.get(constructName);
+		if (!construct) {
+			console.warn(`${constructName} constructor doesn't exist`);
+			return
+		}
+
 		const middleware = [..._this.middleware];
 
 		for (const middlewareFunc of middleware) {
@@ -541,7 +670,7 @@ const getAllObjKeys = (obj) => [... new Set(obj ? Object.keys(obj).concat(
 const _Component = new WeakMap(); // Store private variables here
 const _ProtoChainKeys = new WeakMap(); // Cache object keys from prototype chains
 
-/** Class that represents an Component (the "C" in the ECS design pattern). */
+/** Class that represents a Component (the "C" in the ECS design pattern). */
 class Component extends MixedWith(observableMixin) {
 
 	/**
@@ -1200,6 +1329,8 @@ class FetchProgressEvent extends GameEvent {
 	}
 }
 
+// -------------------------------------------------------------------------
+
 const IMAGE_EXTENSIONS = Object.freeze(['jpg', 'jpeg', 'gif', 'bmp', 'png', 'tif', 'tiff']);
 const AUDIO_EXTENSIONS = Object.freeze(['ogg', 'wav', 'mp3']);
 const VIDEO_EXTENSIONS = Object.freeze(['m3u8', 'webm', 'mp4']);
@@ -1224,8 +1355,7 @@ const resolveAudio = response => response.arrayBuffer();
 const resolveVideo = createBlobResolveFunc('video');
 const resolveText = response => response.text();
 
-// fetchAsset() - fetches and converts the response into the appropriate type of object
-var fetchAsset = (path, callback) => {
+const fetchAsset = (path) => {
 	const parts = path.split('.');
 	const ext = parts.length !== 0 ? parts[parts.length - 1].toLowerCase() : 'json';
 
@@ -1237,16 +1367,10 @@ var fetchAsset = (path, callback) => {
 	else if (VIDEO_EXTENSIONS.includes(ext)) resolve = resolveVideo;
 	else resolve = resolveText;
 
-	if (callback) {
-		const wrappedCallback = val => {
-			callback(val);
-			return val
-		};
-		return fetchOK(path).then(resolve).then(wrappedCallback).catch(wrappedCallback)
-	}
-
 	return fetchOK(path).then(resolve)
-}
+};
+
+// -------------------------------------------------------------------------
 
 const _AssetFetcher = new WeakMap();
 
@@ -1291,12 +1415,13 @@ class AssetFetcher extends MixedWith(eventTargetMixin) {
 		const paths = [..._AssetFetcher.get(this).queuedAssetPaths];
 
 		let count = 0;
-		const dispatchProgressEvent = () => {
+		const dispatchProgressEvent = (val) => {
 			count += 1;
 			this.dispatchEvent(new FetchProgressEvent('fetchProgress', { progress: count / paths.length }));
+			return val
 		};
 		return Promise.all(
-			paths.map(path => fetchAsset(path, dispatchProgressEvent).then(asset => [ path, asset ]))
+			paths.map(path => fetchAsset(path).then(dispatchProgressEvent).then(asset => [ path, asset ]))
 		)
 	}
 

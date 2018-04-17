@@ -3,11 +3,27 @@ import ObservableChangeEvent from './events/observableChangeEvent.mjs'
 
 const handledObjs = new WeakMap()
 
-export default Object.assign({}, eventTargetMixin, {
+/**
+ * Observable mixin
+ *
+ * This provides properties and methods used for observing property value
+ * changes and/or method calls.
+ *
+ * @mixin observableMixin
+ * @mixes eventTargetMixin
+ */
+const observableMixin = {
 	construct() {
 		eventTargetMixin.construct.call(this)
 	},
 
+	/**
+	 * Observes and dispatches an ObservableChangeEvent each time the specified
+	 * property changes or method is called.
+	 *
+	 * @param {string} prop - Name of property/method to observe.
+	 * @returns {this} - Returns self for method chaining.
+	 */
 	makeObservable(prop) {
 		if (!handledObjs.has(this))
 			handledObjs.set(this, new Set())
@@ -42,4 +58,6 @@ export default Object.assign({}, eventTargetMixin, {
 		}
 		return this
 	},
-})
+}
+
+export default Object.assign({}, eventTargetMixin, observableMixin)

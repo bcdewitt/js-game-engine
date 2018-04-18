@@ -5,16 +5,13 @@ describe('Game', () => {
 	// Test the most basic Game instance (create, start, stop processes)
 	it('Should successfully create, start, and stop an engine instance', async () => {
 		const result = await global.page.evaluate(async () => await new Promise((resolve) => {
+			const sceneFactory = Game.createSceneFactory()
+				.set('sceneA', async () => Game.createScene())
 
 			// Create Game Instance, then configure, run, and stop it
-			const sceneA = Game.createScene()
 			Game.createGame()
-				.setScene('sceneA', sceneA)
-				.addEventListener('stopGame', (e) => {
-					const hasSceneWithName = e.currentTarget.hasScene('sceneA')
-					const hasMatchingScene = e.currentTarget.getScene('sceneA') === sceneA
-					resolve(hasSceneWithName && hasMatchingScene)
-				})
+				.setSceneFactory(sceneFactory)
+				.addEventListener('stopGame', () => resolve(true))
 				.run('sceneA')
 				.stopGame()
 		}))
@@ -25,41 +22,46 @@ describe('Game', () => {
 	// Test for successful assetFetcher injection
 	it('Should successfully use an injected assetFetcher', async () => {
 		const result = await global.page.evaluate(async () => await new Promise((resolve) => {
+			const sceneFactory = Game.createSceneFactory()
+				.set('sceneA', async () => Game.createScene())
+
 			Game.createGame()
+				.setSceneFactory(sceneFactory)
 				.setAssetFetcher(Game.createAssetFetcher())
-				.setScene('sceneA', Game.createScene())
 				.addEventListener('load', async ({ assetFetcher }) => {
 					assetFetcher.queueAsset('files/test.json')
 				})
 				.addEventListener('loaded', async ({ assets }) => {
 					resolve(assets.size === 1)
 				})
-				.changeScene('sceneA')
-				.load()
+				.load('sceneA')
 		}))
 		expect(result).toBe(true)
 	})
 
 
-	// Test for "changeScene" event (requires scenes)
-	it('Should fire "changeScene" event on changeScene() calls', async () => {
-		const result = await global.page.evaluate(async () => await new Promise((resolve) => {
+	// Test for "changeScene" event
+	it('Should fire "changeScene" event on changeScene() calls and use an injected sceneFactory', async () => {
+		const result = await global.page.evaluate(async () => await new Promise(async (resolve) => {
+			const sceneFactory = Game.createSceneFactory()
+				.set('sceneA', async () => Game.createScene())
+				.set('sceneB', async () => Game.createScene())
 
 			// Create Game Instance
-			const sceneB = Game.createScene()
-			let returnVal = null
-			Game.createGame()
-				.setScene('sceneA', Game.createScene())
-				.setScene('sceneB', sceneB)
-				.addEventListener('changeScene', (e) => {
-					returnVal = e.currentTarget.getScene() === sceneB
-				})
-				.addEventListener('stopGame', () => {
-					resolve(returnVal)
-				})
-				.run('sceneA')
-				.changeScene('sceneB')
-				.stopGame()
+			const game = Game.createGame()
+				.setSceneFactory(sceneFactory)
+
+			// Set initial scene
+			await game.changeScene('sceneA')
+			const firstScene = game.getScene()
+
+			// Listen for changeScene event
+			game.addEventListener('changeScene', (e) => resolve(
+				firstScene && e.currentTarget.getScene() !== firstScene
+			))
+
+			// Dispatch changeScene event
+			await game.changeScene('sceneB')
 		}))
 		expect(result).toBe(true)
 	})

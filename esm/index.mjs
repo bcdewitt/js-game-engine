@@ -1348,6 +1348,7 @@ class Game extends MixedWith(eventTargetMixin) {
 		super();
 		const _this = {
 			assetFetcher: null,
+			sceneFactory: null,
 			activeScene: null,
 			activeSceneLoaded: false,
 			scenes: new Map(),
@@ -1364,80 +1365,6 @@ class Game extends MixedWith(eventTargetMixin) {
 		this.addEventListener('stopGame', _this.stopGameEventListener);
 	}
 
-	// ---------------------------- Scene Management ----------------------------
-
-	/**
-	 * Add a scene.
-	 *
-	 * @param {string} sceneName - Name used to uniquely identify the added scene.
-	 * @param {Scene} scene - Scene to add.
-	 * @returns {this} - Returns self for method chaining.
-	 */
-	setScene(sceneName, scene) {
-		const _this = _Game.get(this);
-		this.propagateEventsFrom(scene);
-		_this.scenes.set(sceneName, scene);
-		return this
-	}
-
-	/**
-	 * Remove a scene.
-	 *
-	 * @param {string} sceneName - Name used to uniquely identify the scene to remove.
-	 * @returns {this} - Returns self for method chaining.
-	 */
-	removeScene(sceneName) {
-		_Game.get(this).scenes.delete(sceneName);
-		return this
-	}
-
-	/**
-	 * Checks if a scene was added under the given name.
-	 *
-	 * @param {string} sceneName - Name used to uniquely identify the scene to find.
-	 * @returns {boolean} - Returns true if a scene was found, false otherwise.
-	 */
-	hasScene(sceneName) {
-		return _Game.get(this).scenes.has(sceneName)
-	}
-
-	/**
-	 * Finds and returns a scene using the given name.
-	 *
-	 * @param {string} sceneName - Name used to uniquely identify the scene to find.
-	 * @returns {Scene|undefined} - Scene found with the given name, if any.
-	 */
-	getScene(sceneName) {
-		if (!sceneName) return _Game.get(this).activeScene
-		return _Game.get(this).scenes.get(sceneName)
-	}
-
-	/**
-	 * Changes the active scene using the given name. Fires a "changeScene" event.
-	 *
-	 * @param {string} sceneName - Name used to uniquely identify the scene to find.
-	 * @returns {this} - Returns self for method chaining.
-	 *
-	 * @throws - Will throw an error if a scene is not found with the given name.
-	 */
-	changeScene(sceneName) {
-		const _this = _Game.get(this);
-		if (!_this.scenes.has(sceneName))
-			throw new Error(`Scene "${sceneName}" doesn't exist`)
-		_this.activeScene = _this.scenes.get(sceneName);
-		_this.activeSceneLoaded = false;
-
-		// Fires changeScene event
-		this.removeEventListener('changeScene', _this.changeSceneEventListener);
-		this.dispatchEvent(new GameSceneChangeEvent('changeScene', { sceneName }));
-		this.addEventListener('changeScene', _this.changeSceneEventListener);
-
-		return this
-	}
-
-
-	// --------------------------------------------------------------------------
-
 	/**
 	 * Injects assetFetcher to be used by scenes during load
 	 *
@@ -1446,6 +1373,54 @@ class Game extends MixedWith(eventTargetMixin) {
 	 */
 	setAssetFetcher(assetFetcher) {
 		_Game.get(this).assetFetcher = assetFetcher;
+		return this
+	}
+
+	/**
+	 * Injects assetFetcher to be used by scenes during load
+	 *
+	 * @param {SceneFactory} sceneFactory - AsyncFactory to be used when loading.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	setSceneFactory(sceneFactory) {
+		_Game.get(this).sceneFactory = sceneFactory;
+		return this
+	}
+
+	/**
+	 * Returns the active scene.
+	 *
+	 * @returns {Scene|undefined} - The active scene, if any.
+	 */
+	getScene() {
+		return _Game.get(this).activeScene
+	}
+
+	/**
+	 * Changes the active scene using the given name. Fires a "changeScene" event.
+	 *
+	 * @async
+	 * @param {string} sceneName - Type of scene to create.
+	 * @returns {this} - Returns self for method chaining.
+	 *
+	 * @throws - Will throw an error if a scene is not found with the given name.
+	 */
+	async changeScene(sceneName) {
+		const _this = _Game.get(this);
+
+		if (!_this.sceneFactory.has(sceneName))
+			throw new Error(`Scene "${sceneName}" doesn't exist`)
+
+		const scene = await _this.sceneFactory.create(sceneName);
+		this.propagateEventsFrom(scene);
+		_this.activeScene = scene;
+		_this.activeSceneLoaded = false;
+
+		// Fires changeScene event (without firing its own listeners)
+		this.removeEventListener('changeScene', _this.changeSceneEventListener);
+		this.dispatchEvent(new GameSceneChangeEvent('changeScene', { sceneName }));
+		this.addEventListener('changeScene', _this.changeSceneEventListener);
+
 		return this
 	}
 
@@ -1460,9 +1435,7 @@ class Game extends MixedWith(eventTargetMixin) {
 	 */
 	async load(sceneName) {
 		const _this = _Game.get(this);
-		if (sceneName) this.changeScene(sceneName);
-		else if (!_this.activeScene)
-			throw new Error('Active scene not set. Use changeScene() method or provide a sceneName to run()')
+		await this.changeScene(sceneName);
 
 		const scene = _this.activeScene;
 		await scene.load(_this.assetFetcher);
@@ -1500,7 +1473,7 @@ class Game extends MixedWith(eventTargetMixin) {
 		};
 
 		const startMain = () => main(performance.now());
-		
+
 		// Run load process if the current scene isn't loaded yet or loading a different scene
 		if (!_this.activeSceneLoaded || _this.scenes.get(sceneName) !== _this.activeScene) {
 			this.load(sceneName).then(startMain);

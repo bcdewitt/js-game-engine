@@ -22,6 +22,25 @@ describe('Game', () => {
 	})
 
 
+	// Test for successful assetFetcher injection
+	it('Should successfully use an injected assetFetcher', async () => {
+		const result = await global.page.evaluate(async () => await new Promise((resolve) => {
+			Game.createGame()
+				.setAssetFetcher(Game.createAssetFetcher())
+				.setScene('sceneA', Game.createScene())
+				.addEventListener('load', async ({ assetFetcher }) => {
+					assetFetcher.queueAsset('files/test.json')
+				})
+				.addEventListener('loaded', async ({ assets }) => {
+					resolve(assets.size === 1)
+				})
+				.changeScene('sceneA')
+				.load()
+		}))
+		expect(result).toBe(true)
+	})
+
+
 	// Test for "changeScene" event (requires scenes)
 	it('Should fire "changeScene" event on changeScene() calls', async () => {
 		const result = await global.page.evaluate(async () => await new Promise((resolve) => {
@@ -57,15 +76,3 @@ describe('Game', () => {
 	})
 
 }, TIMEOUT)
-
-/*
-TODO:
-Test for expected failures/errors
-
-.addTransition('start', 'pause', (startScene, pauseScene, deltaTime) => {
-	// pauseScene.cloneEntitiesFrom(startScene)
-	pauseScene.cloneSystemsFrom(startScene)
-	startScene.transitionOut(deltaTime)
-	pauseScene.transitionIn(deltaTime)
-})
-*/

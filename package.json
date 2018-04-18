@@ -2,7 +2,7 @@
 	"name": "js-game-engine",
 	"version": "0.0.1",
 	"main": "dist/index.js",
-	"description": "This README would normally document whatever steps are necessary to get your application up and running.",
+	"description": "A JavaScript library that utilizes the ECS design pattern to organize video game logic.",
 	"scripts": {
 		"watch": "nodemon --watch src --exec",
 		"build": "rollup src/index.mjs --o dist/index.js --f cjs && rollup src/index.mjs --o esm/index.mjs --f es",

@@ -1,3 +1,8 @@
+/**
+ * Module containing the GameEvent constructor and eventTargetMixin.
+ * @module GameEvent
+ */
+
 import Collection from './collection.mjs'
 
 const _GameEvent = new WeakMap()

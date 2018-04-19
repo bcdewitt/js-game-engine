@@ -793,9 +793,15 @@ class Entity extends MixedWith(observableMixin$1) {
 	}
 }
 
-const getAllObjKeys = (obj) => [... new Set(obj ? Object.keys(obj).concat(
-	getAllObjKeys(Object.getPrototypeOf(obj))
-) : [])];
+const getAllObjKeys = (obj) => {
+	if (!obj || obj === Object.prototype) return []
+  
+	const set = new Set(Object.getOwnPropertyNames(obj).concat(
+		getAllObjKeys(Object.getPrototypeOf(obj))
+	));
+	set.delete('constructor');
+	return [...set]
+};
 
 const _Component = new WeakMap(); // Store private variables here
 const _ProtoChainKeys = new WeakMap(); // Cache object keys from prototype chains

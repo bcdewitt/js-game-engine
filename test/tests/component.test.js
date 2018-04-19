@@ -15,16 +15,20 @@ describe('Component', () => {
 	// Test for decoration functionality
 	it('Should successfully decorate any object', async () => {
 		const result = await global.page.evaluate(() => {
-			let val = 'test'
-			const comp = Game.createComponent().decorate({
-				firstName: 'John',
-				lastName: 'Doe',
-				get job() { return val },
+			const _job = Symbol('_job')
+			class Person {
+				constructor() {
+					this[_job] = 'Programmer'
+					this.firstName = 'John'
+					this.lastName = 'Doe'
+				}
+				get job() { return this[_job] }
+				set job(val) { this[_job] = val }
 				getFullName() {
 					return this.firstName + ' ' + this.lastName
-				},
-			})
-			val = 'Programmer'
+				}
+			}
+			const comp = Game.createComponent().decorate(new Person())
 
 			return {
 				firstName: comp.firstName,

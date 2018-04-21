@@ -1255,27 +1255,32 @@ class Scene extends MixedWith(eventTargetMixin) {
 	 */
 	async load(assetFetcher) {
 		const systems = _Scene.get(this).systems;
+		const queueKey = Symbol();
 
 		// Fire load event for the scene
+		assetFetcher.startQueue(queueKey);
 		await this.dispatchEventAsync(new SceneLoadEvent('load', { assetFetcher }));
 
 		// Fire load events for each system
-		systems.forEach(system => system.load(assetFetcher));
+		systems.forEach((system, systemName) => {
+			assetFetcher.startQueue(systemName);
+			system.load(assetFetcher);
+		});
 
 		// Temporarily allow fetchProgress events to bubble up through this scene
 		this.propagateEventsFrom(assetFetcher);
 
 		// Fetch all assets and pass them back to the systems' loaded method
-		const assets = new Map(await assetFetcher.fetchAssets());
+		const assets = await assetFetcher.fetchAssets();
 
 		// Stop fetchProgress events from bubbling up throug this scene
 		this.stopPropagatingFrom(assetFetcher);
 
 		// TODO: Replace this with a keyed collection (Map version of Collection instead of Set)
 		const promises = [
-			this.dispatchEventAsync(new SceneLoadedEvent('loaded', { assets }))
+			this.dispatchEventAsync(new SceneLoadedEvent('loaded', { assets: assets.get(queueKey) }))
 		];
-		systems.forEach(system => promises.push(system.loaded(assets)));
+		systems.forEach((system, systemName) => promises.push(system.loaded(assets.get(systemName))));
 
 		return Promise.all(promises)
 	}
@@ -1515,9 +1520,36 @@ const _AssetFetcher = new WeakMap();
 class AssetFetcher extends MixedWith(eventTargetMixin) {
 	constructor() {
 		super();
+		this.reset();
+	}
+
+	get queue() {
+		const _this = _AssetFetcher.get(this);
+		return _this.queues.get(_this.currentQueue)
+	}
+
+	/**
+	 * Resets this instance, reverting totalCount and removing existing queues
+	 */
+	reset() {
 		_AssetFetcher.set(this, {
-			queuedAssetPaths: new Set()
+			queues: new Map(),
+			currentQueue: null,
+			totalCount: 0,
 		});
+	}
+
+	/**
+	 * Creates a new queue to be used from now until reset or startQueue is called again.
+	 *
+	 * @param {*} queueKey - Value used as a key to uniquely identify a queue.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	startQueue(queueKey) {
+		const _this = _AssetFetcher.get(this);
+		_this.currentQueue = queueKey;
+		_this.queues.set(queueKey, new Set());
+		return this
 	}
 
 	/**
@@ -1527,7 +1559,14 @@ class AssetFetcher extends MixedWith(eventTargetMixin) {
 	 * @returns {this} - Returns self for method chaining.
 	 */
 	queueAsset(path) {
-		if (path) _AssetFetcher.get(this).queuedAssetPaths.add(path);
+		const _this = _AssetFetcher.get(this);
+		if (_this.currentQueue === null)
+			throw new Error('Must start a queue before queuing assets')
+
+		if (path) {
+			this.queue.add(path);
+			_AssetFetcher.get(this).totalCount++;
+		}
 		return this
 	}
 
@@ -1546,20 +1585,39 @@ class AssetFetcher extends MixedWith(eventTargetMixin) {
 	 * Fetch all queued assets. On each asset fetch, a "fetchProgress" event
 	 * will be dispatched with the current percent complete. (Ex. 0.5 for 50%)
 	 *
-	 * @returns {Promise<Object[]>} - A promise that resolves when all assets have been fetched.
+	 * @async
+	 * @param {*} queueKey - Value used as a key to uniquely identify a queue.
+	 * @returns {Object[]} - All assets that have been fetched.
 	 */
-	fetchAssets() {
-		const paths = [..._AssetFetcher.get(this).queuedAssetPaths];
+	async fetchAssets(queueKey) {
+		const _this = _AssetFetcher.get(this);
 
 		let count = 0;
-		const dispatchProgressEvent = (val) => {
+		const dispatchProgressEvent = () => {
 			count += 1;
-			this.dispatchEvent(new FetchProgressEvent('fetchProgress', { progress: count / paths.length }));
-			return val
+			this.dispatchEvent(new FetchProgressEvent('fetchProgress', { progress: count / _this.totalCount }));
 		};
-		return Promise.all(
-			paths.map(path => fetchAsset(path).then(dispatchProgressEvent).then(asset => [ path, asset ]))
-		)
+
+		const outerPromises = [];
+		_this.queues.forEach((set, key) => {
+			const innerPromises = [...set].map(async (path) => {
+				const asset = await fetchAsset(path);
+				dispatchProgressEvent();
+				return [ path, asset ]
+			});
+			outerPromises.push(
+				Promise.all(innerPromises).then(entries => {
+					return [ key, new Map(entries) ]
+				}));
+		});
+		const data = await Promise.all(outerPromises);
+
+		this.reset();
+
+		const allFetched = new Map(data);
+		_this.totalCount = 0;
+		if (queueKey) return allFetched.get(queueKey)
+		return allFetched
 	}
 
 	/**
@@ -1641,7 +1699,7 @@ class TiledMap {
 	}
 
 	setResources(resources) {
-		this.resources = new Map(resources);
+		this.resources = resources;
 
 		// Post-loading setup
 		const { data } = this;

@@ -107,7 +107,7 @@ describe('Scene', () => {
 	it('Should fire bubbling "fetchProgress" event on load() calls', async () => {
 		const result = await global.page.evaluate(async () => await new Promise((resolve) => {
 			const progressLog = []
-			const assetFetcher = Game.createAssetFetcher()
+			const assetFetcher = Game.createAssetFetcher().startQueue('default')
 			Game.createScene()
 				.addEventListener('load', async ({ assetFetcher }) => assetFetcher.queueAssets([
 					'files/test.json',
@@ -126,12 +126,14 @@ describe('Scene', () => {
 	// Test for "load" event
 	it('Should fire bubbling "loaded" event on load() calls', async () => {
 		const result = await global.page.evaluate(async () => await new Promise((resolve) => {
-			Game.createScene()
+			const scene = Game.createScene()
 				.addEventListener('load', async ({ assetFetcher }) => {
 					assetFetcher.queueAsset('files/test.json')
 				})
 				.addEventListener('loaded', async (e) => resolve(e.bubbles && !!e.assets))
-				.load(Game.createAssetFetcher())
+			const assetFetcher = Game.createAssetFetcher()
+			assetFetcher.startQueue('default')
+			scene.load(assetFetcher)
 		}))
 		expect(result).toBe(true)
 	})

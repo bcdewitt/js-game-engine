@@ -215,27 +215,32 @@ class Scene extends MixedWith(eventTargetMixin) {
 	 */
 	async load(assetFetcher) {
 		const systems = _Scene.get(this).systems
+		const queueKey = Symbol()
 
 		// Fire load event for the scene
+		assetFetcher.startQueue(queueKey)
 		await this.dispatchEventAsync(new SceneLoadEvent('load', { assetFetcher }))
 
 		// Fire load events for each system
-		systems.forEach(system => system.load(assetFetcher))
+		systems.forEach((system, systemName) => {
+			assetFetcher.startQueue(systemName)
+			system.load(assetFetcher)
+		})
 
 		// Temporarily allow fetchProgress events to bubble up through this scene
 		this.propagateEventsFrom(assetFetcher)
 
 		// Fetch all assets and pass them back to the systems' loaded method
-		const assets = new Map(await assetFetcher.fetchAssets())
+		const assets = await assetFetcher.fetchAssets()
 
 		// Stop fetchProgress events from bubbling up throug this scene
 		this.stopPropagatingFrom(assetFetcher)
 
 		// TODO: Replace this with a keyed collection (Map version of Collection instead of Set)
 		const promises = [
-			this.dispatchEventAsync(new SceneLoadedEvent('loaded', { assets }))
+			this.dispatchEventAsync(new SceneLoadedEvent('loaded', { assets: assets.get(queueKey) }))
 		]
-		systems.forEach(system => promises.push(system.loaded(assets)))
+		systems.forEach((system, systemName) => promises.push(system.loaded(assets.get(systemName))))
 
 		return Promise.all(promises)
 	}

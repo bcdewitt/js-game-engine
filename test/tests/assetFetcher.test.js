@@ -5,9 +5,7 @@ describe('AssetFetcher', () => {
 	// Test fetching json files
 	it('Should fetch json files as POJO\'s', async () => {
 		const result = await global.page.evaluate(async () => {
-			const game = Game.createAssetFetcher().queueAsset('files/test.json')
-			const [ [ , asset ] ] = await game.fetchAssets()
-			return asset
+			return await Game.createAssetFetcher().fetch('files/test.json')
 		})
 		expect(result).toEqual({ message: 'Test Message' })
 	})
@@ -16,8 +14,7 @@ describe('AssetFetcher', () => {
 	// Test fetching image files
 	it('Should fetch image files as HTMLImageElement\'s', async () => {
 		const result = await global.page.evaluate(async () => {
-			const game = Game.createAssetFetcher().queueAsset('files/test.jpg')
-			const [ [ , asset ] ] = await game.fetchAssets()
+			const asset = await Game.createAssetFetcher().fetch('files/test.jpg')
 			return asset.constructor.name === 'HTMLImageElement'
 		})
 		expect(result).toBe(true)
@@ -27,8 +24,7 @@ describe('AssetFetcher', () => {
 	// Test fetching image files
 	it('Should fetch audio files as ArrayBuffer\'s', async () => {
 		const result = await global.page.evaluate(async () => {
-			const game = Game.createAssetFetcher().queueAsset('files/test.mp3')
-			const [ [ , asset ] ] = await game.fetchAssets()
+			const asset = await Game.createAssetFetcher().fetch('files/test.mp3')
 			return asset.constructor.name === 'ArrayBuffer'
 		})
 		expect(result).toBe(true)
@@ -38,8 +34,7 @@ describe('AssetFetcher', () => {
 	// Test fetching image files
 	it('Should fetch video files as HTMLVideoElement\'s', async () => {
 		const result = await global.page.evaluate(async () => {
-			const game = Game.createAssetFetcher().queueAsset('files/test.mp4')
-			const [ [ , asset ] ] = await game.fetchAssets()
+			const asset = await Game.createAssetFetcher().fetch('files/test.mp4')
 			return asset.constructor.name === 'HTMLVideoElement'
 		})
 		expect(result).toBe(true)
@@ -50,16 +45,16 @@ describe('AssetFetcher', () => {
 	it('Should fetch multiple files and types and fire a "fetchProgress" event', async () => {
 		const result = await global.page.evaluate(async () => {
 			const progressLog = []
-			const game = Game.createAssetFetcher().queueAssets([
+			const assetFetcher = Game.createAssetFetcher().startQueue('default').queueAssets([
 				'files/test.json',
 				'files/test.jpg',
 			]).addEventListener('fetchProgress', e => progressLog.push(e.progress))
 
-			const [ [,jsonAsset], [,imgAsset] ] = await game.fetchAssets()
+			const map = await assetFetcher.fetchAssets('default')
 
 			return {
-				jsonAsset,
-				imgAsset: imgAsset.constructor.name === 'HTMLImageElement',
+				jsonAsset: map.get('files/test.json'),
+				imgAsset: map.get('files/test.jpg').constructor.name === 'HTMLImageElement',
 				progressLog,
 			}
 		})

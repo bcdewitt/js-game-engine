@@ -68,7 +68,7 @@ class TiledMap {
 	}
 
 	setResources(resources) {
-		this.resources = new Map(resources)
+		this.resources = resources
 
 		// Post-loading setup
 		const { data } = this

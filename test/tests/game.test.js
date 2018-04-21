@@ -27,7 +27,7 @@ describe('Game', () => {
 
 			Game.createGame()
 				.setSceneFactory(sceneFactory)
-				.setAssetFetcher(Game.createAssetFetcher())
+				.setAssetFetcher(Game.createAssetFetcher().startQueue('default'))
 				.addEventListener('load', async ({ assetFetcher }) => {
 					assetFetcher.queueAsset('files/test.json')
 				})

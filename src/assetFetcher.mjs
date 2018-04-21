@@ -1,6 +1,6 @@
 import { MixedWith } from './utilities.mjs'
 import { eventTargetMixin } from './gameEvent.mjs'
-import GameFetchProgressEvent from './events/fetchProgressEvent.mjs'
+import FetchProgressEvent from './events/fetchProgressEvent.mjs'
 
 // -------------------------------------------------------------------------
 
@@ -54,9 +54,36 @@ const _AssetFetcher = new WeakMap()
 class AssetFetcher extends MixedWith(eventTargetMixin) {
 	constructor() {
 		super()
+		this.reset()
+	}
+
+	get queue() {
+		const _this = _AssetFetcher.get(this)
+		return _this.queues.get(_this.currentQueue)
+	}
+
+	/**
+	 * Resets this instance, reverting totalCount and removing existing queues
+	 */
+	reset() {
 		_AssetFetcher.set(this, {
-			queuedAssetPaths: new Set()
+			queues: new Map(),
+			currentQueue: null,
+			totalCount: 0,
 		})
+	}
+
+	/**
+	 * Creates a new queue to be used from now until reset or startQueue is called again.
+	 *
+	 * @param {*} queueKey - Value used as a key to uniquely identify a queue.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	startQueue(queueKey) {
+		const _this = _AssetFetcher.get(this)
+		_this.currentQueue = queueKey
+		_this.queues.set(queueKey, new Set())
+		return this
 	}
 
 	/**
@@ -66,7 +93,14 @@ class AssetFetcher extends MixedWith(eventTargetMixin) {
 	 * @returns {this} - Returns self for method chaining.
 	 */
 	queueAsset(path) {
-		if (path) _AssetFetcher.get(this).queuedAssetPaths.add(path)
+		const _this = _AssetFetcher.get(this)
+		if (_this.currentQueue === null)
+			throw new Error('Must start a queue before queuing assets')
+
+		if (path) {
+			this.queue.add(path)
+			_AssetFetcher.get(this).totalCount++
+		}
 		return this
 	}
 
@@ -85,20 +119,39 @@ class AssetFetcher extends MixedWith(eventTargetMixin) {
 	 * Fetch all queued assets. On each asset fetch, a "fetchProgress" event
 	 * will be dispatched with the current percent complete. (Ex. 0.5 for 50%)
 	 *
-	 * @returns {Promise<Object[]>} - A promise that resolves when all assets have been fetched.
+	 * @async
+	 * @param {*} queueKey - Value used as a key to uniquely identify a queue.
+	 * @returns {Object[]} - All assets that have been fetched.
 	 */
-	fetchAssets() {
-		const paths = [..._AssetFetcher.get(this).queuedAssetPaths]
+	async fetchAssets(queueKey) {
+		const _this = _AssetFetcher.get(this)
 
 		let count = 0
-		const dispatchProgressEvent = (val) => {
+		const dispatchProgressEvent = () => {
 			count += 1
-			this.dispatchEvent(new GameFetchProgressEvent('fetchProgress', { progress: count / paths.length }))
-			return val
+			this.dispatchEvent(new FetchProgressEvent('fetchProgress', { progress: count / _this.totalCount }))
 		}
-		return Promise.all(
-			paths.map(path => fetchAsset(path).then(dispatchProgressEvent).then(asset => [ path, asset ]))
-		)
+
+		const outerPromises = []
+		_this.queues.forEach((set, key) => {
+			const innerPromises = [...set].map(async (path) => {
+				const asset = await fetchAsset(path)
+				dispatchProgressEvent()
+				return [ path, asset ]
+			})
+			outerPromises.push(
+				Promise.all(innerPromises).then(entries => {
+					return [ key, new Map(entries) ]
+				}))
+		})
+		const data = await Promise.all(outerPromises)
+
+		this.reset()
+
+		const allFetched = new Map(data)
+		_this.totalCount = 0
+		if (queueKey) return allFetched.get(queueKey)
+		return allFetched
 	}
 
 	/**

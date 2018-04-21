@@ -8,8 +8,7 @@ describe('TiledMap', () => {
 
 			// Load data to create a TiledMap instance
 			const assetFetcher = Game.createAssetFetcher()
-			assetFetcher.queueAsset('files/tiledData.json')
-			const [ [ ,data ] ] = await assetFetcher.fetchAssets()
+			const data = await assetFetcher.fetch('files/tiledData.json')
 
 			// Initialize a TiledMap instance
 			const tiledMap = Game.createTiledMap()
@@ -17,8 +16,9 @@ describe('TiledMap', () => {
 				.decorate(data)
 
 			// Load and add the necessary resources to the TiledMap instance
+			assetFetcher.startQueue('default')
 			assetFetcher.queueAssets(tiledMap.getResourcePaths())
-			tiledMap.setResources(await assetFetcher.fetchAssets())
+			tiledMap.setResources(await assetFetcher.fetchAssets('default'))
 
 			return {
 				tilesetImageLoaded: tiledMap.getResource('tileset.png') instanceof HTMLImageElement,
@@ -45,8 +45,7 @@ describe('TiledMap', () => {
 
 			// Load data to create a TiledMap instance
 			const assetFetcher = Game.createAssetFetcher()
-			assetFetcher.queueAsset('files/tiledData.json')
-			const [ [ ,data ] ] = await assetFetcher.fetchAssets()
+			const data = await assetFetcher.fetch('files/tiledData.json')
 
 			// Initialize a TiledMap instance
 			const tiledMap = Game.createTiledMap()
@@ -54,8 +53,9 @@ describe('TiledMap', () => {
 				.decorate(data)
 
 			// Load and add the necessary resources to the TiledMap instance
+			assetFetcher.startQueue('default')
 			assetFetcher.queueAssets(tiledMap.getResourcePaths())
-			tiledMap.setResources(await assetFetcher.fetchAssets())
+			tiledMap.setResources(await assetFetcher.fetchAssets('default'))
 
 			const canvas = document.createElement('canvas')
 			canvas.width = 1000

@@ -32,7 +32,7 @@ const observableMixin = {
 		if (handledProps.has(prop)) return
 
 		let val = this[prop]
-		const descriptor = Reflect.getOwnPropertyDescriptor(this, prop)
+		//const descriptor = Reflect.getOwnPropertyDescriptor(this, prop)
 
 		// Observe method calls
 		if (typeof val === 'function') {
@@ -44,7 +44,7 @@ const observableMixin = {
 					}
 				},
 				set(inVal) { val = inVal }
-			}, descriptor))
+			}))
 
 		// Observe property changes
 		} else {
@@ -54,7 +54,7 @@ const observableMixin = {
 					this.dispatchEvent(new ObservableChangeEvent('observableChange', { prop, args: [ inVal ] }))
 					val = inVal
 				}
-			}, descriptor))
+			}))
 		}
 		return this
 	},

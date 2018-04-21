@@ -704,7 +704,7 @@ const observableMixin = {
 		if (handledProps.has(prop)) return
 
 		let val = this[prop];
-		const descriptor = Reflect.getOwnPropertyDescriptor(this, prop);
+		//const descriptor = Reflect.getOwnPropertyDescriptor(this, prop)
 
 		// Observe method calls
 		if (typeof val === 'function') {
@@ -716,7 +716,7 @@ const observableMixin = {
 					}
 				},
 				set(inVal) { val = inVal; }
-			}, descriptor));
+			}));
 
 		// Observe property changes
 		} else {
@@ -726,7 +726,7 @@ const observableMixin = {
 					this.dispatchEvent(new ObservableChangeEvent('observableChange', { prop, args: [ inVal ] }));
 					val = inVal;
 				}
-			}, descriptor));
+			}));
 		}
 		return this
 	},
@@ -795,18 +795,7 @@ class Entity extends MixedWith(observableMixin$1) {
 	}
 }
 
-const getAllObjKeys = (obj) => {
-	if (!obj || obj === Object.prototype) return []
-  
-	const set = new Set(Object.getOwnPropertyNames(obj).concat(
-		getAllObjKeys(Object.getPrototypeOf(obj))
-	));
-	set.delete('constructor');
-	return [...set]
-};
-
 const _Component = new WeakMap(); // Store private variables here
-const _ProtoChainKeys = new WeakMap(); // Cache object keys from prototype chains
 
 /**
  * Class representing a Component (the "C" in the ECS design pattern).
@@ -816,42 +805,12 @@ class Component extends MixedWith(observableMixin$1) {
 
 	/**
 	 * Create a Component.
-	 * @param {Object} [obj] - Object with properties to assign to this Component
 	 */
-	constructor(obj) {
+	constructor() {
 		super();
-		if (obj) this.decorate(obj);
 		_Component.set(this, {
 			parentEntity: null
 		});
-	}
-
-	/**
-	 * Decorates an existing object with Component functionality.
-	 * @param {Object} [obj] - Object with properties to assign to this Component
-	 * @returns {this} - Returns self for method chaining.
-	 */
-	decorate(obj = {}) {
-		const objProto = Reflect.getPrototypeOf(obj);
-
-		let objKeys;
-		if (objProto !== Object.prototype) {
-			if (!_ProtoChainKeys.has(objProto))
-				_ProtoChainKeys.set(objProto, getAllObjKeys(obj));
-			objKeys = _ProtoChainKeys.get(objProto);
-		} else {
-			objKeys = getAllObjKeys(obj);
-		}
-
-		objKeys.forEach((key) => {
-			Reflect.defineProperty(this, key, {
-				enumerable: true,
-				get() { return obj[key] },
-				set(val) { obj[key] = val; },
-			});
-		});
-
-		return this
 	}
 
 	/**
@@ -1999,6 +1958,7 @@ class InputManager {
  * @namespace
  */
 const game = {
+	Component,
 
 	/**
 	 * @returns {Collection} - A new Collection instance.
@@ -2111,10 +2071,7 @@ const game = {
 	 */
 	createComponentFactory(...args) {
 		return (new Factory(...args)).use((constructorName, data = {}) =>
-			({
-				component: new Component(),
-				data,
-			})
+			({ data })
 		)
 	},
 

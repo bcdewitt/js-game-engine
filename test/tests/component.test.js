@@ -12,37 +12,20 @@ describe('Component', () => {
 		expect(result).toBe(true)
 	})
 
-	// Test for decoration functionality
-	it('Should successfully decorate any object', async () => {
+	// Test for class-based syntax
+	it('Should allow extension of the Component class', async () => {
 		const result = await global.page.evaluate(() => {
-			const _job = Symbol('_job')
-			class Person {
+			class TestComponent extends Game.Component {
 				constructor() {
-					this[_job] = 'Programmer'
-					this.firstName = 'John'
-					this.lastName = 'Doe'
+					super()
+					this.foo = 'bar'
 				}
-				get job() { return this[_job] }
-				set job(val) { this[_job] = val }
-				getFullName() {
-					return this.firstName + ' ' + this.lastName
-				}
-			}
-			const comp = Game.createComponent().decorate(new Person())
 
-			return {
-				firstName: comp.firstName,
-				lastName: comp.lastName,
-				job: comp.job,
-				fullName: comp.getFullName(),
 			}
+			const testComponent = new TestComponent()
+			return testComponent.getParentEntity !== undefined && testComponent.foo === 'bar'
 		})
-		expect(result).toEqual({
-			firstName: 'John',
-			lastName: 'Doe',
-			job: 'Programmer',
-			fullName: 'John Doe',
-		})
+		expect(result).toBe(true)
 	})
 
 }, TIMEOUT)

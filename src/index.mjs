@@ -19,6 +19,7 @@ import InputManager from './inputManager.mjs'
  * @namespace
  */
 const game = {
+	Component,
 
 	/**
 	 * @returns {Collection} - A new Collection instance.
@@ -131,10 +132,7 @@ const game = {
 	 */
 	createComponentFactory(...args) {
 		return (new Factory(...args)).use((constructorName, data = {}) =>
-			({
-				component: new Component(),
-				data,
-			})
+			({ data })
 		)
 	},
 

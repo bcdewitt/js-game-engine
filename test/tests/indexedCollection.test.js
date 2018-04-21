@@ -31,9 +31,16 @@ describe('Collection', () => {
 		const result = await global.page.evaluate(() => {
 			const collection = Game.createIndexedCollection()
 
+			class TestComponent extends Game.Component {
+				constructor(firstName, lastName) {
+					super()
+					this.firstName = firstName
+					this.lastName = lastName
+				}
+			}
+
 			const createComponent = (firstName, lastName) => {
-				const comp = Game.createComponent({ firstName, lastName })
-				comp
+				const comp = (new TestComponent(firstName, lastName))
 					.makeObservable('lastName')
 					.addEventListener('observableChange', ({ currentTarget }) => {
 						collection.reindexItem(currentTarget)

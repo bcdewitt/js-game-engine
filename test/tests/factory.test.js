@@ -57,8 +57,8 @@ describe('Factory', () => {
 					// Entity Factory
 					sceneData.entityFactory
 						.use((entityName, entityData) => {
-							entityData.componentFactory.set('testComponent', (name, { component, data }) =>
-								component.decorate(data)
+							entityData.componentFactory.set('testComponent', () =>
+								new Game.Component()
 							)
 							return entityData
 						})

@@ -1246,6 +1246,8 @@ class Scene extends MixedWith(eventTargetMixin) {
 
 	/**
 	 * Passes assetFetcher to all systems to load.
+	 * Multiple events are dispatched during this process
+	 * including 'load', 'fetchProgress' and 'loaded' events
 	 *
 	 * @async
 	 * @param {AssetFetcher} assetFetcher - AssetFetcher to be used in handlers.
@@ -1260,10 +1262,14 @@ class Scene extends MixedWith(eventTargetMixin) {
 		// Fire load events for each system
 		systems.forEach(system => system.load(assetFetcher));
 
-		// TODO: Add a "loading" event to be handled like the update event
+		// Temporarily allow fetchProgress events to bubble up through this scene
+		this.propagateEventsFrom(assetFetcher);
 
 		// Fetch all assets and pass them back to the systems' loaded method
 		const assets = new Map(await assetFetcher.fetchAssets());
+
+		// Stop fetchProgress events from bubbling up throug this scene
+		this.stopPropagatingFrom(assetFetcher);
 
 		// TODO: Replace this with a keyed collection (Map version of Collection instead of Set)
 		const promises = [

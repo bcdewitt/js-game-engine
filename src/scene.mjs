@@ -117,7 +117,7 @@ class Scene extends MixedWith(eventTargetMixin) {
 	 * this method will return all added entities.
 	 *
 	 * @param {string} indexName - Name of the index.
-	 * @returns {Set<Entity>|Collection<Entity>} - Set object containing the entities.
+	 * @returns {Collection<Entity>} - Collection object containing the entities.
 	 */
 	getEntities(indexName) {
 		if (indexName === undefined) return _Scene.get(this).entities
@@ -236,7 +236,6 @@ class Scene extends MixedWith(eventTargetMixin) {
 		// Stop fetchProgress events from bubbling up throug this scene
 		this.stopPropagatingFrom(assetFetcher)
 
-		// TODO: Replace this with a keyed collection (Map version of Collection instead of Set)
 		const promises = [
 			this.dispatchEventAsync(new SceneLoadedEvent('loaded', { assets: assets.get(queueKey) }))
 		]

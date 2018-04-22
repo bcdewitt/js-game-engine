@@ -9,19 +9,19 @@ describe('Scene', () => {
 			const entity = Game.createEntity()
 			const scene = Game.createScene().addEntity(entity)
 			const hadEntity = scene.hasEntity(entity)
-			const [ grabbedEntity ] = scene.getEntities()
+			const [ [, grabbedEntity] ] = scene.getEntities()
 			scene.removeEntity(entity)
 			const remainingEntities = scene.getEntities()
 			return {
 				hadEntity,
 				grabbedEntityCorrect: grabbedEntity === entity,
-				zeroRemainingEntities: remainingEntities.size === 0,
+				remainingEntityCount: remainingEntities.size,
 			}
 		})
 		expect(result).toEqual({
 			hadEntity: true,
 			grabbedEntityCorrect: true,
-			zeroRemainingEntities: true,
+			remainingEntityCount: 0,
 		})
 	})
 

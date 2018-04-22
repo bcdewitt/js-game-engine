@@ -10,7 +10,7 @@ describe('Collection', () => {
 			collection.delete(2)
 
 			const results = []
-			for (const item of collection) {
+			for (const item of collection.values()) {
 				results.push(item)
 			}
 
@@ -29,13 +29,13 @@ describe('Collection', () => {
 
 			return {
 				forEach: results,
-				map: [...collection.map(item => item * 2)],
-				filter: [...collection.filter(item => item >= 2)],
+				map: [...collection.map(item => item * 2).values()],
+				filter: [...collection.filter(item => item >= 2).values()],
 				reduce: collection.reduce((total, item) => total + item),
 				some: collection.some(item => item === 2),
 				every: collection.every(item => item <= 3),
 				find: collection.find(item => item === 2),
-				concat: [...collection.concat(Game.createCollection([3, 4, 5]))],
+				concat: [...collection.concat(Game.createCollection([3, 4, 5])).values()],
 			}
 		})
 		expect(result).toEqual({

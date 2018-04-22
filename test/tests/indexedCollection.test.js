@@ -17,7 +17,7 @@ describe('Collection', () => {
 				)
 
 			const objSet = collection.getIndexed('The Doe Family')
-			return [...objSet]
+			return [...objSet.values()]
 		})
 		expect(result).toEqual([
 			{ fullName: 'John Doe' },
@@ -64,7 +64,7 @@ describe('Collection', () => {
 
 			const objSet = collection.getIndexed('The Doe Family')
 
-			return [...objSet]
+			return [...objSet.values()]
 		})
 		expect(result).toEqual([
 			{ firstName: 'John', lastName: 'Doe' },

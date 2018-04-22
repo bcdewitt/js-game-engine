@@ -29,8 +29,8 @@ class IndexedCollection extends Collection {
 		_this.indexers.set(indexName, indexer)
 
 		const indexedSet = new Collection()
-		this.forEach((item) => {
-			const val = indexer(item)
+		this.forEach((item, key) => {
+			const val = indexer(item, key)
 			if (val !== undefined) indexedSet.add(val)
 		})
 

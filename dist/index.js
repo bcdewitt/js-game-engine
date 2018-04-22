@@ -1,10 +1,28 @@
 'use strict';
 
 /**
- * A class that extends Set with partial implementations of common Array
- * methods like .map() .filter(), etc.
+ * A class that extends Map with partial implementations of common Array
+ * methods like .map() .filter(), etc. (and .add() from Set)
  */
-class Collection extends Set {
+class Collection extends Map {
+	constructor(iterable, useKeys = false) {
+		super(useKeys ? iterable : undefined);
+		if (iterable && useKeys === false) {
+			for (const item of iterable) {
+				this.add(item);
+			}
+		}
+	}
+
+	/**
+	 * Adds an item to the Collection, setting the item as the key.
+	 *
+	 * @param {*} item - The item to be added.
+	 * @returns {this} - Returns self for method chaining.
+	 */
+	add(item) {
+		return this.set(item, item)
+	}
 
 	/**
 	 * The map() method creates a new Collection with the results of calling
@@ -16,10 +34,12 @@ class Collection extends Set {
 	 * @returns {Collection} - A new Collection (or subclass) with each element being the result of the callback function.
 	 */
 	map(callback) {
-		const Clazz = this.constructor; // In case Collection gets extended
-		const newSet = new Clazz();
-		this.forEach(item => newSet.add(callback(item)));
-		return newSet
+		const Clazz = this.constructor;
+		const newCollection = new Clazz();
+		this.forEach((item, key) =>
+			newCollection.set(key, callback(item, key))
+		);
+		return newCollection
 	}
 
 	/**
@@ -34,9 +54,11 @@ class Collection extends Set {
 	 */
 	filter(callback) {
 		const Clazz = this.constructor;
-		const newSet = new Clazz();
-		this.forEach(item => { if (callback(item)) newSet.add(item); });
-		return newSet
+		const newCollection = new Clazz();
+		this.forEach((item, key) => {
+			if (callback(item, key)) newCollection.set(key, item);
+		});
+		return newCollection
 	}
 
 	/**
@@ -54,12 +76,15 @@ class Collection extends Set {
 	 */
 	reduce(callback, initialValue) {
 		if (initialValue === undefined && this.size === 0)
-			throw new Error('reduce() cannot be called on an empty set')
+			throw new Error('reduce() cannot be called on an empty collection')
 
-		const iterator = this.values();
-		let lastVal = initialValue === undefined ? iterator.next().value : initialValue;
-		for (const item of iterator) {
-			lastVal = callback(lastVal, item);
+		const iterator = this.entries();
+		let [, lastVal] = initialValue === undefined
+			? iterator.next().value
+			: [undefined, initialValue];
+
+		for (const [key, item] of iterator) {
+			lastVal = callback(lastVal, item, key);
 		}
 		return lastVal
 	}
@@ -74,8 +99,8 @@ class Collection extends Set {
 	 * @returns {boolean} - True if the callback function returns a truthy value for any Collection element; otherwise, false.
 	 */
 	some(callback) {
-		for (const item of this) {
-			if (callback(item)) return true
+		for (const [key, item] of this) {
+			if (callback(item, key)) return true
 		}
 		return false
 	}
@@ -90,8 +115,8 @@ class Collection extends Set {
 	 * @returns {boolean} - True if the callback function returns a truthy value for every Collection element; otherwise, false.
 	 */
 	every(callback) {
-		for (const item of this) {
-			if (!callback(item)) return false
+		for (const [key, item] of this) {
+			if (!callback(item, key)) return false
 		}
 		return true
 	}
@@ -106,8 +131,24 @@ class Collection extends Set {
 	 * @returns {*} - A value in the Collection if an element passes the test; otherwise, undefined.
 	 */
 	find(callback) {
-		for (const item of this) {
-			if (callback(item)) return item
+		for (const [key, item] of this) {
+			if (callback(item, key)) return item
+		}
+		return undefined
+	}
+
+	/**
+	 * The findEntry() method returns the first key/value pair in the Collection
+	 * that satisfies the provided testing function. Otherwise undefined is returned.
+	 *
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+	 *
+	 * @param {function} callback - Function to execute on each value in the Collection.
+	 * @returns {*} - A value in the Collection if an element passes the test; otherwise, undefined.
+	 */
+	findEntry(callback) {
+		for (const [key, item] of this) {
+			if (callback(item, key)) return [key, item]
 		}
 		return undefined
 	}
@@ -124,13 +165,14 @@ class Collection extends Set {
 	 */
 	concat(...iterables) {
 		const Clazz = this.constructor; // In case Collection gets extended
-		const newSet = new Clazz(this);
+		const newCollection = new Clazz(this, true);
 		for (const iterable of iterables) {
-			for (const item of iterable) {
-				newSet.add(item);
+			for (const entry of iterable) {
+				const [key, item] = entry;
+				newCollection.set(key, item);
 			}
 		}
-		return newSet
+		return newCollection
 	}
 }
 
@@ -225,10 +267,10 @@ const eventTargetMixin = {
 		_event.currentTarget = this;
 
 		// Loop over listeners (break out when e.stopImmediatePropagation() is called)
-		const set = _this.listeners.get(e.type);
-		let promises = [];
-		if (set) {
-			for (const listener of set) {
+		const collection = _this.listeners.get(e.type);
+		const promises = [];
+		if (collection) {
+			for (const listener of collection.values()) {
 				const options = _this.listenerOptions.get(listener);
 				promises.push(listener.call(this, e));
 				if (options && options.once) this.removeEventListener(e.type, listener);
@@ -268,9 +310,9 @@ const eventTargetMixin = {
 		_event.currentTarget = this;
 
 		// Loop over listeners (break out when e.stopImmediatePropagation() is called)
-		const set = _this.listeners.get(e.type);
-		if (set) {
-			for (const listener of set) {
+		const collection = _this.listeners.get(e.type);
+		if (collection) {
+			for (const listener of collection.values()) {
 				const options = _this.listenerOptions.get(listener);
 				listener.call(this, e);
 				if (options && options.once) this.removeEventListener(e.type, listener);
@@ -375,8 +417,8 @@ class IndexedCollection extends Collection {
 		_this.indexers.set(indexName, indexer);
 
 		const indexedSet = new Collection();
-		this.forEach((item) => {
-			const val = indexer(item);
+		this.forEach((item, key) => {
+			const val = indexer(item, key);
 			if (val !== undefined) indexedSet.add(val);
 		});
 
@@ -1159,7 +1201,7 @@ class Scene extends MixedWith(eventTargetMixin) {
 	 * this method will return all added entities.
 	 *
 	 * @param {string} indexName - Name of the index.
-	 * @returns {Set<Entity>|Collection<Entity>} - Set object containing the entities.
+	 * @returns {Collection<Entity>} - Collection object containing the entities.
 	 */
 	getEntities(indexName) {
 		if (indexName === undefined) return _Scene.get(this).entities
@@ -1278,7 +1320,6 @@ class Scene extends MixedWith(eventTargetMixin) {
 		// Stop fetchProgress events from bubbling up throug this scene
 		this.stopPropagatingFrom(assetFetcher);
 
-		// TODO: Replace this with a keyed collection (Map version of Collection instead of Set)
 		const promises = [
 			this.dispatchEventAsync(new SceneLoadedEvent('loaded', { assets: assets.get(queueKey) }))
 		];

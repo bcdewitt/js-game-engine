@@ -91,10 +91,10 @@ const eventTargetMixin = {
 		_event.currentTarget = this
 
 		// Loop over listeners (break out when e.stopImmediatePropagation() is called)
-		const set = _this.listeners.get(e.type)
-		let promises = []
-		if (set) {
-			for (const listener of set) {
+		const collection = _this.listeners.get(e.type)
+		const promises = []
+		if (collection) {
+			for (const listener of collection.values()) {
 				const options = _this.listenerOptions.get(listener)
 				promises.push(listener.call(this, e))
 				if (options && options.once) this.removeEventListener(e.type, listener)
@@ -134,9 +134,9 @@ const eventTargetMixin = {
 		_event.currentTarget = this
 
 		// Loop over listeners (break out when e.stopImmediatePropagation() is called)
-		const set = _this.listeners.get(e.type)
-		if (set) {
-			for (const listener of set) {
+		const collection = _this.listeners.get(e.type)
+		if (collection) {
+			for (const listener of collection.values()) {
 				const options = _this.listenerOptions.get(listener)
 				listener.call(this, e)
 				if (options && options.once) this.removeEventListener(e.type, listener)

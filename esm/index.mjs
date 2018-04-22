@@ -225,6 +225,44 @@ class GameEvent {
 
 const _eventTargetMixin = new WeakMap();
 
+const _dispatchEvent = function(e, isAsync = false) {
+	// Prevent duplicate events during propagation
+	if (propagatingEvent && propagatingEvent.currentTarget === this) return
+
+	const _this = _eventTargetMixin.get(this);
+	const _event = _GameEvent.get(e);
+
+	// Modify event's private properties
+	if (_event.target === null) {
+		_event.timestamp = performance.now();
+		_event.target = this;
+	}
+	_event.currentTarget = this;
+
+	// Loop over listeners (break out when e.stopImmediatePropagation() is called)
+	const collection = _this.listeners.get(e.type);
+	const results = [];
+	if (collection) {
+		for (const listener of collection.values()) {
+			const options = _this.listenerOptions.get(listener);
+			results.push(listener.call(this, e));
+			if (options && options.once) this.removeEventListener(e.type, listener);
+			if (!_event.propagateImmediate) break
+		}
+	}
+
+	// If this event propagates, dispatch event on parent
+	if (_event.propagate && _this.parent) {
+		propagatingEvent = e;
+		const methodName = isAsync ? 'dispatchEventAsync' : 'dispatchEvent';
+		results.push(_this.parent[methodName](e));
+	} else {
+		propagatingEvent = null;
+	}
+
+	return results
+};
+
 /**
  * Event Target mixin
  *
@@ -249,40 +287,7 @@ const eventTargetMixin = {
 	 * @param {GameEvent} e - Event to dispatch.
 	 */
 	async dispatchEventAsync(e) {
-		// TODO: DRY this up by using shared code between this and .dispatchEvent()
-
-		// Prevent duplicate events during propagation
-		if (propagatingEvent && propagatingEvent.currentTarget === this) return
-
-		const _this = _eventTargetMixin.get(this);
-		const _event = _GameEvent.get(e);
-
-		// Modify event's private properties
-		if (_event.target === null) {
-			_event.timestamp = performance.now();
-			_event.target = this;
-		}
-		_event.currentTarget = this;
-
-		// Loop over listeners (break out when e.stopImmediatePropagation() is called)
-		const collection = _this.listeners.get(e.type);
-		const promises = [];
-		if (collection) {
-			for (const listener of collection.values()) {
-				const options = _this.listenerOptions.get(listener);
-				promises.push(listener.call(this, e));
-				if (options && options.once) this.removeEventListener(e.type, listener);
-				if (!_event.propagateImmediate) break
-			}
-		}
-
-		// If this event propagates, dispatch event on parent
-		if (_event.propagate && _this.parent) {
-			propagatingEvent = e;
-			promises.push(_this.parent.dispatchEventAsync(e));
-		} else {
-			propagatingEvent = null;
-		}
+		const promises = _dispatchEvent.call(this, e, true);
 		await Promise.all(promises);
 	},
 
@@ -294,37 +299,7 @@ const eventTargetMixin = {
 	 * @returns {this} - Returns self for method chaining.
 	 */
 	dispatchEvent(e) {
-		// Prevent duplicate events during propagation
-		if (propagatingEvent && propagatingEvent.currentTarget === this) return
-
-		const _this = _eventTargetMixin.get(this);
-		const _event = _GameEvent.get(e);
-
-		// Modify event's private properties
-		if (_event.target === null) {
-			_event.timestamp = performance.now();
-			_event.target = this;
-		}
-		_event.currentTarget = this;
-
-		// Loop over listeners (break out when e.stopImmediatePropagation() is called)
-		const collection = _this.listeners.get(e.type);
-		if (collection) {
-			for (const listener of collection.values()) {
-				const options = _this.listenerOptions.get(listener);
-				listener.call(this, e);
-				if (options && options.once) this.removeEventListener(e.type, listener);
-				if (!_event.propagateImmediate) break
-			}
-		}
-
-		// If this event propagates, dispatch event on parent
-		if (_event.propagate && _this.parent) {
-			propagatingEvent = e;
-			_this.parent.dispatchEvent(e);
-		} else {
-			propagatingEvent = null;
-		}
+		_dispatchEvent.call(this, e);
 		return this
 	},
 

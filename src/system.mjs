@@ -139,7 +139,13 @@ class System extends MixedWith(eventTargetMixin) {
 	 * @returns {this} - Returns self for method chaining.
 	 */
 	mounted(entities) {
-		this.dispatchEvent(new SystemMountedEvent('mounted', { entities }))
+		this.dispatchEvent(new SystemMountedEvent('mounted', {
+			indexComponents: (compNames = []) =>
+				compNames.forEach(compName =>
+					entities.setIndex(compName, entity => entity.getComponent(compName))
+				),
+			entities
+		}))
 		return this
 	}
 

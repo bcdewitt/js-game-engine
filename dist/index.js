@@ -888,9 +888,10 @@ class GameSceneChangeEvent extends GameEvent {
 }
 
 class SystemMountedEvent extends GameEvent {
-	constructor(type, { entities } = {}) {
+	constructor(type, { entities, indexComponents } = {}) {
 		super(type);
 		Object.defineProperty(this, 'entities', { value: entities, writable: false });
+		Object.defineProperty(this, 'indexComponents', { value: indexComponents, writable: false });
 	}
 }
 
@@ -1049,7 +1050,13 @@ class System extends MixedWith(eventTargetMixin) {
 	 * @returns {this} - Returns self for method chaining.
 	 */
 	mounted(entities) {
-		this.dispatchEvent(new SystemMountedEvent('mounted', { entities }));
+		this.dispatchEvent(new SystemMountedEvent('mounted', {
+			indexComponents: (compNames = []) =>
+				compNames.forEach(compName =>
+					entities.setIndex(compName, entity => entity.getComponent(compName))
+				),
+			entities
+		}));
 		return this
 	}
 

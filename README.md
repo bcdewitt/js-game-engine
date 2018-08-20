@@ -1,31 +1,22 @@
 # JS Game Engine #
 
-A JavaScript library that utilizes the ECS design pattern to organize video game logic.
-
-
-## Example ##
-* (TBD)
-
-
-## What is this repository for? ##
-
-* A custom game engine being developed with aspirations to eventually exceed the quality of currently available JS game engines...but is mostly for educational purposes at the moment.
-* Version 0.0.1
+A JavaScript library that utilizes the ECS design pattern to organize video game logic. This has been mostly used for educational purposes (learning ES6+ syntax, Rollup, JSDoc, Jest, etc.), but I do aim to eventually complete this and build a real game with it.
 
 
 ## How do I get set up? ##
 
-* This will eventually be installable via `npm i --save <project name>`.
-* Install node and clone the repository. Run `npm install` at the project root.
+Until this is complete enough for me to put up on npm, I would install the example game instead of the engine alone. The example game includes this engine and shows it being put to use in an incomplete but functional prototype.
 
 
 ## Development guidelines ##
 
+I am not currently accepting outside contributions, but will list out the guidelines I use for this project:
+
 * Set up your IDE to use the ESLint configuration and run `npm run lint` to catch problems early.
-* Follow Test Driven Development.
+* Follow Test Driven Development - make a failing test first, then implement changes.
 * Tests are in the test/tests folder. Each one uses Puppeteer to run the test in a browser context and looks like this: `const result = await global.page.evaluate(() => { ... }`
 * While developing, be sure to build using `npm run build` or `npm run watch` before running tests with `npm run test`.
-* Be sure to include valid jsdoc comments on any new classes, methods, mixins, etc. instead of manually running the command each time.
+* Be sure to include valid jsdoc comments on any new classes, methods, mixins, etc.
 * Before finishing a feature, update the documentation using `npm run doc`.
 
 
